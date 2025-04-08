@@ -12,7 +12,7 @@
 		</div>
 		<nav class="navbar navbar-expand-xl w-100">
 			<ul class="navbar-nav justify-content-start flex-grow-1 gap-1">
-				<li class="nav-item">
+				<!-- <li class="nav-item">
                     <router-link to="/admin/luong">
                         <a class="nav-link" href="/admin/luong">
 						<div class="parent-icon"><i class="fa-solid fa-rectangle-list"></i>
@@ -21,35 +21,70 @@
 					</a>
                     </router-link>
 					
-				</li>
+				</li> -->
 				<li class="nav-item">
-					<router-link to="/admin/chuc-vu">
-						<a class="nav-link" href="/admin/chuc-vu">
+					<router-link to="/admin/danh-muc">
+						<a class="nav-link" href="/admin/danh-muc">
 							<div class="parent-icon"><i class="fa-solid fa-boxes-stacked"></i>
 							</div>
-							<div class="menu-title">Chức Vụ</div>
+							<div class="menu-title">Danh Mục</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
+					<router-link to="/admin/nha-cung-cap">
+						<a class="nav-link" href="/admin/nha-cung-cap">
+							<div class="parent-icon"><i class="fa-solid fa-truck"></i>
+							</div>
+							<div class="menu-title">Nhà Cung Cấp</div>
+						</a>
+					</router-link>
+				</li>	
+				<li class="nav-item">
+					<router-link to="/admin/thuong-hieu">
+						<a class="nav-link" href="/admin/thuong-hieu">
+							<div class="parent-icon"><i class="fa-solid fa-truck"></i>
+							</div>
+							<div class="menu-title">Thương Hiệu</div>
+						</a>
+					</router-link>
+				</li>	
+				<li class="nav-item">
+					<router-link to="/admin/giam-gia">
+						<a class="nav-link" href="/admin/giam-gia">
+							<div class="parent-icon"><i class="fa-solid fa-truck"></i>
+							</div>
+							<div class="menu-title">Giảm giá</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
+					<router-link to="/admin/san-pham">
+						<a class="nav-link" href="/admin/san-pham">
+							<div class="parent-icon"><i class="fa-solid fa-truck"></i>
+							</div>
+							<div class="menu-title">Sản phẩm</div>
 						</a>
 					</router-link>
 				</li>
 				<li class="nav-item">
 					<router-link to="/admin/khach-hang">
 						<a class="nav-link" href="/admin/khach-hang">
-							<div class="parent-icon"><i class="fa-solid fa-users"></i>
+							<div class="parent-icon"><i class="fa-solid fa-truck"></i>
 							</div>
 							<div class="menu-title">Khách Hàng</div>
 						</a>
 					</router-link>
 				</li>
 				<li class="nav-item">
-					<router-link to="/admin/phong-ban">
-						<a class="nav-link" href="/admin/phong-ban">
-							<div class="parent-icon"><i class="fa-solid fa-users"></i>
+					<router-link to="/admin/danh-gia">
+						<a class="nav-link" href="/admin/danh-gia">
+							<div class="parent-icon"><i class="fa-solid fa-truck"></i>
 							</div>
-							<div class="menu-title">Phòng Ban</div>
+							<div class="menu-title">Đánh Giá</div>
 						</a>
 					</router-link>
-				</li>
-				
+				</li>				
 			</ul>
 		</nav>
 	</div>

@@ -1,389 +1,192 @@
 <template>
-
-	<div class="topbar d-flex align-items-center">
-		<nav class="navbar navbar-expand">
-			<div class="topbar-logo-header">
-				<div class="">
+	<div class="topbar d-flex align-items-center shadow-sm">
+		<nav class="navbar navbar-expand w-100">
+			<!-- Logo -->
+			<div class="topbar-logo-header d-flex align-items-center">
+				<div class="logo-icon-wrapper me-2">
 					<img src="../../assets/images/logo-icon.png" class="logo-icon" alt="logo icon">
 				</div>
-				<div class="">
-					<h4 class="logo-text">Rocker</h4>
+				<div class="logo-text-wrapper">
+					<h4 class="logo-text fw-bold mb-0">Quản Trị Hệ Thống</h4>
 				</div>
 			</div>
-			<div class="mobile-toggle-menu"><i class='bx bx-menu'></i></div>
-			<div class="search-bar flex-grow-1">
+			
+			<!-- Mobile Toggle Menu -->
+			<div class="mobile-toggle-menu d-lg-none"><i class='bx bx-menu fs-4'></i></div>
+			
+			<!-- Search Bar -->
+			<div class="search-bar flex-grow-1 px-4">
 				<div class="position-relative search-bar-box">
-					<input type="text" class="form-control search-control" placeholder="Tìm Kiếm?">
-					<span class="position-absolute top-50 search-show translate-middle-y"><i
-							class='bx bx-search'></i></span>
-					<span class="position-absolute top-50 search-close translate-middle-y"><i
-							class='bx bx-x'></i></span>
+					<input type="text" class="form-control search-control rounded-pill" placeholder="Tìm kiếm...">
+					<span class="position-absolute top-50 search-show translate-middle-y end-0 me-3">
+						<i class='bx bx-search fs-5'></i>
+					</span>
+					<span class="position-absolute top-50 search-close translate-middle-y end-0 me-3 d-none">
+						<i class='bx bx-x fs-5'></i>
+					</span>
 				</div>
 			</div>
-			<div class="top-menu ms-auto">
-				<ul class="navbar-nav align-items-center">
-					<li class="nav-item mobile-search-icon">
-						<a class="nav-link" href="#"> <i class='bx bx-search'></i>
-						</a>
-					</li>
-					<li class="nav-item dropdown dropdown-large">
-						<a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button"
-							data-bs-toggle="dropdown" aria-expanded="false"> <i class='bx bx-category'></i>
-						</a>
-						<div class="dropdown-menu dropdown-menu-end">
-							<div class="row row-cols-3 g-3 p-3">
-								<div class="col text-center">
-									<div class="app-box mx-auto bg-gradient-cosmic text-white"><i
-											class='bx bx-group'></i>
-									</div>
-									<div class="app-title">Teams</div>
-								</div>
-								<div class="col text-center">
-									<div class="app-box mx-auto bg-gradient-burning text-white"><i
-											class='bx bx-atom'></i>
-									</div>
-									<div class="app-title">Projects</div>
-								</div>
-								<div class="col text-center">
-									<div class="app-box mx-auto bg-gradient-lush text-white"><i
-											class='bx bx-shield'></i>
-									</div>
-									<div class="app-title">Tasks</div>
-								</div>
-								<div class="col text-center">
-									<div class="app-box mx-auto bg-gradient-kyoto text-dark"><i
-											class='bx bx-notification'></i>
-									</div>
-									<div class="app-title">Feeds</div>
-								</div>
-								<div class="col text-center">
-									<div class="app-box mx-auto bg-gradient-blues text-dark"><i class='bx bx-file'></i>
-									</div>
-									<div class="app-title">Files</div>
-								</div>
-								<div class="col text-center">
-									<div class="app-box mx-auto bg-gradient-moonlit text-white"><i
-											class='bx bx-filter-alt'></i>
-									</div>
-									<div class="app-title">Alerts</div>
-								</div>
-							</div>
-						</div>
-					</li>
-					<li class="nav-item dropdown dropdown-large">
-						<a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#"
-							role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span
-								class="alert-count">7</span>
-							<i class='bx bx-bell'></i>
-						</a>
-						<div class="dropdown-menu dropdown-menu-end">
-							<a href="javascript:;">
-								<div class="msg-header">
-									<p class="msg-header-title">Notifications</p>
-									<p class="msg-header-clear ms-auto">Marks all as read</p>
-								</div>
-							</a>
-							<div class="header-notifications-list">
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-primary text-primary"><i class="bx bx-group"></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">New Customers<span class="msg-time float-end">14 Sec
-													ago</span></h6>
-											<p class="msg-info">5 new user registered</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-danger text-danger"><i class="bx bx-cart-alt"></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">New Orders <span class="msg-time float-end">2 min
-													ago</span></h6>
-											<p class="msg-info">You have recived new orders</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-success text-success"><i class="bx bx-file"></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">24 PDF File<span class="msg-time float-end">19 min
-													ago</span></h6>
-											<p class="msg-info">The pdf files generated</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-warning text-warning"><i class="bx bx-send"></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">Time Response <span class="msg-time float-end">28 min
-													ago</span></h6>
-											<p class="msg-info">5.1 min avarage time response</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-info text-info"><i class="bx bx-home-circle"></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">New Product Approved <span class="msg-time float-end">2
-													hrs ago</span></h6>
-											<p class="msg-info">Your new product has approved</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-danger text-danger"><i
-												class="bx bx-message-detail"></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">New Comments <span class="msg-time float-end">4 hrs
-													ago</span></h6>
-											<p class="msg-info">New customer comments recived</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-success text-success"><i
-												class='bx bx-check-square'></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">Your item is shipped <span class="msg-time float-end">5
-													hrs
-													ago</span></h6>
-											<p class="msg-info">Successfully shipped your item</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-primary text-primary"><i class='bx bx-user-pin'></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">New 24 authors<span class="msg-time float-end">1 day
-													ago</span></h6>
-											<p class="msg-info">24 new authors joined last week</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-warning text-warning"><i
-												class='bx bx-door-open'></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">Defense Alerts <span class="msg-time float-end">2 weeks
-													ago</span></h6>
-											<p class="msg-info">45% less alerts last 4 weeks</p>
-										</div>
-									</div>
-								</a>
-							</div>
-							<a href="javascript:;">
-								<div class="text-center msg-footer">View All Notifications</div>
-							</a>
-						</div>
-					</li>
-					<li class="nav-item dropdown dropdown-large">
-						<a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#"
-							role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span
-								class="alert-count">8</span>
-							<i class='bx bx-comment'></i>
-						</a>
-						<div class="dropdown-menu dropdown-menu-end">
-							<a href="javascript:;">
-								<div class="msg-header">
-									<p class="msg-header-title">Messages</p>
-									<p class="msg-header-clear ms-auto">Marks all as read</p>
-								</div>
-							</a>
-							<div class="header-message-list">
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="assets/images/avatars/avatar-1.png" class="msg-avatar"
-												alt="user avatar">
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">Daisy Anderson <span class="msg-time float-end">5 sec
-													ago</span></h6>
-											<p class="msg-info">The standard chunk of lorem</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="assets/images/avatars/avatar-2.png" class="msg-avatar"
-												alt="user avatar">
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">Althea Cabardo <span class="msg-time float-end">14
-													sec ago</span></h6>
-											<p class="msg-info">Many desktop publishing packages</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="assets/images/avatars/avatar-3.png" class="msg-avatar"
-												alt="user avatar">
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">Oscar Garner <span class="msg-time float-end">8 min
-													ago</span></h6>
-											<p class="msg-info">Various versions have evolved over</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="assets/images/avatars/avatar-4.png" class="msg-avatar"
-												alt="user avatar">
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">Katherine Pechon <span class="msg-time float-end">15
-													min ago</span></h6>
-											<p class="msg-info">Making this the first true generator</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="assets/images/avatars/avatar-5.png" class="msg-avatar"
-												alt="user avatar">
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">Amelia Doe <span class="msg-time float-end">22 min
-													ago</span></h6>
-											<p class="msg-info">Duis aute irure dolor in reprehenderit</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="assets/images/avatars/avatar-6.png" class="msg-avatar"
-												alt="user avatar">
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">Cristina Jhons <span class="msg-time float-end">2 hrs
-													ago</span></h6>
-											<p class="msg-info">The passage is attributed to an unknown</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="assets/images/avatars/avatar-7.png" class="msg-avatar"
-												alt="user avatar">
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">James Caviness <span class="msg-time float-end">4 hrs
-													ago</span></h6>
-											<p class="msg-info">The point of using Lorem</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="assets/images/avatars/avatar-8.png" class="msg-avatar"
-												alt="user avatar">
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">Peter Costanzo <span class="msg-time float-end">6 hrs
-													ago</span></h6>
-											<p class="msg-info">It was popularised in the 1960s</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="assets/images/avatars/avatar-9.png" class="msg-avatar"
-												alt="user avatar">
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">David Buckley <span class="msg-time float-end">2 hrs
-													ago</span></h6>
-											<p class="msg-info">Various versions have evolved over</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="assets/images/avatars/avatar-10.png" class="msg-avatar"
-												alt="user avatar">
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">Thomas Wheeler <span class="msg-time float-end">2 days
-													ago</span></h6>
-											<p class="msg-info">If you are going to use a passage</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="assets/images/avatars/avatar-11.png" class="msg-avatar"
-												alt="user avatar">
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">Johnny Seitz <span class="msg-time float-end">5 days
-													ago</span></h6>
-											<p class="msg-info">All the Lorem Ipsum generators</p>
-										</div>
-									</div>
-								</a>
-							</div>
-							<a href="javascript:;">
-								<div class="text-center msg-footer">View All Messages</div>
-							</a>
-						</div>
-					</li>
-				</ul>
-			</div>
-			<div class="user-box dropdown">
-				<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
-					role="button" data-bs-toggle="dropdown" aria-expanded="false">
-					<img src="https://dzfullstack.com/assets/images/logo-img.png" class="user-img" alt="user avatar">
-					<div class="user-info ps-3">
-						<p class="user-name mb-0">DZFullStack</p>
-						<p class="designattion mb-0">Admin</p>
+			
+			<!-- User Profile Menu -->
+			<div class="user-box dropdown ms-3">
+				<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret rounded-pill bg-light p-2 px-3" 
+					href="javascript:;" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					<img :src="adminInfo.hinhAnh || 'https://ui-avatars.com/api/?name='+ encodeURIComponent(adminInfo.hoTen || 'Admin') +'&background=4e73df&color=fff'" 
+						class="user-img rounded-circle me-2" width="40" height="40" alt="user avatar">
+					<div class="user-info">
+						<p class="user-name fw-bold mb-0">{{ adminInfo.hoTen || 'Admin' }}</p>
+						<p class="designation text-secondary mb-0 small">{{ adminInfo.chucVu || 'Quản trị viên' }}</p>
 					</div>
 				</a>
-				<ul class="dropdown-menu dropdown-menu-end">
+				<ul class="dropdown-menu dropdown-menu-end shadow-lg mt-2">
 					<li>
-						<router-link to="/admin/profile">
-							<a class="dropdown-item" href="/admin/profile"><i class="bx bx-user"></i><span>Profile</span></a>
+						<router-link to="/admin/profile" class="dropdown-item">
+							<div class="d-flex align-items-center">
+								<div class="icon-box bg-light-primary rounded-circle me-2 text-center" style="width: 36px; height: 36px; line-height: 36px;">
+									<i class="bx bx-user text-primary"></i>
+								</div>
+								<div>Thông tin cá nhân</div>
+							</div>
 						</router-link>
 					</li>
-					<li><a class="dropdown-item" href="javascript:;"><i
-								class='bx bx-log-out-circle'></i><span>Logout</span></a>
+					<li>
+						<router-link to="/admin/settings" class="dropdown-item">
+							<div class="d-flex align-items-center">
+								<div class="icon-box bg-light-success rounded-circle me-2 text-center" style="width: 36px; height: 36px; line-height: 36px;">
+									<i class="bx bx-cog text-success"></i>
+								</div>
+								<div>Cài đặt</div>
+							</div>
+						</router-link>
+					</li>
+					<li><hr class="dropdown-divider"></li>
+					<li>
+						<a class="dropdown-item" @click="handleLogout" href="javascript:;">
+							<div class="d-flex align-items-center">
+								<div class="icon-box bg-light-danger rounded-circle me-2 text-center" style="width: 36px; height: 36px; line-height: 36px;">
+									<i class="bx bx-log-out text-danger"></i>
+								</div>
+								<div>Đăng xuất</div>
+							</div>
+						</a>
 					</li>
 				</ul>
 			</div>
 		</nav>
 	</div>
 </template>
-<script>
-export default {
 
+<script>
+import axios from 'axios';
+
+export default {
+	name: 'TopRocker',
+	data() {
+		return {
+			adminInfo: {
+				hoTen: '',
+				chucVu: '',
+				hinhAnh: '',
+				email: ''
+			}
+		}
+	},
+	mounted() {
+		this.getAdminInfo();
+	},
+	methods: {
+		getAdminInfo() {
+			// Kiểm tra thông tin admin trong localStorage
+			const adminData = localStorage.getItem('admin_info');
+			
+			if (adminData) {
+				try {
+					this.adminInfo = JSON.parse(adminData);
+				} catch (error) {
+					console.error('Lỗi khi parse dữ liệu admin từ localStorage', error);
+					this.getAdminInfoFromAPI();
+				}
+			} else {
+				this.getAdminInfoFromAPI();
+			}
+		},
+		getAdminInfoFromAPI() {
+			// Lấy thông tin admin từ API
+			const token = localStorage.getItem('token_admin');
+			
+			if (!token) {
+				console.error('Không tìm thấy token admin');
+				return;
+			}
+			
+			axios.get('/api/admin/profile', {
+				headers: {
+					'Authorization': `Bearer ${token}`
+				},
+			})
+			.then(response => {
+				if (response.data.status) {
+					this.adminInfo = response.data.data;
+					
+					// Lưu thông tin vào localStorage để sử dụng sau này
+					localStorage.setItem('admin_info', JSON.stringify(this.adminInfo));
+				}
+			})
+			.catch(error => {
+				console.error('Lỗi khi lấy thông tin admin từ API', error);
+			});
+		},
+		handleLogout() {
+			// Xóa token và thông tin admin từ localStorage
+			localStorage.removeItem('token_admin');
+			localStorage.removeItem('admin_info');
+			
+			// Chuyển hướng về trang đăng nhập
+			this.$router.push('/admin/dang-nhap');
+		}
+	}
 }
 </script>
-<style></style>
+
+<style scoped>
+.hover-shadow:hover {
+	background-color: #f8f9fa;
+	transition: all 0.3s ease;
+}
+
+.search-control {
+	border: 1px solid #e9ecef;
+	padding-right: 40px;
+}
+
+.search-control:focus {
+	border-color: #4e73df;
+	box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+}
+
+.user-img {
+	object-fit: cover;
+}
+
+.icon-box {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.logo-icon {
+	width: 35px;
+	height: 35px;
+}
+
+.topbar {
+	background-color: #fff;
+	height: 70px;
+}
+
+.dropdown-menu {
+	border: none;
+	border-radius: 10px;
+	min-width: 280px;
+}
+</style>

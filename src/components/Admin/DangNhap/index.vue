@@ -11,30 +11,35 @@
                             <div class="card-body">
                                 <div class="border p-4 rounded">
                                     <div class="text-center">
-                                        <h3 class="">Đăng nhập</h3>
-                                        <p>Chưa có tài khoản? 
-                                            <router-link to="/dang-ky">Đăng ký ngay</router-link>
+                                        <h3 class="">Đăng nhập Admin</h3>
+                                        <p>Chưa có tài khoản? <a href="javascript:;">Liên hệ với quản trị viên</a>
                                         </p>
                                     </div>
                                     <div class="form-body">
                                         <form class="row g-3" @submit.prevent="dangNhap">
                                             <div class="col-12">
                                                 <label for="inputEmailAddress" class="form-label">Email</label>
-                                                <input v-model="dang_nhap.email" type="email" class="form-control" id="inputEmailAddress" placeholder="Email" required>
+                                                <input v-model="admin.email" type="email" class="form-control" id="inputEmailAddress" placeholder="Email" required>
                                             </div>
                                             <div class="col-12">
                                                 <label for="inputChoosePassword" class="form-label">Mật khẩu</label>
                                                 <div class="input-group" id="show_hide_password">
-                                                    <input v-model="dang_nhap.password" type="password" class="form-control border-end-0" id="inputChoosePassword" placeholder="Nhập mật khẩu" required>
+                                                    <input v-model="admin.password" type="password" class="form-control border-end-0" id="inputChoosePassword" placeholder="Nhập mật khẩu" required>
                                                     <a href="javascript:;" class="input-group-text bg-transparent"><i class='bx bx-hide'></i></a>
                                                 </div>
                                             </div>
-                                            <div class="col-12 text-end">
+                                            <div class="col-md-6">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                                                    <label class="form-check-label" for="flexSwitchCheckChecked">Ghi nhớ đăng nhập</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 text-end">
                                                 <a href="javascript:;">Quên mật khẩu?</a>
                                             </div>
                                             <div class="col-12">
                                                 <div class="d-grid">
-                                                    <button type="submit" class="btn btn-primary"><i class="bx bxs-lock-open me-2"></i>Đăng nhập</button>
+                                                    <button type="submit" class="btn btn-primary"><i class="bx bxs-lock-open"></i>Đăng nhập</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -50,112 +55,70 @@
 </template>
 
 <script>
+import axios from 'axios';
 import { createToaster } from "@meforma/vue-toaster";
 const toaster = createToaster({ position: "top-right" });
-import axios from "axios";
 
 export default {
     data() {
         return {
-            dang_nhap: {
-                email: "",
-                password: "",
-            },
-            loading: false
-        };
+            admin: {
+                email: '',
+                password: ''
+            }
+        }
     },
     mounted() {
         this.kiemTraDangNhap();
-        this.setupPasswordToggle();
     },
     methods: {
-        setupPasswordToggle() {
-            setTimeout(() => {
-                const passwordToggle = document.querySelector('#show_hide_password a');
-                if (passwordToggle) {
-                    passwordToggle.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const passwordInput = document.querySelector('#inputChoosePassword');
-                        const icon = passwordToggle.querySelector('i');
-                        
-                        if (passwordInput.type === 'text') {
-                            passwordInput.type = 'password';
-                            icon.classList.remove('bx-show');
-                            icon.classList.add('bx-hide');
-                        } else {
-                            passwordInput.type = 'text';
-                            icon.classList.remove('bx-hide');
-                            icon.classList.add('bx-show');
-                        }
-                    });
-                }
-            }, 100);
-        },
         kiemTraDangNhap() {
-            const token = localStorage.getItem('token_khach_hang');
+            const token = localStorage.getItem('token_admin');
             if (token) {
-                axios.get('/api/kiem-tra-token', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                })
-                .then(res => {
-                    if (res.data.status) {
-                        this.$router.push('/home-page');
-                    } else {
-                        localStorage.removeItem('token_khach_hang');
-                    }
-                })
-                .catch(() => {
-                    localStorage.removeItem('token_khach_hang');
-                });
+                axios.get('/api/admin/kiem-tra-token')
+                    .then(res => {
+                        if (res.data.status) {
+                            this.$router.push('/admin/thuong-hieu');
+                        } else {
+                            localStorage.removeItem('token_admin');
+                            localStorage.removeItem('admin_info');
+                        }
+                    })
+                    .catch(() => {
+                        localStorage.removeItem('token_admin');
+                        localStorage.removeItem('admin_info');
+                        this.$router.push("/admin/dang-nhap");
+
+                    });
             }
         },
-        dangNhap() {          
-            console.log("Dữ liệu gửi lên:", this.dang_nhap);
-            axios
-                .post("/api/dang-nhap", this.dang_nhap)
+        dangNhap() {
+            axios.post("/api/admin/dang-nhap", this.admin)
                 .then((res) => {
                     console.log("Response từ server:", res.data);
-                    if (res.data.status == true) {
-                        // Lưu token và thông tin người dùng
-                        localStorage.setItem("token_khach_hang", res.data.token);
-                        localStorage.setItem("user_info", JSON.stringify(res.data.user));
+                    if (res.data.status) {
+                        // Lưu token và thông tin admin
+                        localStorage.setItem("token_admin", res.data.token);
+                        localStorage.setItem("admin_info", JSON.stringify(res.data.user || res.data.data));
                         
-                        console.log("Đã lưu token:", localStorage.getItem("token_khach_hang"));
-                        console.log("Đã lưu user info:", localStorage.getItem("user_info"));
-                        
-                        // Cập nhật state
-                        this.$root.$emit('login-success');
-                        
-                        toaster.success(res.data.message);
-                        
-                        // Force reload MenuClient component
-                        this.$nextTick(() => {
-                            window.dispatchEvent(new Event('storage'));
-                            setTimeout(() => {
-                                this.$router.push("/home-page");
-                            }, 500);
-                        });
+                        toaster.success("Đăng nhập thành công!");
+                        this.$router.push("/admin/thuong-hieu");
                     } else {
                         toaster.error(res.data.message || "Đăng nhập thất bại!");
                     }
                 })
                 .catch((error) => {
                     if (error.response) {
-                        // Server trả về lỗi
                         toaster.error(error.response.data.message || "Đăng nhập thất bại!");
                     } else if (error.request) {
-                        // Không nhận được response
                         toaster.error("Không thể kết nối đến server!");
                     } else {
-                        // Lỗi khi tạo request
                         toaster.error("Đã có lỗi xảy ra khi đăng nhập!");
                     }
                 });
-        },
-    },
-};
+        }
+    }
+}
 </script>
 
 <style scoped>

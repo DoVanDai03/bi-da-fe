@@ -6,7 +6,7 @@
      </div>
      <div class="page-wrapper" style="margin-top: 0px;padding-left: 0px;padding-right: 0px;">
         <div class="page-content">
-               <router-view> </router-view>
+               <router-view></router-view>
            </div>
      </div>
        <BotClient></BotClient>

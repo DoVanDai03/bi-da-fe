@@ -33,7 +33,7 @@ export default {
 </script>
 <style>
 @import "../../assets/plugins/simplebar/css/simplebar.css";
-@import "../../assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css";
+/* @import "../../assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css"; */
 @import "../../assets/plugins/metismenu/css/metisMenu.min.css";
 @import "../../assets/css/pace.min.css";
 @import "../../assets/css/bootstrap.min.css";
