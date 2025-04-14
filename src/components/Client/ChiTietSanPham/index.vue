@@ -11,29 +11,18 @@
                 <div class="main-image-wrapper">
                     <img :src="mainImage || san_pham.hinhAnh" :alt="san_pham.tenSanPham" class="main-image">
                 </div>
-                <div class="thumbnail-gallery">
-                    <div class="thumbnail-item"
-                        v-for="(image, index) in [san_pham.hinhAnh, ...(san_pham.hinhAnhPhu || [])]" :key="index"
-                        :class="{ active: mainImage === image }" @click="changeMainImage(image)">
-                        <img :src="image" :alt="san_pham.tenSanPham">
+                <div class="support-info mt-2">
+                    <div class="support-item">
+                        <i class="bi bi-truck"></i>
+                        <span>Miễn phí vận chuyển</span>
                     </div>
-                </div>
-                <div class="row-support">
-                    <div class="col-md-12 col-lg-6">
-                        Tư vấn mua hàng
-                        1900.6753
+                    <div class="support-item">
+                        <i class="bi bi-shield-check"></i>
+                        <span>Bảo hành chính hãng</span>
                     </div>
-                    <div class="col-md-12 col-lg-6">
-                        Bảo hành
-                        Chính hãng
-                    </div>
-                    <div class="col-md-12 col-lg-6">
-                        Đổi/trả hàng
-                        Trong vòng 15 ngày
-                    </div>
-                    <div class="col-md-12 col-lg-6">
-                        Giao hàng nhanh
-                        Trong 24h
+                    <div class="support-item">
+                        <i class="bi bi-credit-card"></i>
+                        <span>Thanh toán linh hoạt</span>
                     </div>
                 </div>
             </div>
@@ -103,31 +92,16 @@
                     </div>
                 </div>
 
-                <div class="action-buttons">
-                    <button class="btn-add-cart" @click="addToCart">
-                        <i class="bi bi-cart-plus"></i>
+                <div class="product-actions">
+                    <button @click="themVaoGioHang" class="btn-add-to-cart" :disabled="san_pham.soLuongTonKho <= 0">
+                        <i class="fas fa-shopping-cart"></i>
                         Thêm vào giỏ hàng
                     </button>
-                    <button class="btn-buy-now" @click="buyNow">
-                        <i class="bi bi-lightning"></i>
+                    <button @click="muaNgay" class="btn-buy-now" :disabled="san_pham.soLuongTonKho <= 0">
                         Mua ngay
                     </button>
                 </div>
 
-                <div class="support-info">
-                    <div class="support-item">
-                        <i class="bi bi-truck"></i>
-                        <span>Miễn phí vận chuyển</span>
-                    </div>
-                    <div class="support-item">
-                        <i class="bi bi-shield-check"></i>
-                        <span>Bảo hành chính hãng</span>
-                    </div>
-                    <div class="support-item">
-                        <i class="bi bi-credit-card"></i>
-                        <span>Thanh toán linh hoạt</span>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -183,17 +157,47 @@
 
         <div class="related-products">
             <h2>Sản phẩm liên quan</h2>
-            <div class="products-grid">
-                <div v-for="product in san_pham_lien_quan" :key="product.id" class="product-card"
-                    @click="viewProduct(product.id)">
-                    <div class="product-card-image">
-                        <img :src="product.hinhAnh" :alt="product.tenSanPham">
+            <div class="row g-4">
+                <template v-for="(value, index) in danh_sach_san_pham" :key="index">
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="product-card">
+                            <img :src="value.hinhAnh" class="card-img-top" :alt="value.tenSanPham">
+                            <div class="discount-badge" v-if="value.giamGia">
+                                <span class="badge">-{{ value.giamGia.phamTramGiamGia }}%</span>
+                            </div>
+                            <div class="view-details">
+                                <a @click="redirectToDetail(value.id)" href="javascript:void(0)">Xem chi tiết</a>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="card-title">{{ value.tenSanPham }}</h6>
+                                <div class="product-details">
+                                    <!-- <div class="specs">
+                                                <span class="badge">Kích cỡ: {{ value.kichCo }}</span>
+                                                <span class="badge">Màu sắc: {{ value.mauSac }}</span>
+                                                <span class="badge">Chất liệu: {{ value.chatLieu }}</span>
+                                            </div> -->
+                                    <div class="price-section">
+                                        <p class="stock-status"
+                                            :class="value.soLuongTonKho > 0 ? 'text-success' : 'text-danger'">
+                                            <i class="bx bx-package"></i>
+                                            {{ value.soLuongTonKho > 0 ? 'Còn hàng' : 'Hết hàng' }}
+                                            ({{ value.soLuongTonKho }})
+                                        </p>
+                                        <p class="mb-0">
+                                            <span v-if="value.giamGia" class="original-price">
+                                                {{ formatCurrency(value.giaSanPham) }}
+                                            </span>
+                                            <span class="discounted-price">
+                                                {{ formatCurrency(value.giaSanPham * (1 -
+                                                    (value.giamGia?.phamTramGiamGia || 0) / 100)) }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="product-card-info">
-                        <h3>{{ product.tenSanPham }}</h3>
-                        <span class="price">{{ formatCurrency(product.giaSanPham) }}</span>
-                    </div>
-                </div>
+                </template>
             </div>
         </div>
     </div>
@@ -209,7 +213,7 @@ export default {
         return {
             san_pham: {},
             danh_sach_danh_gia: [],
-            san_pham_lien_quan: [],
+            danh_sach_san_pham: [],
             selectedSize: '',
             selectedColor: '',
             quantity: 1,
@@ -220,7 +224,7 @@ export default {
     mounted() {
         this.layChiTietSanPham();
         this.layDanhGia();
-        this.laySanPhamLienQuan();
+        this.layDanhSachSanPham();
     },
     methods: {
         formatCurrency(amount) {
@@ -258,17 +262,16 @@ export default {
                     toaster.error('Có lỗi xảy ra khi lấy đánh giá!');
                 });
         },
-        laySanPhamLienQuan() {
-            const id = this.$route.params.id;
+        layDanhSachSanPham() {
             axios
-                .get(`/api/client/san-pham-lien-quan/${id}`)
+                .get('/api/user/san-pham/home-page')
                 .then((res) => {
                     if (res.data.status) {
-                        this.san_pham_lien_quan = res.data.data;
+                        this.danh_sach_san_pham = res.data.data;
                     }
                 })
                 .catch((error) => {
-                    toaster.error('Có lỗi xảy ra khi lấy sản phẩm liên quan!');
+                    toaster.error('Có lỗi xảy ra khi lấy danh sách sản phẩm!');
                 });
         },
         changeMainImage(image) {
@@ -282,13 +285,85 @@ export default {
                 this.quantity--;
             }
         },
-        addToCart() {
-            // Xử lý thêm vào giỏ hàng
-            toaster.success('Đã thêm sản phẩm vào giỏ hàng!');
+        themVaoGioHang() {
+            if (this.san_pham.soLuongTonKho <= 0) {
+                toaster.error('Sản phẩm đã hết hàng!');
+                return;
+            }
+
+            const userInfo = JSON.parse(localStorage.getItem('user_info'));
+            const token = localStorage.getItem('token_khach_hang');
+            
+            if (userInfo && token) {
+                // Tính giá tiền sau khi giảm giá (nếu có)
+                const giaSauGiamGia = this.san_pham.giamGia
+                    ? this.san_pham.giaSanPham * (1 - this.san_pham.giamGia.phamTramGiamGia / 100)
+                    : this.san_pham.giaSanPham;
+                
+                const thanhTien = giaSauGiamGia * 1; // Mặc định thêm 1 sản phẩm
+
+                // Thêm vào giỏ hàng qua API
+                axios.post('/api/user/gio-hang/them-san-pham', null, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    params: {
+                        idKhachHang: userInfo.id,
+                        idSanPham: this.san_pham.id,
+                        soLuong: 1,
+                        thanhTien: thanhTien
+                    }
+                })
+                .then(res => {
+                    if (res.data.status) {
+                        toaster.success('Thêm vào giỏ hàng thành công!');
+                        this.$root.$emit('update-cart');
+                    } else {
+                        toaster.error(res.data.message || 'Có lỗi xảy ra!');
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    toaster.error('Có lỗi xảy ra khi thêm vào giỏ hàng!');
+                });
+            } else {
+                // Thêm vào giỏ hàng localStorage
+                let cartItems = JSON.parse(localStorage.getItem('cart_items') || '[]');
+                const existingItem = cartItems.find(item => item.id === this.san_pham.id);
+                
+                if (existingItem) {
+                    if (existingItem.soLuong >= this.san_pham.soLuongTonKho) {
+                        toaster.error('Số lượng sản phẩm trong giỏ hàng đã đạt tối đa!');
+                        return;
+                    }
+                    existingItem.soLuong += 1;
+                } else {
+                    cartItems.push({
+                        id: this.san_pham.id,
+                        tenSanPham: this.san_pham.tenSanPham,
+                        giaSanPham: this.san_pham.giaSanPham,
+                        hinhAnh: this.san_pham.hinhAnh,
+                        soLuong: 1,
+                        giamGia: this.san_pham.giamGia ? {
+                            phamTramGiamGia: this.san_pham.giamGia.phamTramGiamGia,
+                            thanhTien: this.san_pham.giaSanPham * (1 - this.san_pham.giamGia.phamTramGiamGia / 100)
+                        } : null,
+                        soLuongTonKho: this.san_pham.soLuongTonKho
+                    });
+                }
+                
+                localStorage.setItem('cart_items', JSON.stringify(cartItems));
+                toaster.success('Thêm vào giỏ hàng thành công!');
+                this.$root.$emit('update-cart');
+            }
         },
-        buyNow() {
-            // Xử lý mua ngay
-            toaster.success('Đang chuyển đến trang thanh toán!');
+        muaNgay() {
+            if (this.san_pham.soLuongTonKho <= 0) {
+                toaster.error('Sản phẩm đã hết hàng!');
+                return;
+            }
+            this.themVaoGioHang();
+            this.$router.push('/gio-hang');
         },
         viewProduct(id) {
             this.$router.push(`/chi-tiet-san-pham/${id}`);
@@ -301,7 +376,6 @@ export default {
 .product-detail-page {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
 }
 
 .breadcrumb {
@@ -328,7 +402,6 @@ export default {
 
 .product-gallery {
     background: #fff;
-    padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -339,8 +412,6 @@ export default {
 
 .main-image {
     width: 100%;
-    height: 400px;
-    object-fit: contain;
 }
 
 .thumbnail-gallery {
@@ -495,34 +566,58 @@ export default {
     border-right: 1px solid #ddd;
 }
 
-.action-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-bottom: 20px;
+.product-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
 }
 
-.btn-add-cart,
-.btn-buy-now {
+.btn-add-to-cart {
+    flex: 1;
     padding: 12px;
-    border: none;
+    background-color: #fff;
+    color: #dc3545;
+    border: 2px solid #dc3545;
     border-radius: 4px;
     font-weight: 600;
-    cursor: pointer;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
 }
 
-.btn-add-cart {
-    background: #0066cc;
-    color: white;
+.btn-add-to-cart:hover {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-add-to-cart:disabled {
+    background-color: #f8f9fa;
+    color: #999;
+    border-color: #ddd;
+    cursor: not-allowed;
 }
 
 .btn-buy-now {
-    background: #e74c3c;
-    color: white;
+    flex: 1;
+    padding: 12px;
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-buy-now:hover {
+    background-color: #c82333;
+}
+
+.btn-buy-now:disabled {
+    background-color: #f8f9fa;
+    color: #999;
+    cursor: not-allowed;
 }
 
 .support-info {
@@ -597,45 +692,6 @@ export default {
     gap: 20px;
 }
 
-.product-card {
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.3s;
-}
-
-.product-card:hover {
-    transform: translateY(-5px);
-}
-
-.product-card-image {
-    aspect-ratio: 1;
-    overflow: hidden;
-}
-
-.product-card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.product-card-info {
-    padding: 15px;
-}
-
-.product-card-info h3 {
-    font-size: 16px;
-    margin-bottom: 8px;
-    color: #333;
-}
-
-.product-card-info .price {
-    color: #e74c3c;
-    font-weight: 600;
-}
-
 @media (max-width: 1024px) {
     .products-grid {
         grid-template-columns: repeat(3, 1fr);
@@ -661,7 +717,7 @@ export default {
         grid-template-columns: 1fr;
     }
 
-    .action-buttons {
+    .product-actions {
         grid-template-columns: 1fr;
     }
 }
@@ -670,7 +726,6 @@ export default {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    padding: 20px;
     background-color: var(--background-light);
     border-radius: 8px;
     box-shadow: var(--shadow-sm);
@@ -704,5 +759,148 @@ export default {
 .row-support .col-md-12:hover {
     box-shadow: var(--shadow-md);
     background-color: #f0f8ff;
+}
+
+/* Product card styles */
+.product-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    position: relative;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Product image */
+.product-card .card-img-top {
+    height: 280px;
+    background: #f8f9fa;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+/* Card body */
+.product-card .card-body {
+    padding: 20px;
+}
+
+.product-card .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+    height: 48px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    text-align: center;
+}
+
+/* Specifications */
+.specs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.specs .badge {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+    color: #666;
+}
+
+/* Price section */
+.price-section {
+    text-align: center;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.stock-status {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.stock-status i {
+    margin-right: 5px;
+}
+
+.price-section .original-price {
+    color: #999;
+    text-decoration: line-through;
+    font-size: 14px;
+    margin-right: 8px;
+}
+
+.price-section .discounted-price {
+    color: #dc3545;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* Discount badge */
+.discount-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+}
+
+.discount-badge .badge {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 4px;
+    background: #dc3545;
+}
+
+/* View details overlay */
+.view-details {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.view-details a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 24px;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.view-details a:hover {
+    background: #fff;
+    color: #333;
+}
+
+.product-card:hover .view-details {
+    opacity: 1;
 }
 </style>

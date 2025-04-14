@@ -33,7 +33,7 @@
                         <div class="cart-box me-3">
                             <router-link to="/gio-hang" class="position-relative">
                                 <i class="fas fa-shopping-cart"></i>
-                                <span class="cart-count">0</span>
+                                <span class="cart-count">{{ cartItemCount }}</span>
                             </router-link>
                         </div>
                         <div class="user-box dropdown" v-if="isLoggedIn">
@@ -46,12 +46,11 @@
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><router-link class="dropdown-item" to="/thong-tin-tai-khoan"><i
                                             class="fas fa-user"></i> Thông tin tài khoản</router-link></li>
-                                <li><router-link class="dropdown-item" to="/lich-su-don-hang"><i
-                                            class="fas fa-history"></i> Lịch sử đơn hàng</router-link></li>
-                                <li><router-link class="dropdown-item" to="/cai-dat"><i class="fas fa-cog"></i> Cài
-                                        đặt</router-link></li>
                                 <li>
-                                    <hr class="dropdown-divider">
+                                    <router-link class="dropdown-item" to="/lich-su-don-hang">
+                                        <i class="fas fa-history"></i>
+                                        Lịch sử đơn hàng
+                                    </router-link>
                                 </li>
                                 <li><a class="dropdown-item" href="#" @click.prevent="dangXuat"><i
                                             class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
@@ -65,19 +64,23 @@
                 </div>
             </div>
         </nav>
-        <div class="category-menu">
+        <!-- <div class="category-menu">
             <div class="container">
                 <div class="row">
                     <template v-for="(value, index) in danh_sach_danh_muc" :key="index">
                         <div class="col">
                             <ul class="category-list">
-                                <li><a href="#"><i class="fas fa-running"></i> {{ value.name }}</a></li>
+                                <li>
+                                    <router-link :to="{ path: '/san-pham', query: { danh_muc_id: value.id } }">
+                                        <i class="fas fa-running"></i> {{ value.name }}
+                                    </router-link>
+                                </li>
                             </ul>
                         </div>
                     </template>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="slider">
             <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-indicators">
@@ -121,7 +124,10 @@ export default {
         return {
             isLoggedIn: false,
             userInfo: {},
-            danh_sach_danh_muc: []
+            danh_sach_danh_muc: [],
+            cartItems: [],
+            isLoading: false,
+            cartItemCount: 0
         }
     },
     beforeDestroy() {
@@ -132,6 +138,7 @@ export default {
     mounted() {
         this.kiemTraDangNhap();
         this.layDanhMuc();
+        this.loadCartItems();
         // Kiểm tra định kỳ token
         setInterval(() => {
             this.kiemTraDangNhap();
@@ -147,6 +154,52 @@ export default {
         }
     },
     methods: {
+        loadCartItems() {
+            this.isLoading = true;
+            const userInfo = JSON.parse(localStorage.getItem('user_info'));
+            const token = localStorage.getItem('token_khach_hang');
+
+            if (userInfo && userInfo.id && token) {
+                // Lấy giỏ hàng từ API nếu đã đăng nhập
+                axios.get(`/api/user/gio-hang/khach-hang/${userInfo.id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                    .then(res => {
+                        if (res.data.status) {
+                            this.cartItems = res.data.data;
+                            // Tính tổng số lượng sản phẩm trong giỏ hàng
+                            this.calculateCartCount();
+                        } else {
+                            toaster.error(res.data.message || 'Có lỗi xảy ra khi tải giỏ hàng!');
+                        }
+                        this.isLoading = false;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        toaster.error('Có lỗi xảy ra khi tải giỏ hàng!');
+                        this.isLoading = false;
+                    });
+            } else {
+                // Lấy giỏ hàng từ localStorage nếu chưa đăng nhập
+                this.cartItems = JSON.parse(localStorage.getItem('cart_items') || '[]');
+                // Tính tổng số lượng sản phẩm trong giỏ hàng
+                this.calculateCartCount();
+                this.isLoading = false;
+            }
+        },
+
+        calculateCartCount() {
+            if (!this.cartItems || !Array.isArray(this.cartItems)) {
+                this.cartItemCount = 0;
+                return;
+            }
+
+            this.cartItemCount = this.cartItems.reduce((total, item) => {
+                return total + (parseInt(item.soLuong) || 1);
+            }, 0);
+        },
         layDanhMuc() {
             axios
                 .get("/api/user/danh-muc/home-page")

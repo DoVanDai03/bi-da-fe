@@ -84,7 +84,25 @@
 							<div class="menu-title">Đánh Giá</div>
 						</a>
 					</router-link>
-				</li>				
+				</li>	
+				<li class="nav-item">
+					<router-link to="/admin/don-hang">
+						<a class="nav-link" href="/admin/don-hang">
+							<div class="parent-icon"><i class="fa-solid fa-truck"></i>
+							</div>
+							<div class="menu-title">Đơn hàng</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
+					<router-link to="/admin/thong-ke">
+						<a class="nav-link" href="/admin/thong-ke">
+							<div class="parent-icon"><i class="fa-solid fa-truck"></i>
+							</div>
+							<div class="menu-title">Thống kê</div>
+						</a>
+					</router-link>
+				</li>
 			</ul>
 		</nav>
 	</div>

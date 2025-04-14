@@ -1,472 +1,102 @@
 <template>
     <div class="container">
-        <div class="section-title">
-            MÁY CHẠY BỘ ĐIỆN
+        <div class="categories-section mb-4">
+            <div class="section-title mb-3">
+                <i class="bx bx-category-alt me-2"></i>
+                DANH MỤC SẢN PHẨM
+            </div>
+            <div class="row g-3">
+                <template v-for="(danhMuc, index) in danh_sach_danh_muc" :key="index">
+                    <div class="col">
+                        <div class="category-card" @click="selectCategory(danhMuc)"
+                            :class="{ active: selectedCategory?.id === danhMuc.id }">
+                            <div class="category-icon">
+                                <i :class="getCategoryIcon(danhMuc.name)"></i>
+                            </div>
+                            <div class="category-name">{{ danhMuc.name }}</div>
+                        </div>
+                    </div>
+                </template>
+            </div>
         </div>
-        <div id="sanpham" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <div class="row g-4">
-                        <template v-for="(value, index) in danh_sach_san_pham" :key="index">
-                            <div v-if="value.danhMuc.id==9" class="col-12 col-sm-6 col-md-3">
-                                <div class="product-card">
-                                    <img :src="value.hinhAnh" class="card-img-top" :alt="value.tenSanPham">
-                                    <div class="discount-badge" v-if="value.giamGia">
-                                        <span class="badge">-{{ value.giamGia.phamTramGiamGia }}%</span>
-                                        </div>
-                                    <div class="view-details">
-                                        <a @click="redirectToDetail(value.id)" href="javascript:void(0)">Xem chi tiết</a>
-                                    </div>
-                                    <div class="card-body">
-                                        <h6 class="card-title">{{ value.tenSanPham }}</h6>
-                                        <div class="product-details">
-                                            <!-- <div class="specs">
-                                                <span class="badge">Kích cỡ: {{ value.kichCo }}</span>
-                                                <span class="badge">Màu sắc: {{ value.mauSac }}</span>
-                                                <span class="badge">Chất liệu: {{ value.chatLieu }}</span>
-                                            </div> -->
-                                            <div class="price-section">
-                                                <p class="stock-status" :class="value.soLuongTonKho > 0 ? 'text-success' : 'text-danger'">
-                                                    <i class="bx bx-package"></i>
-                                                    {{ value.soLuongTonKho > 0 ? 'Còn hàng' : 'Hết hàng' }}
-                                                    ({{ value.soLuongTonKho }})
-                                                </p>
-                                                <p class="mb-0">
-                                                    <span v-if="value.giamGia" class="original-price">
-                                                        {{ formatCurrency(value.giaSanPham) }}
-                                                    </span>
-                                                    <span class="discounted-price">
-                                                        {{ formatCurrency(value.giaSanPham * (1 - (value.giamGia?.phamTramGiamGia || 0) / 100)) }}
-                                                    </span>
-                                                </p>
-                                            </div>
-                                        </div>
+
+        <div v-if="selectedCategory" class="category-products-section mb-5">
+            <div class="section-title mb-3">
+                <i :class="getCategoryIcon(selectedCategory.name) + ' me-2'"></i>
+                {{ selectedCategory.name }}
+            </div>
+            <div v-if="isLoading" class="loading-container">
+                <div class="loading-spinner"></div>
+                <p>Đang tải sản phẩm...</p>
+            </div>
+            <div v-else-if="!san_pham_theo_danh_muc[selectedCategory.id]?.length" class="no-products">
+                <i class="bx bx-box-open"></i>
+                <p>Không có sản phẩm nào trong danh mục này.</p>
+            </div>
+            <div v-else class="row g-4">
+                <template v-for="(sp, spIndex) in san_pham_theo_danh_muc[selectedCategory.id]" :key="spIndex">
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="product-card">
+                            <img :src="sp.hinhAnh" class="card-img-top" :alt="sp.tenSanPham">
+                            <div class="discount-badge" v-if="sp.giamGia">
+                                <span class="badge">-{{ sp.giamGia.phamTramGiamGia }}%</span>
+                            </div>
+                            <div class="view-details">
+                                <a @click="redirectToDetail(sp.id)" href="javascript:void(0)">Xem chi tiết</a>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="card-title">{{ sp.tenSanPham }}</h6>
+                                <div class="product-details">
+                                    <div class="price-section">
+                                        <p class="stock-status" :class="sp.soLuongTonKho > 0 ? 'text-success' : 'text-danger'">
+                                            <i class="bx bx-package"></i>
+                                            {{ sp.soLuongTonKho > 0 ? 'Còn hàng' : 'Hết hàng' }}
+                                            ({{ sp.soLuongTonKho }})
+                                        </p>
+                                        <p class="mb-0">
+                                            <span v-if="sp.giamGia" class="original-price">
+                                                {{ formatCurrency(sp.giaSanPham) }}
+                                            </span>
+                                            <span class="discounted-price">
+                                                {{ formatCurrency(sp.giaSanPham * (1 - (sp.giamGia?.phamTramGiamGia || 0) / 100)) }}
+                                            </span>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
-                        </template>
+                        </div>
                     </div>
-                </div>
+                </template>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#sanpham" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#sanpham" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
         </div>
     </div>
 
-    <div class="container">
-        <div class="mb-3" style="font-size: 20px;">
-            <b>MÁY CHẠY BỘ ĐIỆN</b>
-        </div>
-        <hr>
-        <div id="sanpham" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <div class="row">
-                        <div class="col">
-                            <div class="card">
-                                <img src="https://www.thethaodaiviet.vn/upload/may-chay-bo/ava-may-chay-zasami-cp-x1-dv.png?v=1.0.0"
-                                    class="card-img-top" alt="...">
-                                <div class="">
-                                    <div class="position-absolute top-0 end-0 m-3 product-discount"><span
-                                            class="">-10%</span></div>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="card-title cursor-pointer">Nest Shaped Chair</h6>
-                                    <div class="clearfix">
-                                        <p class="mb-0 float-start"><strong>134</strong> Sales</p>
-                                        <p class="mb-0 float-end fw-bold"><span
-                                                class="me-2 text-decoration-line-through text-secondary">$350</span><span>$240</span>
-                                        </p>
-                                    </div>
-                                    <div class="d-flex align-items-center mt-3 fs-6">
-                                        <div class="cursor-pointer">
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-secondary"></i>
-                                        </div>
-                                        <p class="mb-0 ms-auto">4.2(182)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="card">
-                                <img src="https://www.thethaodaiviet.vn/upload/may-chay-bo/ava-may-chay-zasami-cp-x1-dv.png?v=1.0.0"
-                                    class="card-img-top" alt="...">
-                                <div class="">
-                                    <div class="position-absolute top-0 end-0 m-3 product-discount"><span
-                                            class="">-10%</span></div>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="card-title cursor-pointer">Nest Shaped Chair</h6>
-                                    <div class="clearfix">
-                                        <p class="mb-0 float-start"><strong>134</strong> Sales</p>
-                                        <p class="mb-0 float-end fw-bold"><span
-                                                class="me-2 text-decoration-line-through text-secondary">$350</span><span>$240</span>
-                                        </p>
-                                    </div>
-                                    <div class="d-flex align-items-center mt-3 fs-6">
-                                        <div class="cursor-pointer">
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-secondary"></i>
-                                        </div>
-                                        <p class="mb-0 ms-auto">4.2(182)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="card">
-                                <img src="https://www.thethaodaiviet.vn/upload/may-chay-bo/ava-may-chay-zasami-cp-x1-dv.png?v=1.0.0"
-                                    class="card-img-top" alt="...">
-                                <div class="">
-                                    <div class="position-absolute top-0 end-0 m-3 product-discount"><span
-                                            class="">-10%</span></div>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="card-title cursor-pointer">Nest Shaped Chair</h6>
-                                    <div class="clearfix">
-                                        <p class="mb-0 float-start"><strong>134</strong> Sales</p>
-                                        <p class="mb-0 float-end fw-bold"><span
-                                                class="me-2 text-decoration-line-through text-secondary">$350</span><span>$240</span>
-                                        </p>
-                                    </div>
-                                    <div class="d-flex align-items-center mt-3 fs-6">
-                                        <div class="cursor-pointer">
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-secondary"></i>
-                                        </div>
-                                        <p class="mb-0 ms-auto">4.2(182)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="card">
-                                <img src="https://www.thethaodaiviet.vn/upload/may-chay-bo/ava-may-chay-zasami-cp-x1-dv.png?v=1.0.0"
-                                    class="card-img-top" alt="...">
-                                <div class="">
-                                    <div class="position-absolute top-0 end-0 m-3 product-discount"><span
-                                            class="">-10%</span></div>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="card-title cursor-pointer">Nest Shaped Chair</h6>
-                                    <div class="clearfix">
-                                        <p class="mb-0 float-start"><strong>134</strong> Sales</p>
-                                        <p class="mb-0 float-end fw-bold"><span
-                                                class="me-2 text-decoration-line-through text-secondary">$350</span><span>$240</span>
-                                        </p>
-                                    </div>
-                                    <div class="d-flex align-items-center mt-3 fs-6">
-                                        <div class="cursor-pointer">
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-secondary"></i>
-                                        </div>
-                                        <p class="mb-0 ms-auto">4.2(182)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="carousel-item">
-                    <div class="row">
-                        <div class="row">
-                            <div class="col">
-                                <div class="card">
-                                    <img src="https://www.thethaodaiviet.vn/upload/may-chay-bo/ava-may-chay-zasami-cp-x1-dv.png?v=1.0.0"
-                                        class="card-img-top" alt="...">
-                                    <div class="">
-                                        <div class="position-absolute top-0 end-0 m-3 product-discount"><span
-                                                class="">-10%</span></div>
-                                    </div>
-                                    <div class="card-body">
-                                        <h6 class="card-title cursor-pointer">Nest Shaped Chair</h6>
-                                        <div class="clearfix">
-                                            <p class="mb-0 float-start"><strong>134</strong> Sales</p>
-                                            <p class="mb-0 float-end fw-bold"><span
-                                                    class="me-2 text-decoration-line-through text-secondary">$350</span><span>$240</span>
-                                            </p>
-                                        </div>
-                                        <div class="d-flex align-items-center mt-3 fs-6">
-                                            <div class="cursor-pointer">
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-secondary"></i>
-                                            </div>
-                                            <p class="mb-0 ms-auto">4.2(182)</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card">
-                                    <img src="https://www.thethaodaiviet.vn/upload/may-chay-bo/ava-may-chay-zasami-cp-x1-dv.png?v=1.0.0"
-                                        class="card-img-top" alt="...">
-                                    <div class="">
-                                        <div class="position-absolute top-0 end-0 m-3 product-discount"><span
-                                                class="">-10%</span></div>
-                                    </div>
-                                    <div class="card-body">
-                                        <h6 class="card-title cursor-pointer">Nest Shaped Chair</h6>
-                                        <div class="clearfix">
-                                            <p class="mb-0 float-start"><strong>134</strong> Sales</p>
-                                            <p class="mb-0 float-end fw-bold"><span
-                                                    class="me-2 text-decoration-line-through text-secondary">$350</span><span>$240</span>
-                                            </p>
-                                        </div>
-                                        <div class="d-flex align-items-center mt-3 fs-6">
-                                            <div class="cursor-pointer">
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-secondary"></i>
-                                            </div>
-                                            <p class="mb-0 ms-auto">4.2(182)</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card">
-                                    <img src="https://www.thethaodaiviet.vn/upload/may-chay-bo/ava-may-chay-zasami-cp-x1-dv.png?v=1.0.0"
-                                        class="card-img-top" alt="...">
-                                    <div class="">
-                                        <div class="position-absolute top-0 end-0 m-3 product-discount"><span
-                                                class="">-10%</span></div>
-                                    </div>
-                                    <div class="card-body">
-                                        <h6 class="card-title cursor-pointer">Nest Shaped Chair</h6>
-                                        <div class="clearfix">
-                                            <p class="mb-0 float-start"><strong>134</strong> Sales</p>
-                                            <p class="mb-0 float-end fw-bold"><span
-                                                    class="me-2 text-decoration-line-through text-secondary">$350</span><span>$240</span>
-                                            </p>
-                                        </div>
-                                        <div class="d-flex align-items-center mt-3 fs-6">
-                                            <div class="cursor-pointer">
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-secondary"></i>
-                                            </div>
-                                            <p class="mb-0 ms-auto">4.2(182)</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card">
-                                    <img src="https://www.thethaodaiviet.vn/upload/may-chay-bo/ava-may-chay-zasami-cp-x1-dv.png?v=1.0.0"
-                                        class="card-img-top" alt="...">
-                                    <div class="">
-                                        <div class="position-absolute top-0 end-0 m-3 product-discount"><span
-                                                class="">-10%</span></div>
-                                    </div>
-                                    <div class="card-body">
-                                        <h6 class="card-title cursor-pointer">Nest Shaped Chair</h6>
-                                        <div class="clearfix">
-                                            <p class="mb-0 float-start"><strong>134</strong> Sales</p>
-                                            <p class="mb-0 float-end fw-bold"><span
-                                                    class="me-2 text-decoration-line-through text-secondary">$350</span><span>$240</span>
-                                            </p>
-                                        </div>
-                                        <div class="d-flex align-items-center mt-3 fs-6">
-                                            <div class="cursor-pointer">
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-secondary"></i>
-                                            </div>
-                                            <p class="mb-0 ms-auto">4.2(182)</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="row">
-                        <div class="row">
-                            <div class="col">
-                                <div class="card">
-                                    <img src="https://www.thethaodaiviet.vn/upload/may-chay-bo/ava-may-chay-zasami-cp-x1-dv.png?v=1.0.0"
-                                        class="card-img-top" alt="...">
-                                    <div class="">
-                                        <div class="position-absolute top-0 end-0 m-3 product-discount"><span
-                                                class="">-10%</span></div>
-                                    </div>
-                                    <div class="card-body">
-                                        <h6 class="card-title cursor-pointer">Nest Shaped Chair</h6>
-                                        <div class="clearfix">
-                                            <p class="mb-0 float-start"><strong>134</strong> Sales</p>
-                                            <p class="mb-0 float-end fw-bold"><span
-                                                    class="me-2 text-decoration-line-through text-secondary">$350</span><span>$240</span>
-                                            </p>
-                                        </div>
-                                        <div class="d-flex align-items-center mt-3 fs-6">
-                                            <div class="cursor-pointer">
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-secondary"></i>
-                                            </div>
-                                            <p class="mb-0 ms-auto">4.2(182)</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card">
-                                    <img src="https://www.thethaodaiviet.vn/upload/may-chay-bo/ava-may-chay-zasami-cp-x1-dv.png?v=1.0.0"
-                                        class="card-img-top" alt="...">
-                                    <div class="">
-                                        <div class="position-absolute top-0 end-0 m-3 product-discount"><span
-                                                class="">-10%</span></div>
-                                    </div>
-                                    <div class="card-body">
-                                        <h6 class="card-title cursor-pointer">Nest Shaped Chair</h6>
-                                        <div class="clearfix">
-                                            <p class="mb-0 float-start"><strong>134</strong> Sales</p>
-                                            <p class="mb-0 float-end fw-bold"><span
-                                                    class="me-2 text-decoration-line-through text-secondary">$350</span><span>$240</span>
-                                            </p>
-                                        </div>
-                                        <div class="d-flex align-items-center mt-3 fs-6">
-                                            <div class="cursor-pointer">
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-secondary"></i>
-                                            </div>
-                                            <p class="mb-0 ms-auto">4.2(182)</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card">
-                                    <img src="https://www.thethaodaiviet.vn/upload/may-chay-bo/ava-may-chay-zasami-cp-x1-dv.png?v=1.0.0"
-                                        class="card-img-top" alt="...">
-                                    <div class="">
-                                        <div class="position-absolute top-0 end-0 m-3 product-discount"><span
-                                                class="">-10%</span></div>
-                                    </div>
-                                    <div class="card-body">
-                                        <h6 class="card-title cursor-pointer">Nest Shaped Chair</h6>
-                                        <div class="clearfix">
-                                            <p class="mb-0 float-start"><strong>134</strong> Sales</p>
-                                            <p class="mb-0 float-end fw-bold"><span
-                                                    class="me-2 text-decoration-line-through text-secondary">$350</span><span>$240</span>
-                                            </p>
-                                        </div>
-                                        <div class="d-flex align-items-center mt-3 fs-6">
-                                            <div class="cursor-pointer">
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-secondary"></i>
-                                            </div>
-                                            <p class="mb-0 ms-auto">4.2(182)</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card">
-                                    <img src="https://www.thethaodaiviet.vn/upload/may-chay-bo/ava-may-chay-zasami-cp-x1-dv.png?v=1.0.0"
-                                        class="card-img-top" alt="...">
-                                    <div class="">
-                                        <div class="position-absolute top-0 end-0 m-3 product-discount"><span
-                                                class="">-10%</span></div>
-                                    </div>
-                                    <div class="card-body">
-                                        <h6 class="card-title cursor-pointer">Nest Shaped Chair</h6>
-                                        <div class="clearfix">
-                                            <p class="mb-0 float-start"><strong>134</strong> Sales</p>
-                                            <p class="mb-0 float-end fw-bold"><span
-                                                    class="me-2 text-decoration-line-through text-secondary">$350</span><span>$240</span>
-                                            </p>
-                                        </div>
-                                        <div class="d-flex align-items-center mt-3 fs-6">
-                                            <div class="cursor-pointer">
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-secondary"></i>
-                                            </div>
-                                            <p class="mb-0 ms-auto">4.2(182)</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#sanpham" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#sanpham" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        </div>
-    </div>
     <hr>
     <div class="container">
         <div class="mt-3 mb-3" style="font-size: 20px;">
             <b class="align-middle">Khách hàng nói về Đại Việt</b>
         </div>
-        <div class="row">
-            <template v-for="(value, index) in danh_sach_danh_gia" :key="index">
-                <div class="col">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex flex-column align-items-center ">
-                                <img src="https://i.pinimg.com/originals/03/19/e7/0319e75748160709ceefa7398a4a7070.jpg"
-                                    alt="Admin" class="rounded-circle p-1 bg-primary " width="110">
-                                <div class="mt-3">
-                                    <h4 class="text-center">{{ value.user.hoVaTen }}</h4>
-                                    <p class="text-secondary mb-1">
-                                        {{ value.danhGia }}
-                                    </p>
-
+        <div class="reviews-container">
+            <div class="reviews-track">
+                <template v-for="(value, index) in danh_sach_danh_gia" :key="index">
+                    <div class="review-item">
+                        <div class="card review-card">
+                            <div class="card-body">
+                                <div class="d-flex flex-column align-items-center">
+                                    <img src="https://i.pinimg.com/originals/03/19/e7/0319e75748160709ceefa7398a4a7070.jpg"
+                                        alt="Admin" class="rounded-circle p-1 bg-primary" width="110">
+                                    <div class="mt-3">
+                                        <h4 class="text-center">{{ value.user.hoVaTen }}</h4>
+                                        <p class="text-secondary mb-1 review-text">
+                                            {{ value.danhGia }}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </template>
+                </template>
+            </div>
         </div>
     </div>
 </template>
@@ -478,15 +108,23 @@ const toaster = createToaster({ position: "top-right" });
 export default {
     data() {
         return {
-            danh_sach_san_pham: [],
-            san_pham_moi: [],
-            san_pham_ban_chay: [],
-            san_pham_giam_gia: [],
             danh_sach_danh_gia: [],
             danh_sach_danh_muc: [],
-            danh_sach_thuong_hieu: [],
-            tuKhoaTimKiem: ''
+            san_pham_theo_danh_muc: {},
+            isLoading: false,
+            selectedCategory: null,
+            carouselInterval: 5000, // 5 seconds per slide
         };
+    },
+    computed: {
+        chunkedReviews() {
+            const chunks = [];
+            const chunkSize = 4; // Show 3 reviews per slide
+            for (let i = 0; i < this.danh_sach_danh_gia.length; i += chunkSize) {
+                chunks.push(this.danh_sach_danh_gia.slice(i, i + chunkSize));
+            }
+            return chunks;
+        }
     },
     methods: {
         formatCurrency(amount) {
@@ -496,20 +134,6 @@ export default {
             if (!dateString) return '';
             const date = new Date(dateString);
             return date.toLocaleDateString('vi-VN');
-        },
-        // Lấy danh sách sản phẩm
-        layDanhSachSanPham() {
-            axios
-                .get('/api/user/san-pham/home-page')
-                .then((res) => {
-                    if (res.data.status) {
-                        this.danh_sach_san_pham = res.data.data;
-                    }
-                    console.log(this.danh_sach_san_pham);
-                })
-                .catch((error) => {
-                    toaster.error('Có lỗi xảy ra khi lấy danh sách sản phẩm!');
-                });
         },
         layDanhGia() {
             axios
@@ -526,117 +150,103 @@ export default {
                     console.error('Error fetching reviews:', error);
                 });
         },
+        layDanhMuc() {
+            axios
+                .get('/api/user/danh-muc/home-page')
+                .then((res) => {
+                    if (res.data.status) {
+                        this.danh_sach_danh_muc = res.data.data;
+                    }
+                })
+                .catch((error) => {
+                    toaster.error('Có lỗi xảy ra khi lấy danh sách danh mục!');
+                });
+        },
         redirectToDetail(id) {
             this.$router.push(`/chi-tiet-san-pham/${id}`);
         },
-        // // Lấy sản phẩm mới nhất
-        // laySanPhamMoi() {
-        //     axios
-        //         .get('/api/client/san-pham-moi')
-        //         .then((res) => {
-        //             if (res.data.status) {
-        //                 this.san_pham_moi = res.data.data;
-        //             }
-        //         })
-        //         .catch((error) => {
-        //             toaster.error('Có lỗi xảy ra khi lấy sản phẩm mới!');
-        //         });
-        // },
-        // // Lấy sản phẩm bán chạy
-        // laySanPhamBanChay() {
-        //     axios
-        //         .get('/api/client/san-pham-ban-chay')
-        //         .then((res) => {
-        //             if (res.data.status) {
-        //                 this.san_pham_ban_chay = res.data.data;
-        //             }
-        //         })
-        //         .catch((error) => {
-        //             toaster.error('Có lỗi xảy ra khi lấy sản phẩm bán chạy!');
-        //         });
-        // },
-        // // Lấy sản phẩm giảm giá
-        // laySanPhamGiamGia() {
-        //     axios
-        //         .get('/api/admin/san-pham-giam-gia')
-        //         .then((res) => {
-        //             if (res.data.status) {
-        //                 this.san_pham_giam_gia = res.data.data;
-        //             }
-        //         })
-        //         .catch((error) => {
-        //             toaster.error('Có lỗi xảy ra khi lấy sản phẩm giảm giá!');
-        //         });
-        // },
-        // // Lấy danh sách đánh giá mới nhất
-        // layDanhGiaMoi() {
-        //     axios
-        //         .get('/api/client/danh-gia-moi')
-        //         .then((res) => {
-        //             if (res.data.status) {
-        //                 this.danh_sach_danh_gia = res.data.data;
-        //             }
-        //         })
-        //         .catch((error) => {
-        //             toaster.error('Có lỗi xảy ra khi lấy đánh giá mới!');
-        //         });
-        // },
-        // // Lấy danh sách danh mục
-        // layDanhSachDanhMuc() {
-        //     axios
-        //         .get('/api/client/danh-muc')
-        //         .then((res) => {
-        //             if (res.data.status) {
-        //                 this.danh_sach_danh_muc = res.data.data;
-        //             }
-        //         })
-        //         .catch((error) => {
-        //             toaster.error('Có lỗi xảy ra khi lấy danh sách danh mục!');
-        //         });
-        // },
-        // // Lấy danh sách thương hiệu
-        // layDanhSachThuongHieu() {
-        //     axios
-        //         .get('/api/client/thuong-hieu')
-        //         .then((res) => {
-        //             if (res.data.status) {
-        //                 this.danh_sach_thuong_hieu = res.data.data;
-        //             }
-        //         })
-        //         .catch((error) => {
-        //             toaster.error('Có lỗi xảy ra khi lấy danh sách thương hiệu!');
-        //         });
-        // },
-        // // Xem chi tiết sản phẩm
-        // xemChiTietSanPham(id) {
-        //     this.$router.push(`/chi-tiet-san-pham/${id}`);
-        // },
-        // // Tìm kiếm sản phẩm
-        // timKiemSanPham() {
-        //     if (!this.tuKhoaTimKiem) {
-        //         toaster.warning('Vui lòng nhập từ khóa tìm kiếm!');
-        //         return;
-        //     }
-        //     this.$router.push(`/tim-kiem?q=${this.tuKhoaTimKiem}`);
-        // },
-        // // Lọc sản phẩm theo danh mục
-        // locTheoDanhMuc(id) {
-        //     this.$router.push(`/danh-muc/${id}`);
-        // },
-        // // Lọc sản phẩm theo thương hiệu
-        // locTheoThuongHieu(id) {
-        //     this.$router.push(`/thuong-hieu/${id}`);
-        // }
+        redirectToCategory(id) {
+            this.$router.push(`/danh-muc/${id}`);
+        },
+        getCategoryIcon(categoryName) {
+            const iconMap = {
+                'Máy chạy bộ': 'bx bx-run',
+                'Xe đạp tập': 'bx bx-cycling',
+                'Máy tập cơ': 'bx bx-dumbbell',
+                'Máy massage': 'bx bx-massage',
+                'Phụ kiện': 'bx bx-dumbbell',
+                'Thiết bị thể thao': 'bx bx-tennis-ball',
+                'Dụng cụ tập luyện': 'bx bx-dumbbell',
+                'Thực phẩm bổ sung': 'bx bx-bowl-hot'
+            };
+
+            // Tìm icon phù hợp dựa trên tên danh mục
+            for (const [key, icon] of Object.entries(iconMap)) {
+                if (categoryName.toLowerCase().includes(key.toLowerCase())) {
+                    return icon;
+                }
+            }
+
+            // Mặc định nếu không tìm thấy
+            return 'bx bx-category';
+        },
+        selectCategory(danhMuc) {
+            this.selectedCategory = danhMuc;
+            if (!this.san_pham_theo_danh_muc[danhMuc.id]) {
+                this.laySanPhamTheoDanhMuc(danhMuc.id);
+            }
+        },
+        laySanPhamTheoDanhMuc(danhMucId) {
+            this.isLoading = true;
+            axios.get(`/api/user/danh-muc/${danhMucId}?limit=8`)
+                .then(res => {
+                    if (res.data.status) {
+                        this.san_pham_theo_danh_muc = {
+                            ...this.san_pham_theo_danh_muc,
+                            [danhMucId]: res.data.data
+                        };
+                        console.log('Sản phẩm theo danh mục:', this.san_pham_theo_danh_muc[danhMucId]);
+                    }
+                })
+                .catch(error => {
+                    console.error(`Error loading products for category ${danhMucId}:`, error);
+                    toaster.error('Có lỗi xảy ra khi tải sản phẩm!');
+                })
+                .finally(() => {
+                    this.isLoading = false;
+                });
+        },
     },
     mounted() {
-        this.layDanhSachSanPham();
-        // this.laySanPhamMoi();
-        // this.laySanPhamBanChay();
-        // this.laySanPhamGiamGia();
         this.layDanhGia();
-        // this.layDanhSachDanhMuc();
-        // this.layDanhSachThuongHieu();
-    }
+        axios.get('/api/user/danh-muc/home-page')
+            .then((res) => {
+                if (res.data.status) {
+                    this.danh_sach_danh_muc = res.data.data;
+                    const defaultCategory = this.danh_sach_danh_muc.find(dm => dm.id === 9);
+                    if (defaultCategory) {
+                        this.selectCategory(defaultCategory);
+                    }
+                }
+            })
+            .catch((error) => {
+                toaster.error('Có lỗi xảy ra khi lấy danh sách danh mục!');
+            });
+        // Initialize Bootstrap Carousel
+        setTimeout(() => {
+            const carousel = new bootstrap.Carousel(document.getElementById('reviewsCarousel'), {
+                interval: this.carouselInterval,
+                ride: 'carousel',
+                wrap: true
+            });
+        }, 100);
+
+        // Set CSS variable for total number of reviews
+        this.$nextTick(() => {
+            const root = document.documentElement;
+            root.style.setProperty('--total-reviews', this.danh_sach_danh_gia.length);
+        });
+    },
 }
 </script>
 <style scoped>
@@ -851,5 +461,277 @@ export default {
     .price-section .discounted-price {
         font-size: 16px;
     }
+}
+
+/* Category styles */
+.categories-section {
+    margin-bottom: 40px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-title i {
+    color: #dc3545;
+    font-size: 28px;
+}
+
+.category-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid #eee;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    border-color: #dc3545;
+}
+
+.category-icon {
+    width: 60px;
+    height: 60px;
+    background: #f8f9fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.category-icon i {
+    font-size: 28px;
+    color: #dc3545;
+}
+
+.category-card:hover .category-icon {
+    background: #dc3545;
+    transform: scale(1.1);
+}
+
+.category-card:hover .category-icon i {
+    color: #fff;
+}
+
+.category-card:hover .category-name {
+    color: #dc3545;
+}
+
+.category-card.active {
+    background: #dc3545;
+    border-color: #dc3545;
+}
+
+.category-card.active .category-icon {
+    background: #fff;
+}
+
+.category-card.active .category-icon i {
+    color: #dc3545;
+}
+
+.category-card.active .category-name {
+    color: #fff;
+}
+
+.category-products-section {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+.category-products-section .section-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #333;
+    display: flex;
+    align-items: center;
+}
+
+.category-products-section .section-title i {
+    color: #dc3545;
+    font-size: 24px;
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    text-align: center;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #dc3545;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.no-products {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    text-align: center;
+    color: #666;
+}
+
+.no-products i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: #dc3545;
+}
+
+.review-card {
+    margin: 10px;
+    border: none;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+.review-text {
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 10px;
+    height: 100px;
+    overflow-y: auto;
+}
+
+#reviewsCarousel {
+    padding: 20px 40px;
+}
+
+#reviewsCarousel .carousel-control-prev,
+#reviewsCarousel .carousel-control-next {
+    width: 40px;
+    height: 40px;
+    background: rgba(220, 53, 69, 0.8);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#reviewsCarousel .carousel-control-prev {
+    left: -10px;
+}
+
+#reviewsCarousel .carousel-control-next {
+    right: -10px;
+}
+
+#reviewsCarousel .carousel-control-prev-icon,
+#reviewsCarousel .carousel-control-next-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.carousel-item {
+    padding: 20px 0;
+}
+
+@media (max-width: 768px) {
+    .review-text {
+        height: 80px;
+    }
+    
+    #reviewsCarousel {
+        padding: 20px;
+    }
+}
+
+.reviews-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    padding: 20px 0;
+}
+
+.reviews-track {
+    display: flex;
+    gap: 20px;
+    animation: scroll 30s linear infinite;
+    width: fit-content;
+}
+
+.review-item {
+    flex: 0 0 300px;
+}
+
+.review-card {
+    margin: 10px;
+    border: none;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.review-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+.review-text {
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 10px;
+    height: 100px;
+    overflow-y: auto;
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.reviews-container:hover .reviews-track {
+    animation-play-state: paused;
 }
 </style>

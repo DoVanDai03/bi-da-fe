@@ -34,6 +34,14 @@ const routes = [
         component: ()=>import('../components/Admin/KhachHang/index.vue')
     },
     {
+        path : '/admin/don-hang',
+        component: ()=>import('../components/Admin/DonHang/index.vue')
+    },
+    {
+        path : '/admin/thong-ke',
+        component: ()=>import('../components/Admin/ThongKe/index.vue')
+    },
+    {
         path : '/home-page',
         component: ()=>import('../components/Client/HomePage/Homepage.vue'),
         meta: { layout: 'client' },
@@ -41,6 +49,31 @@ const routes = [
     {
         path : '/chi-tiet-san-pham/:id',
         component: ()=>import('../components/Client/ChiTietSanPham/index.vue'),
+        meta: { layout: 'client' }
+    },
+    {
+        path : '/san-pham',
+        component: ()=>import('../components/Client/SanPham/index.vue'),
+        meta: { layout: 'client' }
+    },
+    {
+        path : '/gio-hang',
+        component: ()=>import('../components/Client/GioHang/index.vue'),
+        meta: { layout: 'client' }
+    },
+    {
+        path : '/don-hang',
+        component: ()=>import('../components/Client/DonHang/index.vue'),
+        meta: { layout: 'client' }
+    },
+    {
+        path : '/lich-su-don-hang',
+        component: ()=>import('../components/Client/LichSuDonHang/index.vue'),
+        meta: { layout: 'client' }
+    },
+    {
+        path : '/thong-tin-tai-khoan',
+        component: ()=>import('../components/Client/ThongTinTaiKhoan/index.vue'),
         meta: { layout: 'client' }
     },
     {
