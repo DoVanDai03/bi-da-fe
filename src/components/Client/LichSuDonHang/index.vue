@@ -105,7 +105,7 @@
                                             Đang vận chuyển
                                         </button>
                                         <button class="btn btn-success btn-sm ms-2" data-bs-toggle="modal"
-                                            data-bs-target="#ModalConfirmDelivery">
+                                            data-bs-target="#ModalConfirmDelivery" @click="delete_id = order.id">
                                             <i class="bx bx-package me-1"></i>
                                             Đã nhận được hàng
                                         </button>
@@ -150,7 +150,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
-                    <button @click="confirmDelivery(delete_id = order.id)" type="button" class="btn btn-primary">Xác nhận</button>
+                    <button @click="confirmDelivery(delete_id)" type="button" class="btn btn-primary">Xác nhận</button>
                 </div>
             </div>
         </div>

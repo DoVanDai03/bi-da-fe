@@ -47,6 +47,17 @@ const routes = [
         meta: { layout: 'client' },
     },
     {
+        path : '/tin-tuc',
+        component: ()=>import('../components/Client/TinTuc/index.vue'),
+        meta: { layout: 'client' }
+    },
+    {
+        path : '/lien-he',
+        component: ()=>import('../components/Client/LienHe/index.vue'),
+        meta: { layout: 'client' }
+    },
+
+    {
         path : '/chi-tiet-san-pham/:id',
         component: ()=>import('../components/Client/ChiTietSanPham/index.vue'),
         meta: { layout: 'client' }
@@ -89,6 +100,11 @@ const routes = [
     {
         path : '/admin/dang-nhap',
         component: ()=>import('../components/Admin/DangNhap/index.vue'),
+        meta: { layout: 'Login' }
+    },
+    {
+        path : '/quen-mat-khau',
+        component: ()=>import('../components/Client/QuenMatKhau/index.vue'),
         meta: { layout: 'Login' }
     },
 ]

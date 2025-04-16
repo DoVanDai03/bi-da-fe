@@ -107,38 +107,117 @@
 
         <div class="product-tabs">
             <div class="tab-header">
-                <button class="tab-btn active" @click="activeTab = 'description'">Mô tả sản phẩm</button>
-                <button class="tab-btn" @click="activeTab = 'specs'">Thông số kỹ thuật</button>
-                <button class="tab-btn" @click="activeTab = 'reviews'">Đánh giá</button>
+                <button 
+                    class="tab-btn" 
+                    :class="{ active: activeTab === 'description' }"
+                    @click="activeTab = 'description'">
+                    Mô tả sản phẩm
+                </button>
+                <button 
+                    class="tab-btn" 
+                    :class="{ active: activeTab === 'specs' }"
+                    @click="activeTab = 'specs'">
+                    Thông số kỹ thuật
+                </button>
+                <button 
+                    class="tab-btn" 
+                    :class="{ active: activeTab === 'reviews' }"
+                    @click="switchToReviews">
+                    Đánh giá
+                </button>
             </div>
 
             <div class="tab-content">
-                <div v-if="activeTab === 'description'" class="tab-pane">
+                <div class="tab-pane" :class="{ active: activeTab === 'description' }">
                     <div class="product-description">
                         <h3>Mô tả sản phẩm</h3>
                         <p>{{ san_pham.moTa }}</p>
                     </div>
                 </div>
 
-                <div v-if="activeTab === 'specs'" class="tab-pane">
+                <div class="tab-pane" :class="{ active: activeTab === 'specs' }">
                     <div class="product-specs">
                         <h3>Thông số kỹ thuật</h3>
                         <div class="specs-table">
-                            <div class="spec-row" v-for="(value, key) in san_pham.thongSoKyThuat" :key="key">
-                                <div class="spec-label">{{ key }}</div>
-                                <div class="spec-value">{{ value }}</div>
+                            <div class="spec-row">
+                                <div class="spec-label">Kích thước</div>
+                                <div class="spec-value">{{ san_pham.kichCo }}</div>
+                            </div>
+                            <div class="spec-row">
+                                <div class="spec-label">Màu sắc</div>
+                                <div class="spec-value">{{ san_pham.mauSac }}</div>
+                            </div>
+                            <div class="spec-row">
+                                <div class="spec-label">Chất liệu</div>
+                                <div class="spec-value">{{ san_pham.chatLieu }}</div>
+                            </div>
+                            <div class="spec-row">
+                                <div class="spec-label">Thương hiệu</div>
+                                <div class="spec-value">{{ san_pham.thuongHieu?.tenThuongHieu }}</div>
+                            </div>
+                            <div class="spec-row">
+                                <div class="spec-label">Xuất xứ</div>
+                                <div class="spec-value">Việt Nam</div>
+                            </div>
+                            <div class="spec-row">
+                                <div class="spec-label">Thời gian bảo hành</div>
+                                <div class="spec-value">12 tháng</div>
+                            </div>
+                            <div class="spec-row">
+                                <div class="spec-label">Nhà cung cấp</div>
+                                <div class="spec-value">{{ san_pham.nhaCungCap?.tenNhaCungCap }}</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div v-if="activeTab === 'reviews'" class="tab-pane">
+                <div class="tab-pane" :class="{ active: activeTab === 'reviews' }">
                     <div class="reviews-section">
                         <h3>Đánh giá từ khách hàng</h3>
-                        <div class="reviews-list">
-                            <div v-for="review in danh_sach_danh_gia" :key="review.id" class="review-card">
+                        
+                        <!-- Review Form -->
+                        <div class="review-form" v-if="isLoggedIn">
+                            <h4>Viết đánh giá của bạn</h4>
+                            <div class="form-group">
+                                <label>Nội dung đánh giá:</label>
+                                <textarea 
+                                    v-model="newReview.danhGia" 
+                                    class="form-control" 
+                                    rows="3"
+                                    placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này...">
+                                </textarea>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label>Hình ảnh (tùy chọn):</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control"
+                                    v-model="newReview.hinhAnh"
+                                    placeholder="Nhập URL hình ảnh (nếu có)">
+                            </div>
+                            <div v-if="newReview.hinhAnh" class="image-preview mt-2">
+                                <img :src="newReview.hinhAnh" alt="Preview" 
+                                    @error="handleImageError" 
+                                    class="preview-image">
+                            </div>
+                            <button 
+                                @click="submitReview" 
+                                class="btn btn-primary mt-3"
+                                :disabled="isSubmittingReview">
+                                {{ isSubmittingReview ? 'Đang gửi...' : 'Gửi đánh giá' }}
+                            </button>
+                        </div>
+                        <div v-else class="login-prompt">
+                            <p>Vui lòng <a href="/dang-nhap">đăng nhập</a> để viết đánh giá</p>
+                        </div>
+
+                        <!-- Reviews List -->
+                        <div class="reviews-list mt-4">
+                            <div v-if="danh_sach_danh_gia.length === 0" class="no-reviews">
+                                <p>Chưa có đánh giá nào cho sản phẩm này.</p>
+                            </div>
+                            <div v-else v-for="review in danh_sach_danh_gia" :key="review.id" class="review-card">
                                 <div class="review-header">
-                                    <img :src="review.user?.avatar || '/default-avatar.png'" class="reviewer-avatar">
                                     <div class="reviewer-info">
                                         <h4>{{ review.user?.hoVaTen }}</h4>
                                         <span class="review-date">{{ formatDate(review.ngayDanhGia) }}</span>
@@ -218,13 +297,21 @@ export default {
             selectedColor: '',
             quantity: 1,
             mainImage: '',
-            activeTab: 'description'
+            activeTab: 'description',
+            newReview: {
+                danhGia: '',
+                hinhAnh: '',
+                idKhachHang: null
+            },
+            isSubmittingReview: false,
+            isLoggedIn: false
         };
     },
     mounted() {
         this.layChiTietSanPham();
         this.layDanhGia();
         this.layDanhSachSanPham();
+        this.checkLoginStatus();
     },
     methods: {
         formatCurrency(amount) {
@@ -252,7 +339,7 @@ export default {
         layDanhGia() {
             const id = this.$route.params.id;
             axios
-                .get(`/api/client/danh-gia/${id}`)
+                .get(`/api/user/danh-gia/san-pham/${id}`)
                 .then((res) => {
                     if (res.data.status) {
                         this.danh_sach_danh_gia = res.data.data;
@@ -260,6 +347,7 @@ export default {
                 })
                 .catch((error) => {
                     toaster.error('Có lỗi xảy ra khi lấy đánh giá!');
+                    console.error('Error fetching reviews:', error);
                 });
         },
         layDanhSachSanPham() {
@@ -367,6 +455,67 @@ export default {
         },
         viewProduct(id) {
             this.$router.push(`/chi-tiet-san-pham/${id}`);
+        },
+        switchToReviews() {
+            this.activeTab = 'reviews';
+            this.layDanhGia(); // Refresh reviews when switching to reviews tab
+        },
+        checkLoginStatus() {
+            const userInfo = JSON.parse(localStorage.getItem('user_info'));
+            const token = localStorage.getItem('token_khach_hang');
+            this.isLoggedIn = !!(userInfo && token);
+            if (this.isLoggedIn) {
+                this.newReview.idKhachHang = userInfo.id;
+            }
+        },
+        handleImageError(event) {
+            event.target.style.display = 'none';
+            toaster.error('URL hình ảnh không hợp lệ');
+            this.newReview.hinhAnh = '';
+        },
+        async submitReview() {
+            if (!this.newReview.danhGia.trim()) {
+                toaster.error('Vui lòng nhập nội dung đánh giá');
+                return;
+            }
+
+            // Validate image URL if provided
+            if (this.newReview.hinhAnh && !this.isValidImageUrl(this.newReview.hinhAnh)) {
+                toaster.error('URL hình ảnh không hợp lệ');
+                return;
+            }
+
+            this.isSubmittingReview = true;
+            try {
+                const token = localStorage.getItem('token_khach_hang');
+                const response = await axios.post(
+                    `/api/user/danh-gia/san-pham/${this.$route.params.id}`,
+                    this.newReview,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }
+                );
+
+                if (response.data.status) {
+                    toaster.success('Đánh giá của bạn đã được gửi thành công');
+                    // Reset form
+                    this.newReview.danhGia = '';
+                    this.newReview.hinhAnh = '';
+                    // Refresh reviews
+                    this.layDanhGia();
+                } else {
+                    toaster.error(response.data.message);
+                }
+            } catch (error) {
+                toaster.error(error.response?.data?.message || 'Có lỗi xảy ra khi gửi đánh giá');
+            } finally {
+                this.isSubmittingReview = false;
+            }
+        },
+        isValidImageUrl(url) {
+            return url.match(/\.(jpeg|jpg|gif|png)$/) != null;
         }
     }
 }
@@ -654,6 +803,11 @@ export default {
     font-weight: 500;
     color: #666;
     position: relative;
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    color: #0066cc;
 }
 
 .tab-btn.active {
@@ -668,13 +822,29 @@ export default {
     right: 0;
     height: 2px;
     background: #0066cc;
+    transition: all 0.3s ease;
 }
 
-.tab-pane {
+.tab-content {
     padding: 20px;
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.no-reviews {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-style: italic;
 }
 
 .related-products {
@@ -902,5 +1072,217 @@ export default {
 
 .product-card:hover .view-details {
     opacity: 1;
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 15px;
+}
+
+.page-info {
+    font-size: 14px;
+    color: #666;
+    margin: 0 10px;
+}
+
+.btn-outline-primary {
+    border: 1px solid #007bff;
+    color: #007bff;
+    background-color: transparent;
+    padding: 5px 15px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover:not(:disabled) {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-outline-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.reviews-section {
+    padding: 20px;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.review-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: white;
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.reviewer-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.reviewer-info h4 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.review-date {
+    font-size: 12px;
+    color: #666;
+}
+
+.review-content {
+    margin: 10px 0;
+    color: #444;
+    line-height: 1.5;
+}
+
+.review-images {
+    margin-top: 10px;
+}
+
+.review-images img {
+    max-width: 200px;
+    border-radius: 4px;
+}
+
+.specs-table {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.spec-row {
+    display: flex;
+    border-bottom: 1px solid #eee;
+}
+
+.spec-row:last-child {
+    border-bottom: none;
+}
+
+.spec-label {
+    width: 200px;
+    padding: 12px 15px;
+    background-color: #f8f9fa;
+    font-weight: 500;
+    color: #333;
+}
+
+.spec-value {
+    flex: 1;
+    padding: 12px 15px;
+    color: #666;
+}
+
+.spec-row:hover {
+    background-color: #f8f9fa;
+}
+
+.review-form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    margin-bottom: 20px;
+}
+
+.review-form h4 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.login-prompt {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.login-prompt a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-prompt a:hover {
+    text-decoration: underline;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-primary:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+.image-preview {
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    background-color: #f8f9fa;
+}
+
+.preview-image {
+    max-width: 200px;
+    max-height: 200px;
+    display: block;
+    margin: 0 auto;
+    border-radius: 4px;
 }
 </style>

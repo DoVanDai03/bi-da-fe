@@ -30,7 +30,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-12 text-end">
-                                                <a href="javascript:;">Quên mật khẩu?</a>
+                                                <router-link to="/quen-mat-khau">Quên mật khẩu?</router-link>
                                             </div>
                                             <div class="col-12">
                                                 <div class="d-grid">
