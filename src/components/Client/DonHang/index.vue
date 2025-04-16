@@ -324,7 +324,7 @@ export default {
             try {
                 const paymentDto = {
                     orderId: order.id,
-                    amount: order.tongTien,
+                    calculateTotal: order.tongTien,
                     paymentMethod: order.phuongThucThanhToan,
                     idKhachHang: userInfo.id,
                     trangThai: 'success',

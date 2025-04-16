@@ -249,12 +249,7 @@
                             </div>
                             <div class="card-body">
                                 <h6 class="card-title">{{ value.tenSanPham }}</h6>
-                                <div class="product-details">
-                                    <!-- <div class="specs">
-                                                <span class="badge">Kích cỡ: {{ value.kichCo }}</span>
-                                                <span class="badge">Màu sắc: {{ value.mauSac }}</span>
-                                                <span class="badge">Chất liệu: {{ value.chatLieu }}</span>
-                                            </div> -->
+                                <div class="product-details">                                   
                                     <div class="price-section">
                                         <p class="stock-status"
                                             :class="value.soLuongTonKho > 0 ? 'text-success' : 'text-danger'">
@@ -301,10 +296,16 @@ export default {
             newReview: {
                 danhGia: '',
                 hinhAnh: '',
+                ngayDanhGia: new Date().toISOString(),
                 idKhachHang: null
             },
             isSubmittingReview: false,
-            isLoggedIn: false
+            isLoggedIn: false,
+            discountCode: '',
+            isDiscountApplied: false,
+            discountMessage: '',
+            discountData: null,
+            finalPrice: 0,
         };
     },
     mounted() {
@@ -373,6 +374,42 @@ export default {
                 this.quantity--;
             }
         },
+        async applyDiscountCode() {
+            if (!this.discountCode) return;
+            
+            try {
+                const orderDetails = [{
+                    giaSanPham: this.san_pham.giaSanPham,
+                    soLuong: this.quantity
+                }];
+
+                const response = await axios.post('/api/ap-dung-ma-giam-gia', {
+                    maGiamGia: this.discountCode,
+                    chiTietDonHang: orderDetails
+                });
+
+                if (response.data.status) {
+                    this.isDiscountApplied = true;
+                    this.discountMessage = response.data.message;
+                    this.discountData = response.data.data;
+                    this.finalPrice = response.data.data.tongTienSauGiam;
+                }
+            } catch (error) {
+                this.discountMessage = error.response?.data?.message || 'Có lỗi xảy ra khi áp dụng mã giảm giá';
+                this.isDiscountApplied = false;
+                this.discountData = null;
+                this.finalPrice = this.san_pham.giaSanPham * this.quantity;
+            }
+        },
+
+        removeDiscountCode() {
+            this.discountCode = '';
+            this.isDiscountApplied = false;
+            this.discountMessage = '';
+            this.discountData = null;
+            this.finalPrice = this.san_pham.giaSanPham * this.quantity;
+        },
+
         themVaoGioHang() {
             if (this.san_pham.soLuongTonKho <= 0) {
                 toaster.error('Sản phẩm đã hết hàng!');
@@ -382,14 +419,13 @@ export default {
             const userInfo = JSON.parse(localStorage.getItem('user_info'));
             const token = localStorage.getItem('token_khach_hang');
             
+            // Tính giá tiền sau khi áp dụng mã giảm giá (nếu có)
+            const giaSauGiamGia = this.isDiscountApplied ? this.finalPrice : 
+                (this.san_pham.giamGia ? this.san_pham.giaSanPham * (1 - this.san_pham.giamGia.phamTramGiamGia / 100) : this.san_pham.giaSanPham);
+            
+            const thanhTien = giaSauGiamGia * this.quantity;
+            
             if (userInfo && token) {
-                // Tính giá tiền sau khi giảm giá (nếu có)
-                const giaSauGiamGia = this.san_pham.giamGia
-                    ? this.san_pham.giaSanPham * (1 - this.san_pham.giamGia.phamTramGiamGia / 100)
-                    : this.san_pham.giaSanPham;
-                
-                const thanhTien = giaSauGiamGia * 1; // Mặc định thêm 1 sản phẩm
-
                 // Thêm vào giỏ hàng qua API
                 axios.post('/api/user/gio-hang/them-san-pham', null, {
                     headers: {
@@ -398,8 +434,9 @@ export default {
                     params: {
                         idKhachHang: userInfo.id,
                         idSanPham: this.san_pham.id,
-                        soLuong: 1,
-                        thanhTien: thanhTien
+                        soLuong: this.quantity,
+                        thanhTien: thanhTien,
+                        maGiamGia: this.isDiscountApplied ? this.discountCode : null
                     }
                 })
                 .then(res => {
@@ -424,17 +461,27 @@ export default {
                         toaster.error('Số lượng sản phẩm trong giỏ hàng đã đạt tối đa!');
                         return;
                     }
-                    existingItem.soLuong += 1;
+                    existingItem.soLuong += this.quantity;
+                    existingItem.thanhTien = giaSauGiamGia * existingItem.soLuong;
+                    if (this.isDiscountApplied) {
+                        existingItem.maGiamGia = this.discountCode;
+                        existingItem.giaGoc = this.san_pham.giaSanPham;
+                        existingItem.giaSauGiam = giaSauGiamGia;
+                    }
                 } else {
                     cartItems.push({
                         id: this.san_pham.id,
                         tenSanPham: this.san_pham.tenSanPham,
-                        giaSanPham: this.san_pham.giaSanPham,
+                        giaSanPham: giaSauGiamGia,
+                        giaGoc: this.san_pham.giaSanPham,
                         hinhAnh: this.san_pham.hinhAnh,
-                        soLuong: 1,
+                        soLuong: this.quantity,
+                        thanhTien: thanhTien,
+                        maGiamGia: this.isDiscountApplied ? this.discountCode : null,
+                        giaSauGiam: this.isDiscountApplied ? giaSauGiamGia : null,
                         giamGia: this.san_pham.giamGia ? {
                             phamTramGiamGia: this.san_pham.giamGia.phamTramGiamGia,
-                            thanhTien: this.san_pham.giaSanPham * (1 - this.san_pham.giamGia.phamTramGiamGia / 100)
+                            thanhTien: giaSauGiamGia
                         } : null,
                         soLuongTonKho: this.san_pham.soLuongTonKho
                     });
@@ -468,9 +515,22 @@ export default {
                 this.newReview.idKhachHang = userInfo.id;
             }
         },
+        isValidImageUrl(url) {
+            if (!url) return false;
+            
+            // Kiểm tra xem URL có hợp lệ không
+            try {
+                new URL(url);
+            } catch (e) {
+                return false;
+            }
+
+            // Kiểm tra xem URL có phải là hình ảnh không
+            return true;
+        },
         handleImageError(event) {
             event.target.style.display = 'none';
-            toaster.error('URL hình ảnh không hợp lệ');
+            toaster.error('URL hình ảnh không hợp lệ hoặc không thể truy cập');
             this.newReview.hinhAnh = '';
         },
         async submitReview() {
@@ -479,10 +539,14 @@ export default {
                 return;
             }
 
-            // Validate image URL if provided
-            if (this.newReview.hinhAnh && !this.isValidImageUrl(this.newReview.hinhAnh)) {
-                toaster.error('URL hình ảnh không hợp lệ');
-                return;
+            // Kiểm tra URL hình ảnh nếu có
+            if (this.newReview.hinhAnh) {
+                const img = new Image();
+                img.onerror = () => {
+                    toaster.error('URL hình ảnh không hợp lệ hoặc không thể truy cập');
+                    return;
+                };
+                img.src = this.newReview.hinhAnh;
             }
 
             this.isSubmittingReview = true;
@@ -514,9 +578,21 @@ export default {
                 this.isSubmittingReview = false;
             }
         },
-        isValidImageUrl(url) {
-            return url.match(/\.(jpeg|jpg|gif|png)$/) != null;
-        }
+        redirectToDetail(id) {
+            // Kiểm tra nếu đang ở trang chi tiết sản phẩm hiện tại
+            if (this.$route.params.id === id.toString()) {
+                // Reload lại trang
+                window.location.reload();
+            } else {
+                // Chuyển đến trang chi tiết sản phẩm mới
+                this.$router.push(`/chi-tiet-san-pham/${id}`).then(() => {
+                    window.location.reload();
+                });
+                this.layChiTietSanPham();
+                this.layDanhGia();
+                this.layDanhSachSanPham();
+            }
+        },
     }
 }
 </script>

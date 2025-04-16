@@ -234,10 +234,12 @@ export default {
                 }
             })
                 .then((res) => {
-                    if (res.data.status) {
+                    if (res.data && Array.isArray(res.data.data)) {
                         this.orders = res.data.data;
+                    } else if (res.data && res.data.message) {
+                        toaster.error(res.data.message);
                     } else {
-                        toaster.error(res.data.message || "Có lỗi xảy ra khi tải đơn hàng");
+                        toaster.error("Có lỗi xảy ra khi tải đơn hàng");
                     }
                 })
                 .catch(error => {
