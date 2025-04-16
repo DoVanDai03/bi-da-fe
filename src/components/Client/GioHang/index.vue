@@ -279,53 +279,7 @@ export default {
             const discount = this.calculateDiscount();
 
             return subtotal + this.shippingFee - discount;
-        },
-        applyCoupon() {
-            if (!this.couponCode) {
-                toaster.error('Vui lòng nhập mã giảm giá!');
-                return;
-            }
-
-            const userInfo = JSON.parse(localStorage.getItem('user_info'));
-            const token = localStorage.getItem('token_khach_hang');
-
-            if (!userInfo || !userInfo.id || !token) {
-                toaster.error('Vui lòng đăng nhập để sử dụng mã giảm giá!');
-                this.$router.push('/dang-nhap');
-                return;
-            }
-
-            // Gọi API kiểm tra mã giảm giá
-            axios.post('/api/user/gio-hang/ap-dung-ma-giam-gia', null, {
-                params: {
-                    idKhachHang: userInfo.id,
-                    maGiamGia: this.couponCode
-                },
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-                .then(res => {
-                    if (res.data.status) {
-                        // Cập nhật giỏ hàng với thông tin giảm giá
-                        this.discountPercent = res.data.phanTramGiamGia || 0;
-                        this.maxDiscountAmount = res.data.discountAmount || 0;
-
-                        // Nếu API trả về danh sách giỏ hàng đã cập nhật
-                        if (res.data.data && Array.isArray(res.data.data)) {
-                            this.cartItems = res.data.data;
-                        }
-
-                        toaster.success(res.data.message || 'Đã áp dụng mã giảm giá!');
-                    } else {
-                        toaster.error(res.data.message || 'Mã giảm giá không hợp lệ!');
-                    }
-                })
-                .catch(error => {
-                    console.error(error);
-                    toaster.error('Có lỗi xảy ra khi kiểm tra mã giảm giá!');
-                });
-        },
+        },       
         checkout() {
             if (this.cartItems.length === 0) {
                 toaster.error('Giỏ hàng trống, vui lòng thêm sản phẩm vào giỏ hàng!');

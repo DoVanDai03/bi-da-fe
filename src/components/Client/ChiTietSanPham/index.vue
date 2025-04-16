@@ -50,7 +50,7 @@
                 </div>
 
                 <div class="price-section">
-                    <div class="current-price">{{ formatCurrency(san_pham.giaSanPham) }}</div>
+                    <div class="current-price">{{ formatCurrency(san_pham.giaSanPham * (1 - san_pham.giamGia.phamTramGiamGia / 100)) }}</div>
                     <div class="price-details" v-if="san_pham.giamGia">
                         <span class="original-price">{{ formatCurrency(san_pham.giaSanPham) }}</span>
                         <span class="discount-badge">-{{ san_pham.giamGia.phamTramGiamGia }}%</span>
@@ -222,6 +222,14 @@
                                         <h4>{{ review.user?.hoVaTen }}</h4>
                                         <span class="review-date">{{ formatDate(review.ngayDanhGia) }}</span>
                                     </div>
+                                    <div v-if="isCurrentUserReview(review)" class="review-actions">
+                                        <button class="btn btn-sm btn-primary me-2" @click="openUpdateModal(review)">
+                                            <i class="fas fa-edit"></i> Sửa
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" @click="openDeleteModal(review)">
+                                            <i class="fas fa-trash"></i> Xóa
+                                        </button>
+                                    </div>
                                 </div>
                                 <p class="review-content">{{ review.danhGia }}</p>
                                 <div v-if="review.hinhAnh" class="review-images">
@@ -274,6 +282,69 @@
                 </template>
             </div>
         </div>
+
+        <!-- Modal cập nhật đánh giá -->
+        <div class="modal fade" id="updateReviewModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cập nhật đánh giá</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nội dung đánh giá:</label>
+                            <textarea 
+                                v-model="updateReview.danhGia" 
+                                class="form-control" 
+                                rows="3"
+                                placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này...">
+                            </textarea>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label>Hình ảnh (tùy chọn):</label>
+                            <input 
+                                type="text" 
+                                class="form-control"
+                                v-model="updateReview.hinhAnh"
+                                placeholder="Nhập URL hình ảnh (nếu có)">
+                        </div>
+                        <div v-if="updateReview.hinhAnh" class="image-preview mt-2">
+                            <img :src="updateReview.hinhAnh" alt="Preview" 
+                                @error="handleImageError" 
+                                class="preview-image">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" class="btn btn-primary" @click="submitUpdateReview" :disabled="isSubmittingReview">
+                            {{ isSubmittingReview ? 'Đang cập nhật...' : 'Cập nhật' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal xác nhận xóa -->
+        <div class="modal fade" id="deleteReviewModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xác nhận xóa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Bạn có chắc chắn muốn xóa đánh giá này không?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" class="btn btn-danger" @click="submitDeleteReview" :disabled="isSubmittingReview">
+                            {{ isSubmittingReview ? 'Đang xóa...' : 'Xóa' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -306,6 +377,13 @@ export default {
             discountMessage: '',
             discountData: null,
             finalPrice: 0,
+            updateReview: {
+                id: null,
+                danhGia: '',
+                hinhAnh: '',
+                idKhachHang: null
+            },
+            selectedReviewId: null,
         };
     },
     mounted() {
@@ -443,6 +521,9 @@ export default {
                     if (res.data.status) {
                         toaster.success('Thêm vào giỏ hàng thành công!');
                         this.$root.$emit('update-cart');
+                        this.$router.push('/chi-tiet-san-pham/' + this.san_pham.id).then(() => {
+                            window.location.reload();
+                        });
                     } else {
                         toaster.error(res.data.message || 'Có lỗi xảy ra!');
                     }
@@ -593,6 +674,95 @@ export default {
                 this.layDanhSachSanPham();
             }
         },
+        isCurrentUserReview(review) {
+            const userInfo = JSON.parse(localStorage.getItem('user_info'));
+            return userInfo && userInfo.id === review.user?.id;
+        },
+
+        openUpdateModal(review) {
+            this.updateReview = {
+                id: review.id,
+                danhGia: review.danhGia,
+                hinhAnh: review.hinhAnh,
+                idKhachHang: review.user.id
+            };
+            const modal = new bootstrap.Modal(document.getElementById('updateReviewModal'));
+            modal.show();
+        },
+
+        openDeleteModal(review) {
+            this.selectedReviewId = review.id;
+            const modal = new bootstrap.Modal(document.getElementById('deleteReviewModal'));
+            modal.show();
+        },
+
+        async submitUpdateReview() {
+            if (!this.updateReview.danhGia.trim()) {
+                toaster.error('Vui lòng nhập nội dung đánh giá');
+                return;
+            }
+
+            this.isSubmittingReview = true;
+            try {
+                const token = localStorage.getItem('token_khach_hang');
+                const response = await axios.put(
+                    `/api/user/danh-gia/${this.updateReview.id}`,
+                    this.updateReview,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }
+                );
+
+                if (response.data.status) {
+                    toaster.success('Cập nhật đánh giá thành công');
+                    // Đóng modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('updateReviewModal'));
+                    modal.hide();
+                    // Refresh đánh giá
+                    this.layDanhGia();
+                } else {
+                    toaster.error(response.data.message);
+                }
+            } catch (error) {
+                toaster.error(error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật đánh giá');
+            } finally {
+                this.isSubmittingReview = false;
+            }
+        },
+
+        async submitDeleteReview() {
+            this.isSubmittingReview = true;
+            try {
+                const token = localStorage.getItem('token_khach_hang');
+                const userInfo = JSON.parse(localStorage.getItem('user_info'));
+                
+                const response = await axios.delete(
+                    `/api/user/danh-gia/${this.selectedReviewId}?idKhachHang=${userInfo.id}`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }
+                );
+
+                if (response.data.status) {
+                    toaster.success('Xóa đánh giá thành công');
+                    // Đóng modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('deleteReviewModal'));
+                    modal.hide();
+                    // Refresh đánh giá
+                    this.layDanhGia();
+                } else {
+                    toaster.error(response.data.message);
+                }
+            } catch (error) {
+                toaster.error(error.response?.data?.message || 'Có lỗi xảy ra khi xóa đánh giá');
+            } finally {
+                this.isSubmittingReview = false;
+            }
+        }
     }
 }
 </script>
@@ -724,13 +894,6 @@ export default {
     color: #999;
 }
 
-.discount-badge {
-    background: #e74c3c;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 14px;
-}
 
 .product-options {
     margin-bottom: 20px;
@@ -1099,21 +1262,8 @@ export default {
     font-weight: 700;
 }
 
-/* Discount badge */
-.discount-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 2;
-}
 
-.discount-badge .badge {
-    font-size: 14px;
-    font-weight: 600;
-    padding: 6px 12px;
-    border-radius: 4px;
-    background: #dc3545;
-}
+
 
 /* View details overlay */
 .view-details {
@@ -1202,9 +1352,8 @@ export default {
 
 .review-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 10px;
 }
 
 .reviewer-avatar {
@@ -1360,5 +1509,15 @@ textarea.form-control {
     display: block;
     margin: 0 auto;
     border-radius: 4px;
+}
+
+.review-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
 }
 </style>
