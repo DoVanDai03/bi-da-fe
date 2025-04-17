@@ -88,7 +88,7 @@
                         <div class="payment-methods">
                             <div class="payment-method">
                                 <input type="radio" id="paymentOnDelivery" v-model="paymentMethod" value="onDelivery">
-                                <label for="paymentOnDelivery">Thanh toán bằng tiền mặt</label>
+                                <label for="paymentOnDelivery">Thanh toán khi nhận hàng</label>
                             </div>
                             <div class="payment-method">
                                 <input type="radio" id="paymentOnline" v-model="paymentMethod" value="online">
@@ -305,11 +305,15 @@ export default {
             })
             .then(res => {
                 if (res.data.status) {
-                    toaster.success('Đặt hàng thành công!');
-                    // Xóa giỏ hàng sau khi đặt hàng thành công
-                    localStorage.removeItem('cart_items');
-                    // Chuyển hướng đến trang chi tiết đơn hàng
-                    this.$router.push('/lich-su-don-hang');
+                    if (this.paymentMethod === 'online') {
+                        // Nếu thanh toán online, chuyển hướng đến VNPay
+                        this.initiateVNPayPayment(res.data.data.id, this.calculateTotal());
+                    } else {
+                        // Nếu thanh toán khi nhận hàng
+                        toaster.success('Đặt hàng thành công!');
+                        localStorage.removeItem('cart_items');
+                        this.$router.push('/lich-su-don-hang');
+                    }
                 } else {
                     toaster.error(res.data.message || 'Có lỗi xảy ra khi đặt hàng!');
                 }
@@ -318,6 +322,59 @@ export default {
                 console.error(error);
                 const errorMessage = error.response?.data?.message || 'Có lỗi xảy ra khi đặt hàng!';
                 toaster.error(errorMessage);
+            });
+        },
+        async initiateVNPayPayment(orderId, amount) {
+            try {
+                const token = localStorage.getItem('token_khach_hang');
+                const response = await axios.post(`/api/user/chi-tiet-don-hang/create-vnpay-payment/${orderId}`, null, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.data.status && response.data.data.paymentUrl) {
+                    // Chuyển hướng đến trang thanh toán VNPay
+                    window.location.href = response.data.data.paymentUrl;
+                } else {
+                    toaster.error('Không thể khởi tạo thanh toán VNPay');
+                }
+            } catch (error) {
+                console.error('VNPay payment error:', error);
+                toaster.error(error.response?.data?.message || 'Có lỗi xảy ra khi khởi tạo thanh toán VNPay');
+            }
+        },
+
+        handleVNPayCallback() {
+            // Lấy các tham số từ URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryParams = {};
+            for (const [key, value] of urlParams.entries()) {
+                queryParams[key] = value;
+            }
+
+            // Gọi API xử lý kết quả thanh toán
+            const token = localStorage.getItem('token_khach_hang');
+            axios.get('/api/user/chi-tiet-don-hang/vnpay-payment', {
+                params: queryParams,
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(res => {
+                if (res.data.status) {
+                    toaster.success(res.data.message || 'Thanh toán thành công!');
+                    localStorage.removeItem('cart_items');
+                    this.$router.push('/lich-su-don-hang');
+                } else {
+                    toaster.error(res.data.message || 'Thanh toán thất bại!');
+                    this.$router.push('/lich-su-don-hang');
+                }
+            })
+            .catch(error => {
+                console.error('VNPay callback error:', error);
+                toaster.error(error.response?.data?.message || 'Có lỗi xảy ra khi xử lý kết quả thanh toán');
+                this.$router.push('/lich-su-don-hang');
             });
         },
         async processPayment(order) {
