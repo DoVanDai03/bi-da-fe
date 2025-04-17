@@ -42,6 +42,14 @@ const routes = [
         component: ()=>import('../components/Admin/ThongKe/index.vue')
     },
     {
+        path : '/admin/nguoi-dung',
+        component: ()=>import('../components/Admin/NguoiDung/index.vue')
+    },
+    {
+        path : '/admin/chuc-vu',
+        component: ()=>import('../components/Admin/ChucVu/index.vue')
+    },
+    {
         path : '/home-page',
         component: ()=>import('../components/Client/HomePage/Homepage.vue'),
         meta: { layout: 'client' },

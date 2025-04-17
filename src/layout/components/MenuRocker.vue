@@ -93,6 +93,24 @@
 						</a>
 					</router-link>
 				</li>
+				<li class="nav-item">
+					<router-link to="/admin/nguoi-dung">
+						<a class="nav-link" href="/admin/nguoi-dung">
+							<div class="parent-icon"><i class="fa-solid fa-user"></i>
+							</div>
+							<div class="menu-title">Người dùng</div>
+						</a>
+					</router-link>
+				</li>
+				<li class="nav-item">
+					<router-link to="/admin/chuc-vu">
+						<a class="nav-link" href="/admin/chuc-vu">
+							<div class="parent-icon"><i class="fa-solid fa-user"></i>
+							</div>
+							<div class="menu-title">Chức vụ</div>
+						</a>
+					</router-link>
+				</li>
 			</ul>
 		</nav>
 	</div>
