@@ -45,7 +45,7 @@
                     </div>
                     <div class="meta-item">
                         <span class="label">Bảo hành:</span>
-                        <span class="value">{{ san_pham.thoiGianBaoHanh }}</span>
+                        <span class="value">{{ san_pham.baoHanh }}</span>
                     </div>
                 </div>
 

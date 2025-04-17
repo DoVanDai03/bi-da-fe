@@ -32,7 +32,24 @@
                                                     class="form-control mt-2" required />
                                             </div>
                                         </div>
-
+                                        <div class="col-lg-6">
+                                            <div class="mb-2 mt-2">
+                                                <label>Mã sản phẩm</label>
+                                                <input v-model="san_pham_create.maSanPham" type="text" class="form-control mt-2" required />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-2 mt-2">
+                                                <label>Xuất xứ</label>
+                                                <input v-model="san_pham_create.xuatXu" type="text" class="form-control mt-2" required />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-2 mt-2">
+                                                <label>Bảo hành</label>
+                                                <input v-model="san_pham_create.baoHanh" type="text" class="form-control mt-2" required />
+                                            </div>
+                                        </div>
                                         <div class="col-lg-6">
                                             <div class="mb-2 mt-2">
                                                 <label>Danh mục</label>
@@ -160,6 +177,9 @@
                             <thead>
                                 <tr class="text-center">
                                     <th>#</th>
+                                    <th>Mã sản phẩm</th>
+                                    <th>Xuất xứ</th>
+                                    <th>Bảo hành</th>
                                     <th>Hình ảnh</th>
                                     <th>Tên sản phẩm</th>
                                     <th>Danh mục</th>
@@ -179,6 +199,9 @@
                                 <template v-for="(v, k) in danh_sach_san_pham" :key="k">
                                     <tr class="text-center align-middle">
                                         <td>{{ k + 1 }}</td>
+                                        <td>{{ v.maSanPham }}</td>
+                                        <td>{{ v.xuatXu }}</td>
+                                        <td>{{ v.baoHanh }}</td>
                                         <td>
                                             <img :src="v.hinhAnh" alt="Product Image" style="max-width: 50px;" />
                                         </td>
@@ -228,6 +251,24 @@
                             <div class="mb-2 mt-2">
                                 <label>Tên sản phẩm</label>
                                 <input v-model="san_pham_update.tenSanPham" type="text" class="form-control mt-2" required />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-2 mt-2">
+                                <label>Mã sản phẩm</label>
+                                <input v-model="san_pham_update.maSanPham" type="text" class="form-control mt-2" required />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-2 mt-2">
+                                <label>Xuất xứ</label>
+                                <input v-model="san_pham_update.xuatXu" type="text" class="form-control mt-2" required />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-2 mt-2">
+                                <label>Bảo hành</label>
+                                <input v-model="san_pham_update.baoHanh" type="text" class="form-control mt-2" required />
                             </div>
                         </div>
                         <div class="col-lg-6">

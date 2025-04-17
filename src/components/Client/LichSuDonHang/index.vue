@@ -27,7 +27,7 @@
                 </div>
 
                 <div v-else class="order-list">
-                    <div v-for="order in orders" :key="order.id" class="order-card" @click="showProductDetails(order.id)">
+                    <div v-for="order in orders" :key="order.id" class="order-card">
                         <div class="order-header">
                             <div class="order-id">
                                 <span class="label">Mã đơn hàng:</span>
@@ -69,6 +69,10 @@
                                     <span class="value">{{ formatPrice(order.tongTien) }}đ</span>
                                 </div>
                                 <div class="order-status">
+                                    <button class="btn btn-info btn-sm me-2" @click="showProductDetails(order.id)">
+                                        <i class="fas fa-box-open me-1"></i>
+                                        Xem chi tiết sản phẩm
+                                    </button>
                                     <template v-if="order.trangThai === 'pending'">
                                         <span class="status-badge pending">Đang chờ xử lý</span>
                                         <button class="btn btn-danger btn-sm ms-2" data-bs-toggle="modal"
@@ -417,18 +421,42 @@ export default {
                     }
                 }
             )
-                .then((res) => {
-                    if (res.data.status) {
-                        toaster.success('Cập nhật trạng thái đơn hàng thành công!');
-                        this.loadOrders();
-                    } else {
-                        toaster.error(res.data.message);
+            .then((res) => {
+                if (res.data.status) {
+                    // Sau khi cập nhật trạng thái thành công, gọi API cập nhật trạng thái thanh toán
+                    this.updatePaymentStatus(orderId);
+                } else {
+                    toaster.error(res.data.message);
+                }
+            })
+            .catch((error) => {
+                console.error('Error updating order status:', error);
+                toaster.error('Có lỗi xảy ra khi cập nhật trạng thái đơn hàng!');
+            });
+        },
+        updatePaymentStatus(orderId) {
+            const token = localStorage.getItem('token_khach_hang');
+            axios.put(`/api/user/chi-tiet-don-hang/don-hang/${orderId}/thanh-toan`,
+                {},
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     }
-                })
-                .catch((error) => {
-                    console.error('Error updating order status:', error);
-                    toaster.error('Có lỗi xảy ra khi cập nhật trạng thái đơn hàng!');
-                });
+                }
+            )
+            .then((res) => {
+                if (res.data.status) {
+                    toaster.success('Cập nhật trạng thái đơn hàng thành công!');
+                    this.loadOrders();
+                } else {
+                    toaster.error(res.data.message);
+                }
+            })
+            .catch((error) => {
+                console.error('Error updating payment status:', error);
+                toaster.error('Có lỗi xảy ra khi cập nhật trạng thái thanh toán!');
+            });
         },
         showProductDetails(orderId) {
             this.productDetails = [];
@@ -812,6 +840,109 @@ export default {
     
     .product-details {
         font-size: 0.9rem;
+    }
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+    color: white;
+}
+
+.btn-info:hover {
+    background-color: #138496;
+    border-color: #117a8b;
+    color: white;
+}
+
+.me-2 {
+    margin-right: 0.5rem;
+}
+
+/* Style riêng cho Modal Product Details */
+#productDetailsModal .modal-dialog {
+    max-width: 90vw;
+}
+
+#productDetailsModal .modal-content {
+    border-radius: 15px;
+}
+
+#productDetailsModal .modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+}
+
+#productDetailsModal .modal-header .modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+#productDetailsModal .modal-body {
+    padding: 1.5rem;
+}
+
+#productDetailsModal .modal-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+}
+
+/* Style cho các modal xác nhận */
+#huydonmodal .modal-dialog,
+#successDeliveryModal .modal-dialog {
+    max-width: 500px;
+    margin: 1.75rem auto;
+}
+
+#huydonmodal .modal-content,
+#successDeliveryModal .modal-content {
+    border-radius: 8px;
+}
+
+#huydonmodal .modal-header,
+#successDeliveryModal .modal-header {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+#huydonmodal .modal-body,
+#successDeliveryModal .modal-body {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+#huydonmodal .modal-footer,
+#successDeliveryModal .modal-footer {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+}
+
+@media (max-width: 768px) {
+    #productDetailsModal .modal-dialog {
+        max-width: 95vw;
+        margin: 10px;
+    }
+    
+    #productDetailsModal .product-image {
+        height: 200px;
+    }
+    
+    #productDetailsModal .product-name {
+        font-size: 1.2rem;
+    }
+    
+    #productDetailsModal .product-details {
+        font-size: 0.9rem;
+    }
+
+    #huydonmodal .modal-dialog,
+    #successDeliveryModal .modal-dialog {
+        max-width: 95%;
+        margin: 10px;
     }
 }
 </style>

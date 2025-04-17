@@ -153,22 +153,6 @@
                     </nav>
                 </div>
             </div>
-            
-            <!-- Đăng ký nhận tin -->
-            <div class="newsletter-section mt-5 p-4 rounded">
-                <div class="row align-items-center">
-                    <div class="col-lg-6 mb-3 mb-lg-0">
-                        <h4 class="mb-2">Đăng ký nhận tin tức và khuyến mãi</h4>
-                        <p class="mb-0">Cập nhật những thông tin mới nhất về sự kiện, chương trình đào tạo và ưu đãi đặc biệt.</p>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="input-group">
-                            <input type="email" class="form-control" placeholder="Nhập email của bạn">
-                            <button class="btn btn-primary" type="button">Đăng ký</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </template>

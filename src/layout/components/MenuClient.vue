@@ -17,10 +17,6 @@
                                 chủ</router-link>
                         </li>
                         <li class="nav-item">
-                            <router-link class="nav-link" to="/san-pham"><i class="fas fa-dumbbell"></i> Sản
-                                phẩm</router-link>
-                        </li>
-                        <li class="nav-item">
                             <router-link class="nav-link" to="/tin-tuc"><i class="fas fa-newspaper"></i> Tin
                                 tức</router-link>
                         </li>
@@ -124,7 +120,6 @@ export default {
         return {
             isLoggedIn: false,
             userInfo: {},
-            danh_sach_danh_muc: [],
             cartItems: [],
             isLoading: false,
             cartItemCount: 0
@@ -137,7 +132,6 @@ export default {
     },
     mounted() {
         this.kiemTraDangNhap();
-        this.layDanhMuc();
         this.loadCartItems();
         // Kiểm tra định kỳ token
         setInterval(() => {
@@ -199,16 +193,6 @@ export default {
             this.cartItemCount = this.cartItems.reduce((total, item) => {
                 return total + (parseInt(item.soLuong) || 1);
             }, 0);
-        },
-        layDanhMuc() {
-            axios
-                .get("/api/user/danh-muc/home-page")
-                .then((res) => {
-                    this.danh_sach_danh_muc = res.data.data;
-                })
-                .catch(error => {
-                    console.error("Lỗi khi lấy danh sách danh mục:", error);
-                });
         },
         kiemTraDangNhap() {
             const token = localStorage.getItem('token_khach_hang');
