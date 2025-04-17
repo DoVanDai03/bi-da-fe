@@ -10,28 +10,24 @@
 					<h4 class="logo-text fw-bold mb-0">Quản Trị Hệ Thống</h4>
 				</div>
 			</div>
-			
+
 			<!-- Mobile Toggle Menu -->
 			<div class="mobile-toggle-menu d-lg-none"><i class='bx bx-menu fs-4'></i></div>
-			
+
 			<!-- Search Bar -->
 			<div class="search-bar flex-grow-1 px-4">
 				<div class="position-relative search-bar-box">
-					<input type="text" class="form-control search-control rounded-pill" placeholder="Tìm kiếm...">
-					<span class="position-absolute top-50 search-show translate-middle-y end-0 me-3">
-						<i class='bx bx-search fs-5'></i>
-					</span>
 					<span class="position-absolute top-50 search-close translate-middle-y end-0 me-3 d-none">
 						<i class='bx bx-x fs-5'></i>
 					</span>
 				</div>
 			</div>
-			
+
 			<!-- User Profile Menu -->
 			<div class="user-box dropdown ms-3">
-				<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret rounded-pill bg-light p-2 px-3" 
+				<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret rounded-pill bg-light p-2 px-3"
 					href="javascript:;" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-					<img :src="adminInfo.hinhAnh || 'https://ui-avatars.com/api/?name='+ encodeURIComponent(adminInfo.hoTen || 'Admin') +'&background=4e73df&color=fff'" 
+					<img :src="adminInfo.hinhAnh || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(adminInfo.hoTen || 'Admin') + '&background=4e73df&color=fff'"
 						class="user-img rounded-circle me-2" width="40" height="40" alt="user avatar">
 					<div class="user-info">
 						<p class="user-name fw-bold mb-0">{{ adminInfo.hoTen || 'Admin' }}</p>
@@ -42,7 +38,8 @@
 					<li>
 						<router-link to="/admin/profile" class="dropdown-item">
 							<div class="d-flex align-items-center">
-								<div class="icon-box bg-light-primary rounded-circle me-2 text-center" style="width: 36px; height: 36px; line-height: 36px;">
+								<div class="icon-box bg-light-primary rounded-circle me-2 text-center"
+									style="width: 36px; height: 36px; line-height: 36px;">
 									<i class="bx bx-user text-primary"></i>
 								</div>
 								<div>Thông tin cá nhân</div>
@@ -50,20 +47,10 @@
 						</router-link>
 					</li>
 					<li>
-						<router-link to="/admin/settings" class="dropdown-item">
-							<div class="d-flex align-items-center">
-								<div class="icon-box bg-light-success rounded-circle me-2 text-center" style="width: 36px; height: 36px; line-height: 36px;">
-									<i class="bx bx-cog text-success"></i>
-								</div>
-								<div>Cài đặt</div>
-							</div>
-						</router-link>
-					</li>
-					<li><hr class="dropdown-divider"></li>
-					<li>
 						<a class="dropdown-item" @click="handleLogout" href="javascript:;">
 							<div class="d-flex align-items-center">
-								<div class="icon-box bg-light-danger rounded-circle me-2 text-center" style="width: 36px; height: 36px; line-height: 36px;">
+								<div class="icon-box bg-light-danger rounded-circle me-2 text-center"
+									style="width: 36px; height: 36px; line-height: 36px;">
 									<i class="bx bx-log-out text-danger"></i>
 								</div>
 								<div>Đăng xuất</div>
@@ -98,7 +85,7 @@ export default {
 		getAdminInfo() {
 			// Kiểm tra thông tin admin trong localStorage
 			const adminData = localStorage.getItem('admin_info');
-			
+
 			if (adminData) {
 				try {
 					this.adminInfo = JSON.parse(adminData);
@@ -113,36 +100,36 @@ export default {
 		getAdminInfoFromAPI() {
 			// Lấy thông tin admin từ API
 			const token = localStorage.getItem('token_admin');
-			
+
 			if (!token) {
 				console.error('Không tìm thấy token admin');
 				return;
 			}
-			
-			axios.get('/api/admin/profile', {
+
+			axios.get('/api/admin', {
 				headers: {
 					'Authorization': `Bearer ${token}`
 				},
 			})
-			.then(response => {
-				if (response.data.status) {
-					this.adminInfo = response.data.data;
-					
-					// Lưu thông tin vào localStorage để sử dụng sau này
-					localStorage.setItem('admin_info', JSON.stringify(this.adminInfo));
-				}
-			})
-			.catch(error => {
-				console.error('Lỗi khi lấy thông tin admin từ API', error);
-			});
+				.then(response => {
+					if (response.data.status) {
+						this.adminInfo = response.data.data;
+
+						// Lưu thông tin vào localStorage để sử dụng sau này
+						localStorage.setItem('admin_info', JSON.stringify(this.adminInfo));
+					}
+				})
+				.catch(error => {
+					console.error('Lỗi khi lấy thông tin admin từ API', error);
+				});
 		},
 		handleLogout() {
 			// Xóa token và thông tin admin từ localStorage
 			localStorage.removeItem('token_admin');
 			localStorage.removeItem('admin_info');
-			
+
 			// Chuyển hướng về trang đăng nhập
-			this.$router.push('/admin/dang-nhap');
+			this.$router.push('/dang-nhap/admin');
 		}
 	}
 }

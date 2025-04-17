@@ -88,6 +88,12 @@ const routes = [
         meta: { layout: 'client' }
     },
     {
+        path: '/thong-tin-thanh-toan',
+        name: 'thong-tin-thanh-toan',
+        component: () => import('../components/Client/ThongTinThanhToan/index.vue'),
+        meta: { layout: 'client' }
+    },
+    {
         path : '/dang-ky',
         component: ()=>import('../components/Client/DangKy/DangKy.vue'),
         meta: { layout: 'Login' }
@@ -98,7 +104,7 @@ const routes = [
         meta: { layout: 'Login' }
     },
     {
-        path : '/admin/dang-nhap',
+        path : '/dang-nhap/admin',
         component: ()=>import('../components/Admin/DangNhap/index.vue'),
         meta: { layout: 'Login' }
     },
@@ -107,6 +113,7 @@ const routes = [
         component: ()=>import('../components/Client/QuenMatKhau/index.vue'),
         meta: { layout: 'Login' }
     },
+
 ]
 
 const router = createRouter({

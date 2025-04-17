@@ -521,9 +521,7 @@ export default {
                     if (res.data.status) {
                         toaster.success('Thêm vào giỏ hàng thành công!');
                         this.$root.$emit('update-cart');
-                        this.$router.push('/chi-tiet-san-pham/' + this.san_pham.id).then(() => {
-                            window.location.reload();
-                        });
+    
                     } else {
                         toaster.error(res.data.message || 'Có lỗi xảy ra!');
                     }

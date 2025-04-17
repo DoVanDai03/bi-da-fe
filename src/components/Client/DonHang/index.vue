@@ -175,7 +175,7 @@ export default {
                 this.sdtNguoiNhan.trim() !== "" &&
                 this.deliveryAddress.trim() !== "" &&
                 this.paymentMethod;
-                
+
         }
     },
     mounted() {
@@ -303,31 +303,34 @@ export default {
                     'Authorization': `Bearer ${token}`
                 }
             })
-            .then(res => {
-                if (res.data.status) {
-                    if (this.paymentMethod === 'online') {
-                        // Nếu thanh toán online, chuyển hướng đến VNPay
-                        this.initiateVNPayPayment(res.data.data.id, this.calculateTotal());
+                .then(res => {
+                    if (res.data.status) {
+                        if (this.paymentMethod === 'online') {
+                            // Nếu thanh toán online, chuyển hướng đến VNPay
+                            this.initiateVNPayPayment(res.data.data.id, this.calculateTotal());
+                        } else {
+                            // Nếu thanh toán khi nhận hàng
+                            localStorage.removeItem('cart_items');
+                            this.$router.push('/lich-su-don-hang');
+                        }
                     } else {
-                        // Nếu thanh toán khi nhận hàng
-                        toaster.success('Đặt hàng thành công!');
-                        localStorage.removeItem('cart_items');
-                        this.$router.push('/lich-su-don-hang');
+                        toaster.error(res.data.message || 'Có lỗi xảy ra khi đặt hàng!');
                     }
-                } else {
-                    toaster.error(res.data.message || 'Có lỗi xảy ra khi đặt hàng!');
-                }
-            })
-            .catch(error => {
-                console.error(error);
-                const errorMessage = error.response?.data?.message || 'Có lỗi xảy ra khi đặt hàng!';
-                toaster.error(errorMessage);
-            });
+                })
+                .catch(error => {
+                    console.error(error);
+                    const errorMessage = error.response?.data?.message || 'Có lỗi xảy ra khi đặt hàng!';
+                    toaster.error(errorMessage);
+                });
         },
         async initiateVNPayPayment(orderId, amount) {
             try {
                 const token = localStorage.getItem('token_khach_hang');
-                const response = await axios.post(`/api/user/chi-tiet-don-hang/create-vnpay-payment/${orderId}`, null, {
+                const response = await axios.post(`/api/user/chi-tiet-don-hang/create-vnpay-payment/${orderId}`, {
+                    amount: amount,
+                    orderInfo: `Thanh toan don hang: ${orderId}`,
+                    returnUrl: `${window.location.origin}/thong-tin-thanh-toan`
+                }, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -349,8 +352,13 @@ export default {
             // Lấy các tham số từ URL
             const urlParams = new URLSearchParams(window.location.search);
             const queryParams = {};
-            for (const [key, value] of urlParams.entries()) {
-                queryParams[key] = value;
+            
+            // Sắp xếp các tham số theo thứ tự alphabet để đảm bảo chữ ký đúng
+            const sortedParams = Array.from(urlParams.entries()).sort();
+            for (const [key, value] of sortedParams) {
+                if (key !== 'vnp_SecureHash' && key !== 'vnp_SecureHashType') {
+                    queryParams[key] = value;
+                }
             }
 
             // Gọi API xử lý kết quả thanh toán
@@ -365,9 +373,13 @@ export default {
                 if (res.data.status) {
                     toaster.success(res.data.message || 'Thanh toán thành công!');
                     localStorage.removeItem('cart_items');
-                    this.$router.push('/lich-su-don-hang');
+                    this.$router.push('/thong-tin-thanh-toan');
                 } else {
                     toaster.error(res.data.message || 'Thanh toán thất bại!');
+                    // Log lỗi chi tiết để debug
+                    if (res.data.data) {
+                        console.error('Payment error details:', res.data.data);
+                    }
                     this.$router.push('/lich-su-don-hang');
                 }
             })
@@ -376,30 +388,6 @@ export default {
                 toaster.error(error.response?.data?.message || 'Có lỗi xảy ra khi xử lý kết quả thanh toán');
                 this.$router.push('/lich-su-don-hang');
             });
-        },
-        async processPayment(order) {
-            try {
-                const paymentDto = {
-                    orderId: order.id,
-                    calculateTotal: order.tongTien,
-                    paymentMethod: order.phuongThucThanhToan,
-                    idKhachHang: userInfo.id,
-                    trangThai: 'success',
-                };
-
-                const response = await axios.post('/api/user/payment', paymentDto);
-                
-                if (response.data.status) {
-                    toaster.success('Thanh toán thành công!');
-                    // Cập nhật lại trạng thái đơn hàng
-                    this.loadOrders();
-                } else {
-                    toaster.error(response.data.message || 'Có lỗi xảy ra khi thanh toán');
-                }
-            } catch (error) {
-                console.error('Payment error:', error);
-                toaster.error('Có lỗi xảy ra khi xử lý thanh toán');
-            }
         },
 
         async handleOrder(order) {
