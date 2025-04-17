@@ -27,7 +27,7 @@
                 </div>
 
                 <div v-else class="order-list">
-                    <div v-for="order in orders" :key="order.id" class="order-card">
+                    <div v-for="order in orders" :key="order.id" class="order-card" @click="showProductDetails(order.id)">
                         <div class="order-header">
                             <div class="order-id">
                                 <span class="label">Mã đơn hàng:</span>
@@ -193,6 +193,85 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Product Details -->
+    <div class="modal fade" id="productDetailsModal" tabindex="-1" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productDetailsModalLabel">Chi tiết sản phẩm trong đơn hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div v-if="isLoadingProducts" class="text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Đang tải...</span>
+                        </div>
+                    </div>
+                    <div v-else-if="productDetails.length === 0" class="text-center py-3">
+                        <p>Không có sản phẩm nào trong đơn hàng này</p>
+                    </div>
+                    <div v-else class="product-list">
+                        <div v-for="product in productDetails" :key="product.id" class="product-item mb-4">
+                            <div class="row g-4">
+                                <div class="col-md-3">
+                                    <img :src="product.hinhAnh" :alt="product.tenSanPham" class="img-fluid rounded product-image">
+                                </div>
+                                <div class="col-md-9">
+                                    <h5 class="product-name mb-3">{{ product.tenSanPham }}</h5>
+                                    <div class="product-details row">
+                                        <div class="col-md-6">
+                                            <div class="detail-row">
+                                                <span class="label">Thương hiệu:</span>
+                                                <span class="value">{{ product.tenThuongHieu }}</span>
+                                            </div>
+                                            <div class="detail-row">
+                                                <span class="label">Danh mục:</span>
+                                                <span class="value">{{ product.tenDanhMuc }}</span>
+                                            </div>
+                                            <div class="detail-row">
+                                                <span class="label">Kích cỡ:</span>
+                                                <span class="value">{{ product.kichCo }}</span>
+                                            </div>
+                                            <div class="detail-row">
+                                                <span class="label">Màu sắc:</span>
+                                                <span class="value">{{ product.mauSac }}</span>
+                                            </div>
+                                            <div class="detail-row">
+                                                <span class="label">Chất liệu:</span>
+                                                <span class="value">{{ product.chatLieu }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="detail-row">
+                                                <span class="label">Số lượng:</span>
+                                                <span class="value">{{ product.soLuong }}</span>
+                                            </div>
+                                            <div class="detail-row">
+                                                <span class="label">Giá gốc:</span>
+                                                <span class="value">{{ formatPrice(product.giaSanPham) }}đ</span>
+                                            </div>
+                                            <div v-if="product.phanTramGiamGia > 0" class="detail-row">
+                                                <span class="label">Giảm giá:</span>
+                                                <span class="value text-danger">-{{ product.phanTramGiamGia }}%</span>
+                                            </div>
+                                            <div class="detail-row total-price">
+                                                <span class="label">Thành tiền:</span>
+                                                <span class="value text-primary fw-bold">{{ formatPrice(product.thanhTien) }}đ</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -207,7 +286,9 @@ export default {
             orders: [],
             isLoading: false,
             isLoggedIn: false,
-            delete_id:""
+            delete_id: "",
+            productDetails: [],
+            isLoadingProducts: false,
         }
     },
     mounted() {
@@ -348,7 +429,39 @@ export default {
                     console.error('Error updating order status:', error);
                     toaster.error('Có lỗi xảy ra khi cập nhật trạng thái đơn hàng!');
                 });
-        }
+        },
+        showProductDetails(orderId) {
+            this.productDetails = [];
+            this.isLoadingProducts = true;
+            const token = localStorage.getItem('token_khach_hang');
+            
+            // Show modal using vanilla JavaScript
+            const modalElement = document.getElementById('productDetailsModal');
+            if (modalElement) {
+                const bsModal = new window.bootstrap.Modal(modalElement);
+                bsModal.show();
+            }
+
+            axios.get(`/api/user/chi-tiet-don-hang/san-pham/${orderId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then((res) => {
+                if (res.data && res.data.status && res.data.data && res.data.data.chiTietSanPham) {
+                    this.productDetails = res.data.data.chiTietSanPham;
+                } else {
+                    toaster.error(res.data.message || "Không thể tải thông tin sản phẩm");
+                }
+            })
+            .catch((error) => {
+                console.error("Error fetching product details:", error);
+                toaster.error("Có lỗi xảy ra khi tải thông tin sản phẩm");
+            })
+            .finally(() => {
+                this.isLoadingProducts = false;
+            });
+        },
     }
 }
 </script>
@@ -431,6 +544,7 @@ export default {
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
     overflow: hidden;
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .order-card:hover {
@@ -584,5 +698,120 @@ export default {
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
     border-radius: 0.2rem;
+}
+
+.product-list {
+    max-height: 80vh;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.product-item {
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: #fff;
+    margin-bottom: 20px;
+}
+
+.product-image {
+    width: 100%;
+    height: 250px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #f8f9fa;
+    padding: 10px;
+}
+
+.product-name {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.product-details {
+    font-size: 1rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.detail-row .label {
+    color: #666;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.detail-row .value {
+    color: #333;
+    font-weight: 500;
+}
+
+.total-price {
+    margin-top: 20px;
+    background: #e8f4ff !important;
+}
+
+.total-price .value {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.modal-dialog {
+    max-width: 90vw;
+}
+
+.modal-content {
+    border-radius: 15px;
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+}
+
+.modal-header .modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .modal-dialog {
+        max-width: 95vw;
+        margin: 10px;
+    }
+    
+    .product-image {
+        height: 200px;
+    }
+    
+    .product-name {
+        font-size: 1.2rem;
+    }
+    
+    .product-details {
+        font-size: 0.9rem;
+    }
 }
 </style>

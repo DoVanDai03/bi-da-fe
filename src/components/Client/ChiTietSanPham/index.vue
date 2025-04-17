@@ -50,7 +50,7 @@
                 </div>
 
                 <div class="price-section">
-                    <div class="current-price">{{ formatCurrency(san_pham.giaSanPham * (1 - san_pham.giamGia.phamTramGiamGia / 100)) }}</div>
+                    <div class="current-price">{{ formatCurrency(san_pham.giamGia ? san_pham.giaSanPham * (1 - san_pham.giamGia.phamTramGiamGia / 100) : san_pham.giaSanPham) }}</div>
                     <div class="price-details" v-if="san_pham.giamGia">
                         <span class="original-price">{{ formatCurrency(san_pham.giaSanPham) }}</span>
                         <span class="discount-badge">-{{ san_pham.giamGia.phamTramGiamGia }}%</span>
@@ -894,7 +894,6 @@ export default {
     color: #999;
 }
 
-
 .product-options {
     margin-bottom: 20px;
 }
@@ -1261,9 +1260,6 @@ export default {
     font-size: 18px;
     font-weight: 700;
 }
-
-
-
 
 /* View details overlay */
 .view-details {
