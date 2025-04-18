@@ -111,6 +111,15 @@
 						</a>
 					</router-link>
 				</li>
+				<li class="nav-item">
+					<router-link to="/admin/quyen-truy-cap">
+						<a class="nav-link" href="/admin/quyen-truy-cap">
+							<div class="parent-icon"><i class="fa-solid fa-user"></i>
+							</div>
+							<div class="menu-title">Quyền truy cập</div>
+						</a>
+					</router-link>
+				</li>
 			</ul>
 		</nav>
 	</div>

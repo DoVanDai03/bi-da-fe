@@ -50,6 +50,10 @@ const routes = [
         component: ()=>import('../components/Admin/ChucVu/index.vue')
     },
     {
+        path : '/admin/quyen-truy-cap',
+        component: ()=>import('../components/Admin/QuyenTruyCap/index.vue')
+    },
+    {
         path : '/home-page',
         component: ()=>import('../components/Client/HomePage/Homepage.vue'),
         meta: { layout: 'client' },

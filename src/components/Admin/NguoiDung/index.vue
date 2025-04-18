@@ -57,11 +57,11 @@
                                             <div class="col-lg-6">
                                                 <div class="mb-2 mt-2">
                                                     <label>Chức vụ</label>
-                                                    <select v-model="nguoi_dung_create.chucVu" class="form-control mt-2" required>
+                                                    <select v-model="nguoi_dung_create.chucVuId" class="form-control mt-2" required>
                                                         <option value="">Chọn chức vụ</option>
                                                         <option v-for="chucVu in danh_sach_chuc_vu" 
                                                                 :key="chucVu.id" 
-                                                                :value="chucVu.tenChucVu">
+                                                                :value="chucVu.id">
                                                             {{ chucVu.tenChucVu }}
                                                         </option>
                                                     </select>
@@ -123,7 +123,7 @@
                                             <td>{{ v.email }}</td>
                                             <td>{{ v.hoVaTen }}</td>
                                             <td>{{ v.sdt }}</td>
-                                            <td>{{ v.chucVu }}</td>
+                                            <td>{{ getChucVuName(v.chucVuId) }}</td>
                                             <td>{{ v.tinhTrang == 1 ? 'Hoạt động' : 'Không hoạt động' }}</td>
                                             <td>{{ formatDate(v.ngayTao) }}</td>
                                             <td>{{ formatDate(v.ngayCapNhat) }}</td>
@@ -137,101 +137,99 @@
                                             </td>
                                         </tr>
                                     </template>
-                                </tbody>
-                            </table>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- update Modal -->
+<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Cập nhật người dùng</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-2 mt-2">
+                            <label>Email</label>
+                            <input v-model="nguoi_dung_update.email" type="email" class="form-control mt-2" required />
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-2 mt-2">
+                            <label>Mật khẩu</label>
+                            <input v-model="nguoi_dung_update.password" type="password" class="form-control mt-2" />
+                            <small class="text-muted">Để trống nếu không muốn thay đổi mật khẩu</small>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-2 mt-2">
+                            <label>Họ và tên</label>
+                            <input v-model="nguoi_dung_update.hoVaTen" type="text" class="form-control mt-2" required />
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-2 mt-2">
+                            <label>Số điện thoại</label>
+                            <input v-model="nguoi_dung_update.sdt" type="tel" class="form-control mt-2" required />
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-2 mt-2">
+                            <label>Chức vụ</label>
+                            <select v-model="nguoi_dung_update.chucVuId" class="form-control mt-2" required>
+                                <option value="">Chọn chức vụ</option>
+                                <option v-for="chucVu in danh_sach_chuc_vu" :key="chucVu.id" :value="chucVu.id">
+                                    {{ chucVu.tenChucVu }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-2 mt-2">
+                            <label>Tình trạng</label>
+                            <select v-model="nguoi_dung_update.tinhTrang" class="form-control mt-2" required>
+                                <option value="1">Hoạt động</option>
+                                <option value="0">Không hoạt động</option>
+                            </select>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- update Modal -->
-        <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Cập nhật người dùng</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="mb-2 mt-2">
-                                    <label>Email</label>
-                                    <input v-model="nguoi_dung_update.email" type="email" class="form-control mt-2" required />
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="mb-2 mt-2">
-                                    <label>Mật khẩu</label>
-                                    <input v-model="nguoi_dung_update.password" type="password" class="form-control mt-2" />
-                                    <small class="text-muted">Để trống nếu không muốn thay đổi mật khẩu</small>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="mb-2 mt-2">
-                                    <label>Họ và tên</label>
-                                    <input v-model="nguoi_dung_update.hoVaTen" type="text" class="form-control mt-2" required />
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="mb-2 mt-2">
-                                    <label>Số điện thoại</label>
-                                    <input v-model="nguoi_dung_update.sdt" type="tel" class="form-control mt-2" required />
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="mb-2 mt-2">
-                                    <label>Chức vụ</label>
-                                    <select v-model="nguoi_dung_update.chucVu" class="form-control mt-2" required>
-                                        <option value="">Chọn chức vụ</option>
-                                        <option v-for="chucVu in danh_sach_chuc_vu" 
-                                                :key="chucVu.id" 
-                                                :value="chucVu.tenChucVu">
-                                            {{ chucVu.tenChucVu }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="mb-2 mt-2">
-                                    <label>Tình trạng</label>
-                                    <select v-model="nguoi_dung_update.tinhTrang" class="form-control mt-2" required>
-                                        <option value="1">Hoạt động</option>
-                                        <option value="0">Không hoạt động</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button v-on:click="capNhatNguoiDung()" data-bs-dismiss="modal" class="btn btn-primary">Save</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- delete Modal -->
-        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Xoá người dùng</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="alert alert-danger" role="alert">
-                            Bạn có thực sự muốn xoá!
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button v-on:click="xoaNguoiDung()" type="button" data-bs-dismiss="modal"
-                            class="btn btn-primary">Save</button>
-                    </div>
-                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button v-on:click="capNhatNguoiDung()" data-bs-dismiss="modal" class="btn btn-primary">Save</button>
             </div>
         </div>
     </div>
+</div>
+<!-- delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Xoá người dùng</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    Bạn có thực sự muốn xoá!
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button v-on:click="xoaNguoiDung()" type="button" data-bs-dismiss="modal"
+                    class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
 </template>
 <script>
 import axios from "axios";
@@ -260,7 +258,11 @@ export default {
         },
         async layNguoiDung() {
             try {
-                const response = await axios.get(`/api/admin/nguoi-dung`);
+                const response = await axios.get(`/api/admin`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token_admin')}`
+                    },
+                });
                 if (response.data.status) {
                     this.danh_sach_nguoi_dung = response.data.data;
                 } else {
@@ -289,7 +291,11 @@ export default {
         },
         async themNguoiDung() {
             try {
-                const response = await axios.post(`/api/admin/nguoi-dung/them-moi`, this.nguoi_dung_create);
+                const response = await axios.post(`/api/admin/them-moi`, this.nguoi_dung_create, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token_admin')}`
+                    },
+                });
                 if (response.data.status) {
                     toaster.success(response.data.message);
                     this.layNguoiDung();
@@ -304,8 +310,13 @@ export default {
         async capNhatNguoiDung() {
             try {
                 const response = await axios.put(
-                    `/api/admin/nguoi-dung/${this.id_nguoi_dung_update}`,
-                    this.nguoi_dung_update
+                    `/api/admin/${this.id_nguoi_dung_update}`,
+                    this.nguoi_dung_update,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token_admin')}`
+                        },
+                    }
                 );
                 if (response.data.status) {
                     toaster.success(response.data.message);
@@ -322,7 +333,12 @@ export default {
         async xoaNguoiDung() {
             try {
                 const response = await axios.delete(
-                    `/api/admin/nguoi-dung/${this.id_nguoi_dung_delete}`
+                    `/api/admin/${this.id_nguoi_dung_delete}`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token_admin')}`
+                        },
+                    }
                 );
                 if (response.data.status) {
                     toaster.success(response.data.message);
@@ -335,9 +351,13 @@ export default {
                 toaster.error(error.response.data.message);
             }
         },
+        getChucVuName(chucVuId) {
+            const chucVu = this.danh_sach_chuc_vu.find(cv => cv.id === chucVuId);
+            return chucVu ? chucVu.tenChucVu : '';
+        },
     },
 };
 </script>
 <style lang="">
-    
+
 </style>

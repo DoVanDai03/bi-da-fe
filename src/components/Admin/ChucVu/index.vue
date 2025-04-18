@@ -205,32 +205,43 @@ export default {
                     },
                 })
                 .then((res) => {
-                    this.danh_sach_chuc_vu = res.data.data;
+                    if (res.data.status) {
+                        this.danh_sach_chuc_vu = res.data.data;
+                    } else {
+                        toaster.error(res.data.message || "Lấy danh sách chức vụ thất bại!");
+                    }
                 })
                 .catch(error => {
-                    console.error("Lỗi khi lấy danh sách chức vụ:", error);
-                    toaster.error("Có lỗi xảy ra khi lấy danh sách chức vụ!");
+                    const message = error.response?.data?.message || "Có lỗi xảy ra khi lấy danh sách chức vụ!";
+                    toaster.error(message);
                 });
         },
         themChucVu() {
+            const createData = {
+                tenChucVu: this.chuc_vu_create.tenChucVu,
+                tinhTrang: Number(this.chuc_vu_create.tinhTrang)
+            };
             axios
-                .post('/api/admin/chuc-vu', this.chuc_vu_create, {
+                .post('/api/admin/chuc-vu', createData, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token_admin')}`
                     },
                 })
                 .then((res) => {
-                    if (res.data.status == true) {
+                    if (res.data.status) {
                         toaster.success(res.data.message);
                         this.layChucVu();
                         this.chuc_vu_create = {
                             tenChucVu: "",
                             tinhTrang: 1
                         };
+                    } else {
+                        toaster.error(res.data.message || "Thêm chức vụ thất bại!");
                     }
                 })
                 .catch(error => {
-                    toaster.error("Có lỗi xảy ra khi thêm chức vụ!");
+                    const message = error.response?.data?.message || "Có lỗi xảy ra khi thêm chức vụ!";
+                    toaster.error(message);
                 });
         },
         xoaChucVu() {
@@ -241,7 +252,7 @@ export default {
                     },
                 })
                 .then((res) => {
-                    if (res.data.status == true) {
+                    if (res.data.status) {
                         toaster.success(res.data.message);
                         this.layChucVu();
                     } else {
@@ -249,12 +260,13 @@ export default {
                     }
                 })
                 .catch(error => {
-                    toaster.error("Có lỗi xảy ra khi xóa chức vụ!");
+                    const message = error.response?.data?.message || "Có lỗi xảy ra khi xóa chức vụ!";
+                    toaster.error(message);
                 });
         },
         capNhatChucVu() {
             const updateData = {
-                ...this.chuc_vu_update,
+                tenChucVu: this.chuc_vu_update.tenChucVu,
                 tinhTrang: Number(this.chuc_vu_update.tinhTrang)
             };
             axios
@@ -264,7 +276,7 @@ export default {
                     },
                 })
                 .then((res) => {
-                    if (res.data.status == true) {
+                    if (res.data.status) {
                         toaster.success(res.data.message);
                         this.layChucVu();
                     } else {
@@ -272,7 +284,8 @@ export default {
                     }
                 })
                 .catch(error => {
-                    toaster.error("Có lỗi xảy ra khi cập nhật chức vụ!");
+                    const message = error.response?.data?.message || "Có lỗi xảy ra khi cập nhật chức vụ!";
+                    toaster.error(message);
                 });
         }
     },
