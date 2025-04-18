@@ -120,6 +120,15 @@
 						</a>
 					</router-link>
 				</li>
+				<li class="nav-item">
+					<router-link to="/admin/phan-quyen">
+						<a class="nav-link" href="/admin/phan-quyen">
+							<div class="parent-icon"><i class="fa-solid fa-user"></i>
+							</div>
+							<div class="menu-title">Phân quyền</div>
+						</a>
+					</router-link>
+				</li>	
 			</ul>
 		</nav>
 	</div>
