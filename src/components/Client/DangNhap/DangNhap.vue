@@ -94,7 +94,7 @@ export default {
         kiemTraDangNhap() {
             const token = localStorage.getItem('token_khach_hang');
             if (token) {
-                axios.get('/api/kiem-tra-token', {
+                axios.get('/api/user/kiem-tra-token', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }

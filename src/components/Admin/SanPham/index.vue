@@ -1,14 +1,14 @@
 <template>
     <!-- them -->
-    <div class="row">
+    <div class="row" v-if="permissions.canView">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col-lg-3 col-xl-2">
-                            <button class="btn btn-primary mb-3 mb-lg-0" data-bs-toggle="modal"
+                            <button v-if="permissions.canCreate" class="btn btn-primary mb-3 mb-lg-0" data-bs-toggle="modal"
                                 data-bs-target="#taoSanPhamModal">
-                                <span class="text-nowrap"><i class="bx bxs-plus-square"></i>Thêm sản phẩm</span>
+                                <i class="bx bxs-plus-square"></i>Thêm sản phẩm
                             </button>
                         </div>
                     </div>
@@ -221,10 +221,11 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <button v-on:click="Object.assign(san_pham_update,v); id_san_pham_update = v.id"
+                                            <button v-if="permissions.canUpdate"
+                                                v-on:click="Object.assign(san_pham_update, v); id_san_pham_update = v.id"
                                                 data-bs-toggle="modal" data-bs-target="#updateModal"
                                                 class="btn btn-info">Cập nhật</button>
-                                            <button v-on:click="id_san_pham_delete = v.id"
+                                            <button v-if="permissions.canDelete" v-on:click="id_san_pham_delete = v.id"
                                                 data-bs-toggle="modal" data-bs-target="#deleteModal"
                                                 class="btn btn-danger ms-2">Xoá</button>
                                         </td>
@@ -400,9 +401,35 @@
 import { createToaster } from "@meforma/vue-toaster";
 import axios from "axios";
 const toaster = createToaster({ position: "top-right" });
+
+// Kiểm tra nhiều quyền
+const checkMultiplePermissions = async (maQuyenList) => {
+    try {
+        const queryString = maQuyenList.map(q => `maQuyen=${q}`).join('&');
+        const response = await axios.get(
+            `/api/admin/quyen/chuc-vu/kiem-tra-nhieu-quyen?${queryString}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token_admin')}`
+                }
+            }
+        );
+        return response.data.data.permissions;
+    } catch (error) {
+        console.error('Error checking permissions:', error);
+        return {};
+    }
+};
+
 export default {
     data() {
         return {
+            permissions: {
+                canView: false,
+                canCreate: false,
+                canUpdate: false,
+                canDelete: false
+            },
             danh_sach_san_pham: [],
             danh_sach_danh_muc: [],
             danh_sach_thuong_hieu: [],
@@ -434,8 +461,30 @@ export default {
             }
         }
     },
+    async created() {
+        // Check permissions when component is created
+        const permissions = await checkMultiplePermissions([
+            'PRODUCT_VIEW',
+            'PRODUCT_CREATE',
+            'PRODUCT_UPDATE',
+            'PRODUCT_DELETE'
+        ]);
+        
+        this.permissions = {
+            canView: permissions.PRODUCT_VIEW || false,
+            canCreate: permissions.PRODUCT_CREATE || false,
+            canUpdate: permissions.PRODUCT_UPDATE || false,
+            canDelete: permissions.PRODUCT_DELETE || false
+        };
+        
+        if (this.permissions.canView) {
+            // Only load data if user has view permission
+            await this.laySanPham();
+        } else {
+            toaster.error("Bạn không có quyền xem sản phẩm!");
+        }
+    },
     mounted() {
-        this.laySanPham();
         this.layDanhMuc();
         this.layThuongHieu();
         this.layGiamGia();

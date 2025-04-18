@@ -58,6 +58,10 @@ const routes = [
         component: ()=>import('../components/Admin/PhanQuyen/index.vue')
     },
     {
+        path : '/admin/thong-tin-tai-khoan',
+        component: ()=>import('../components/Admin/ThongTinTaiKhoan/index.vue')
+    },
+    {
         path : '/home-page',
         component: ()=>import('../components/Client/HomePage/Homepage.vue'),
         meta: { layout: 'client' },

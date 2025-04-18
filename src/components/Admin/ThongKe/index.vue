@@ -123,6 +123,25 @@ ChartJS.register(
 
 const toaster = createToaster({ position: "top-right" });
 
+// Kiểm tra nhiều quyền
+const checkMultiplePermissions = async (maQuyenList) => {
+    try {
+        const queryString = maQuyenList.map(q => `maQuyen=${q}`).join('&');
+        const response = await axios.get(
+            `/api/admin/quyen/chuc-vu/kiem-tra-nhieu-quyen?${queryString}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token_admin')}`
+                }
+            }
+        );
+        return response.data.data.permissions;
+    } catch (error) {
+        console.error('Error checking permissions:', error);
+        return {};
+    }
+};
+
 export default {
     name: 'ThongKe',
     components: {
@@ -212,7 +231,31 @@ export default {
                         }
                     }
                 }
+            },
+            permissions: {
+                canView: false,
+                canCreate: false,
+                canUpdate: false,
+                canDelete: false
             }
+        }
+    },
+    async created() {
+        // Check permissions when component is created
+        const permissions = await checkMultiplePermissions([
+            'xem_thong_ke'
+        ]);
+        
+        this.permissions = {
+            canView: permissions.xem_thong_ke || false,
+            canCreate: false, // No create permission needed for statistics
+            canUpdate: false, // No update permission needed for statistics
+            canDelete: false  // No delete permission needed for statistics
+        };
+        
+        if (this.permissions.canView) {
+            // Only load data if user has view permission
+            await this.loadData();
         }
     },
     mounted() {

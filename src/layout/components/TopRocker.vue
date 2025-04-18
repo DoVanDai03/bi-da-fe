@@ -30,13 +30,13 @@
 					<img :src="adminInfo.hinhAnh || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(adminInfo.hoTen || 'Admin') + '&background=4e73df&color=fff'"
 						class="user-img rounded-circle me-2" width="40" height="40" alt="user avatar">
 					<div class="user-info">
-						<p class="user-name fw-bold mb-0">{{ adminInfo.hoTen || 'Admin' }}</p>
+						<p class="user-name fw-bold mb-0">{{ adminInfo.hoVaTen || 'Admin' }}</p>
 						<p class="designation text-secondary mb-0 small">{{ adminInfo.chucVu || 'Quản trị viên' }}</p>
 					</div>
 				</a>
 				<ul class="dropdown-menu dropdown-menu-end shadow-lg mt-2">
 					<li>
-						<router-link to="/admin/profile" class="dropdown-item">
+						<router-link to="/admin/thong-tin-tai-khoan" class="dropdown-item">
 							<div class="d-flex align-items-center">
 								<div class="icon-box bg-light-primary rounded-circle me-2 text-center"
 									style="width: 36px; height: 36px; line-height: 36px;">
@@ -71,7 +71,7 @@ export default {
 	data() {
 		return {
 			adminInfo: {
-				hoTen: '',
+				hoVaTen: '',
 				chucVu: '',
 				hinhAnh: '',
 				email: ''
@@ -79,24 +79,9 @@ export default {
 		}
 	},
 	mounted() {
-		this.getAdminInfo();
+		this.getAdminInfoFromAPI();
 	},
 	methods: {
-		getAdminInfo() {
-			// Kiểm tra thông tin admin trong localStorage
-			const adminData = localStorage.getItem('admin_info');
-
-			if (adminData) {
-				try {
-					this.adminInfo = JSON.parse(adminData);
-				} catch (error) {
-					console.error('Lỗi khi parse dữ liệu admin từ localStorage', error);
-					this.getAdminInfoFromAPI();
-				}
-			} else {
-				this.getAdminInfoFromAPI();
-			}
-		},
 		getAdminInfoFromAPI() {
 			// Lấy thông tin admin từ API
 			const token = localStorage.getItem('token_admin');
@@ -106,7 +91,7 @@ export default {
 				return;
 			}
 
-			axios.get('/api/admin', {
+			axios.get('/api/admin/kiem-tra-token', {
 				headers: {
 					'Authorization': `Bearer ${token}`
 				},

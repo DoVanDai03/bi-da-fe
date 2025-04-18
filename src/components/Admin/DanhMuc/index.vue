@@ -1,12 +1,12 @@
 <template>
     <!-- them -->
-    <div class="row">
+    <div class="row" v-if="permissions.canView">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col-lg-3 col-xl-2">
-                            <button class="btn btn-primary mb-3 mb-lg-0" data-bs-toggle="modal"
+                            <button v-if="permissions.canCreate" class="btn btn-primary mb-3 mb-lg-0" data-bs-toggle="modal"
                                 data-bs-target="#taoPhongModal">
                                 <i class="bx bxs-plus-square"></i>Thêm danh mục
                             </button>
@@ -82,10 +82,11 @@
                                         <td>{{ v.name }}</td>
                                         <td>{{ v.description }}</td>
                                         <td class="text-center">
-                                            <button v-on:click="Object.assign(danh_muc_update,v); id_danh_muc_update = v.id"
+                                            <button v-if="permissions.canUpdate"
+                                                v-on:click="Object.assign(danh_muc_update, v); id_danh_muc_update = v.id"
                                                 data-bs-toggle="modal" data-bs-target="#updateModal"
                                                 class="btn btn-info">Cập nhật</button>
-                                            <button v-on:click="id_danh_muc_delete = v.id"
+                                            <button v-if="permissions.canDelete" v-on:click="id_danh_muc_delete = v.id"
                                                 data-bs-toggle="modal" data-bs-target="#deleteModal"
                                                 class="btn btn-danger ms-2">Xoá</button>
                                         </td>
@@ -155,9 +156,35 @@
 import { createToaster } from "@meforma/vue-toaster";
 import axios from "axios";
 const toaster = createToaster({ position: "top-right" });
+
+// Kiểm tra nhiều quyền
+const checkMultiplePermissions = async (maQuyenList) => {
+    try {
+        const queryString = maQuyenList.map(q => `maQuyen=${q}`).join('&');
+        const response = await axios.get(
+            `/api/admin/quyen/chuc-vu/kiem-tra-nhieu-quyen?${queryString}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token_admin')}`
+                }
+            }
+        );
+        return response.data.data.permissions;
+    } catch (error) {
+        console.error('Error checking permissions:', error);
+        return {};
+    }
+};
+
 export default {
     data() {
         return {
+            permissions: {
+                canView: false,
+                canCreate: false,
+                canUpdate: false,
+                canDelete: false
+            },
             danh_sach_danh_muc: [],
             danh_muc_create: {
                 name: "",
@@ -168,8 +195,28 @@ export default {
             id_danh_muc_delete: "",
         };
     },
-    mounted() {
-        this.layDanhMuc();
+    async created() {
+        // Check permissions when component is created
+        const permissions = await checkMultiplePermissions([
+            'CATEGORY_VIEW',
+            'CATEGORY_CREATE', 
+            'CATEGORY_UPDATE',
+            'CATEGORY_DELETE'
+        ]);
+        
+        this.permissions = {
+            canView: permissions.CATEGORY_VIEW || false,
+            canCreate: permissions.CATEGORY_CREATE || false,
+            canUpdate: permissions.CATEGORY_UPDATE || false,
+            canDelete: permissions.CATEGORY_DELETE || false
+        };
+        
+        if (this.permissions.canView) {
+            // Only load data if user has view permission
+            await this.layDanhMuc();
+        } else {
+            toaster.error("Bạn không có quyền xem danh mục!");
+        }
     },
     methods: {
         formatDate(dateString) {

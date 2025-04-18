@@ -1,12 +1,20 @@
 <template>
     <div class="container-fluid">
-        <div class="row">
+        <div class="row" v-if="permissions.canView">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Quản lý đơn hàng</h3>
                     </div>
                     <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-lg-3 col-xl-2">
+                                <button v-if="permissions.canCreate" class="btn btn-primary mb-3 mb-lg-0" data-bs-toggle="modal"
+                                    data-bs-target="#taoDonHangModal">
+                                    <i class="bx bxs-plus-square"></i>Thêm đơn hàng
+                                </button>
+                            </div>
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover">
                                 <thead>
@@ -43,7 +51,7 @@
                                                 <option value="returned">Đã hoàn trả</option>
                                                 <option value="completed">Đã hoàn thành</option>
                                             </select>
-                                        </td>                                        
+                                        </td>                                      
                                     </tr>
                                 </tbody>
                             </table>
@@ -59,6 +67,25 @@
 import axios from 'axios';
 import { createToaster } from "@meforma/vue-toaster";
 const toaster = createToaster({ position: "top-right" });
+
+// Kiểm tra nhiều quyền
+const checkMultiplePermissions = async (maQuyenList) => {
+    try {
+        const queryString = maQuyenList.map(q => `maQuyen=${q}`).join('&');
+        const response = await axios.get(
+            `/api/admin/quyen/chuc-vu/kiem-tra-nhieu-quyen?${queryString}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token_admin')}`
+                }
+            }
+        );
+        return response.data.data.permissions;
+    } catch (error) {
+        console.error('Error checking permissions:', error);
+        return {};
+    }
+};
 
 export default {
     name: 'DonHang',
@@ -76,11 +103,35 @@ export default {
                 sdtNguoiNhan: '',
                 trangThai: 'pending'
             },
-            isEdit: false
+            isEdit: false,
+            permissions: {
+                canView: false,
+                canCreate: false,
+                canUpdate: false,
+                canDelete: false
+            },
+            id_don_hang_update: null,
+            id_don_hang_delete: null
         }
     },
-    mounted() {
-        this.loadDonHang();
+    async created() {
+        // Check permissions when component is created
+        const permissions = await checkMultiplePermissions([
+            'ORDER_VIEW',
+            'ORDER_UPDATE_STATUS'
+        ]);
+        
+        this.permissions = {
+            canView: permissions.ORDER_VIEW || false,
+            canUpdate: permissions.ORDER_UPDATE_STATUS || false
+        };
+        
+        if (this.permissions.canView) {
+            // Only load data if user has view permission
+            await this.loadDonHang();
+        } else {
+            toaster.error("Bạn không có quyền xem đơn hàng!");
+        }
     },
     methods: {
         loadDonHang() {

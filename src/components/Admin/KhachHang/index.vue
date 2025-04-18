@@ -1,14 +1,14 @@
 <template>
     <!-- them -->
-    <div class="row">
+    <div class="row" v-if="permissions.canView">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col-lg-3 col-xl-2">
-                            <button class="btn btn-primary mb-3 mb-lg-0" data-bs-toggle="modal"
+                            <button v-if="permissions.canCreate" class="btn btn-primary mb-3 mb-lg-0" data-bs-toggle="modal"
                                 data-bs-target="#taoKhachHangModal">
-                                <span class="text-nowrap"><i class="bx bxs-plus-square"></i>Thêm khách hàng</span>
+                                <i class="bx bxs-plus-square"></i>Thêm khách hàng
                             </button>
                         </div>
                     </div>
@@ -126,10 +126,11 @@
                                         <td>{{ formatDate(v.ngaySinh) }}</td>
                                         <td>{{ v.gioiTinh == 1 ? 'Nam' : 'Nữ' }}</td>
                                         <td class="text-center">
-                                            <button v-on:click="Object.assign(khach_hang_update,v); id_khach_hang_update = v.id"
+                                            <button v-if="permissions.canUpdate"
+                                                v-on:click="Object.assign(khach_hang_update, v); id_khach_hang_update = v.id"
                                                 data-bs-toggle="modal" data-bs-target="#updateModal"
                                                 class="btn btn-info">Cập nhật</button>
-                                            <button v-on:click="id_khach_hang_delete = v.id"
+                                            <button v-if="permissions.canDelete" v-on:click="id_khach_hang_delete = v.id"
                                                 data-bs-toggle="modal" data-bs-target="#deleteModal"
                                                 class="btn btn-danger ms-2">Xoá</button>
                                         </td>
@@ -234,9 +235,35 @@
 import axios from "axios";
 import { createToaster } from "@meforma/vue-toaster";
 const toaster = createToaster({ position: "top-right" });
+
+// Kiểm tra nhiều quyền
+const checkMultiplePermissions = async (maQuyenList) => {
+    try {
+        const queryString = maQuyenList.map(q => `maQuyen=${q}`).join('&');
+        const response = await axios.get(
+            `/api/admin/quyen/chuc-vu/kiem-tra-nhieu-quyen?${queryString}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token_admin')}`
+                }
+            }
+        );
+        return response.data.data.permissions;
+    } catch (error) {
+        console.error('Error checking permissions:', error);
+        return {};
+    }
+};
+
 export default {
     data() {
         return {
+            permissions: {
+                canView: false,
+                canCreate: false,
+                canUpdate: false,
+                canDelete: false
+            },
             danh_sach_khach_hang: [],
             khach_hang_create: {},
             khach_hang_update: {},
@@ -244,8 +271,28 @@ export default {
             id_khach_hang_delete: "",
         };
     },
-    mounted() {
-        this.layKhachHang();
+    async created() {
+        // Check permissions when component is created
+        const permissions = await checkMultiplePermissions([
+            'CUSTOMER_VIEW',
+            'CUSTOMER_CREATE',
+            'CUSTOMER_UPDATE',
+            'CUSTOMER_DELETE'
+        ]);
+        
+        this.permissions = {
+            canView: permissions.CUSTOMER_VIEW || false,
+            canCreate: permissions.CUSTOMER_CREATE || false,
+            canUpdate: permissions.CUSTOMER_UPDATE || false,
+            canDelete: permissions.CUSTOMER_DELETE || false
+        };
+        
+        if (this.permissions.canView) {
+            // Only load data if user has view permission
+            await this.layKhachHang();
+        } else {
+            toaster.error("Bạn không có quyền xem khách hàng!");
+        }
     },
     methods: {
         formatDate(dateString) {

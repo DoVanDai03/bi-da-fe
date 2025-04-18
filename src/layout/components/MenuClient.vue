@@ -74,9 +74,9 @@
                             </ul>
                         </div>
                     </template>
-                </div>
-            </div>
-        </div> -->
+</div>
+</div>
+</div> -->
         <div class="slider">
             <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-indicators">
@@ -122,7 +122,7 @@ export default {
             userInfo: {},
             cartItems: [],
             isLoading: false,
-            cartItemCount: 0
+            cartItemCount: 0,
         }
     },
     beforeDestroy() {
@@ -131,23 +131,19 @@ export default {
         window.removeEventListener('storage', this.kiemTraDangNhap);
     },
     mounted() {
-        this.kiemTraDangNhap();
-        this.loadCartItems();
-        // Kiểm tra định kỳ token
-        setInterval(() => {
-            this.kiemTraDangNhap();
-        }, 30000); // Kiểm tra mỗi 30 giây
-    },
-    watch: {
-        // Watch route changes
-        '$route': {
-            handler() {
-                this.kiemTraDangNhap();
-            },
-            immediate: true
+        // Chỉ khởi tạo kiểm tra token nếu không phải là admin
+        if (!this.isAdminRoute()) {
+            this.initializeCustomerChecks();
         }
     },
     methods: {
+        isAdminRoute() {
+            return this.$route.path.startsWith('/admin');
+        },
+        initializeCustomerChecks() {
+            this.kiemTraDangNhap();
+            this.loadCartItems();
+        },
         loadCartItems() {
             this.isLoading = true;
             const userInfo = JSON.parse(localStorage.getItem('user_info'));
@@ -198,50 +194,38 @@ export default {
             const token = localStorage.getItem('token_khach_hang');
             const userInfo = localStorage.getItem('user_info');
 
-            console.log("Kiểm tra đăng nhập - Token:", token);
-            console.log("Kiểm tra đăng nhập - UserInfo:", userInfo);
-
-            if (token && userInfo) {
-                try {
-                    const parsedUserInfo = JSON.parse(userInfo);
-                    console.log("Parsed user info:", parsedUserInfo);
-
-                    if (!parsedUserInfo || !parsedUserInfo.hoVaTen) {
-                        console.error("User info không hợp lệ");
-                        this.dangXuat();
-                        return;
-                    }
-
-                    this.isLoggedIn = true;
-                    this.userInfo = parsedUserInfo;
-
-                    console.log("Trạng thái đăng nhập:", this.isLoggedIn);
-                    console.log("Thông tin user:", this.userInfo);
-
-                    // Kiểm tra token với server
-                    axios.get('/api/kiem-tra-token', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    })
-                        .then(res => {
-                            console.log("Kết quả kiểm tra token:", res.data);
-                            if (!res.data.status) {
-                                this.dangXuat();
-                            }
-                        })
-                        .catch((error) => {
-                            console.error("Lỗi kiểm tra token:", error);
-                            this.dangXuat();
-                        });
-                } catch (error) {
-                    console.error('Error parsing user info:', error);
-                    this.dangXuat();
-                }
-            } else {
-                console.log("Không tìm thấy token hoặc user info");
+            if (!token || !userInfo) {
                 this.isLoggedIn = false;
                 this.userInfo = {};
+                return;
+            }
+
+            try {
+                const parsedUserInfo = JSON.parse(userInfo);
+                if (!parsedUserInfo || !parsedUserInfo.hoVaTen) {
+                    this.dangXuat();
+                    return;
+                }
+
+                this.isLoggedIn = true;
+                this.userInfo = parsedUserInfo;
+
+                // Kiểm tra token với server
+                axios.get('/api/user/kiem-tra-token', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                    .then(res => {
+                        if (!res.data.status) {
+                            this.dangXuat();
+                        }
+                    })
+                    .catch(() => {
+                        this.dangXuat();
+                    });
+            } catch (error) {
+                this.dangXuat();
             }
         },
         dangXuat() {

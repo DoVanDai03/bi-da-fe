@@ -1,13 +1,13 @@
 <template lang="">
     <div>
         <!-- Create Permission Modal -->
-        <div class="row">
+        <div class="row" v-if="permissions.canView">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-lg-3 col-xl-2">
-                                <button class="btn btn-primary mb-3 mb-lg-0" data-bs-toggle="modal"
+                                <button v-if="permissions.canCreate" class="btn btn-primary mb-3 mb-lg-0" data-bs-toggle="modal"
                                     data-bs-target="#taoQuyenModal">
                                     <span class="text-nowrap"><i class="bx bxs-plus-square"></i>Thêm quyền</span>
                                 </button>
@@ -94,11 +94,12 @@
                                             <td>{{ formatDate(v.ngayTao) }}</td>
                                             <td>{{ formatDate(v.ngayCapNhat) }}</td>
                                             <td>
-                                                <button v-on:click="editQuyen(v)" class="btn btn-warning me-2" data-bs-toggle="modal"
+                                                <button v-if="permissions.canUpdate"
+                                                    v-on:click="editQuyen(v)" class="btn btn-warning me-2" data-bs-toggle="modal"
                                                     data-bs-target="#editQuyenModal">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 </button>
-                                                <button v-on:click="xoaQuyen(v.id)" class="btn btn-danger">
+                                                <button v-if="permissions.canDelete" v-on:click="xoaQuyen(v.id)" class="btn btn-danger">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </td>
@@ -158,9 +159,34 @@ import axios from 'axios';
 import { createToaster } from "@meforma/vue-toaster";
 const toaster = createToaster({ position: "top-right" });
 
+// Kiểm tra nhiều quyền
+const checkMultiplePermissions = async (maQuyenList) => {
+    try {
+        const queryString = maQuyenList.map(q => `maQuyen=${q}`).join('&');
+        const response = await axios.get(
+            `/api/admin/quyen/chuc-vu/kiem-tra-nhieu-quyen?${queryString}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token_admin')}`
+                }
+            }
+        );
+        return response.data.data.permissions;
+    } catch (error) {
+        console.error('Error checking permissions:', error);
+        return {};
+    }
+};
+
 export default {
     data() {
         return {
+            permissions: {
+                canView: false,
+                canCreate: false,
+                canUpdate: false,
+                canDelete: false
+            },
             danh_sach_quyen: [],
             quyen_create: {
                 tenQuyen: '',
@@ -265,8 +291,28 @@ export default {
         }
     },
 
-    mounted() {
-        this.loadDanhSachQuyen();
+    async created() {
+        // Check permissions when component is created
+        const permissions = await checkMultiplePermissions([
+            'ACCESS_VIEW',
+            'ACCESS_CREATE',
+            'ACCESS_UPDATE',
+            'ACCESS_DELETE'
+        ]);
+        
+        this.permissions = {
+            canView: permissions.ACCESS_VIEW || false,
+            canCreate: permissions.ACCESS_CREATE || false,
+            canUpdate: permissions.ACCESS_UPDATE || false,
+            canDelete: permissions.ACCESS_DELETE || false
+        };
+        
+        if (this.permissions.canView) {
+            // Only load data if user has view permission
+            await this.loadDanhSachQuyen();
+        } else {
+            toaster.error("Bạn không có quyền xem danh sách quyền truy cập!");
+        }
     }
 }
 </script>

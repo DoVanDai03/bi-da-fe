@@ -1,5 +1,5 @@
 <template>
-	<div class="nav-container primary-menu">
+	<div class="nav-container primary-menu mt-3">
 		<div class="mobile-topbar-header">
 			<div>
 				<img src="https://th.bing.com/th/id/OIP.8Py2QVfx4Kofy4KjGLersQAAAA?pid=ImgDet&w=159&h=159&c=7" class="logo-icon" alt="logo icon">
@@ -15,7 +15,7 @@
 				<li class="nav-item">
 					<router-link to="/admin/danh-muc">
 						<a class="nav-link" href="/admin/danh-muc">
-							<div class="parent-icon"><i class="fa-solid fa-list"></i>
+							<div class="parent-icon"><i class="fas fa-th-list"></i>
 							</div>
 							<div class="menu-title">Danh Mục</div>
 						</a>
@@ -24,7 +24,7 @@
 				<li class="nav-item">
 					<router-link to="/admin/nha-cung-cap">
 						<a class="nav-link" href="/admin/nha-cung-cap">
-							<div class="parent-icon"><i class="fa-solid fa-truck-field"></i>
+							<div class="parent-icon"><i class="fas fa-industry"></i>
 							</div>
 							<div class="menu-title">Nhà Cung Cấp</div>
 						</a>
@@ -33,7 +33,7 @@
 				<li class="nav-item">
 					<router-link to="/admin/thuong-hieu">
 						<a class="nav-link" href="/admin/thuong-hieu">
-							<div class="parent-icon"><i class="fa-solid fa-trademark"></i>
+							<div class="parent-icon"><i class="fas fa-crown"></i>
 							</div>
 							<div class="menu-title">Thương Hiệu</div>
 						</a>
@@ -42,7 +42,7 @@
 				<li class="nav-item">
 					<router-link to="/admin/giam-gia">
 						<a class="nav-link" href="/admin/giam-gia">
-							<div class="parent-icon"><i class="fa-solid fa-percent"></i>
+							<div class="parent-icon"><i class="fas fa-tags"></i>
 							</div>
 							<div class="menu-title">Giảm giá</div>
 						</a>
@@ -51,7 +51,7 @@
 				<li class="nav-item">
 					<router-link to="/admin/san-pham">
 						<a class="nav-link" href="/admin/san-pham">
-							<div class="parent-icon"><i class="fa-solid fa-box"></i>
+							<div class="parent-icon"><i class="fas fa-box-open"></i>
 							</div>
 							<div class="menu-title">Sản phẩm</div>
 						</a>
@@ -60,7 +60,7 @@
 				<li class="nav-item">
 					<router-link to="/admin/khach-hang">
 						<a class="nav-link" href="/admin/khach-hang">
-							<div class="parent-icon"><i class="fa-solid fa-users"></i>
+							<div class="parent-icon"><i class="fas fa-user-friends"></i>
 							</div>
 							<div class="menu-title">Khách Hàng</div>
 						</a>
@@ -69,7 +69,7 @@
 				<li class="nav-item">
 					<router-link to="/admin/danh-gia">
 						<a class="nav-link" href="/admin/danh-gia">
-							<div class="parent-icon"><i class="fa-solid fa-star"></i>
+							<div class="parent-icon"><i class="fas fa-star-half-alt"></i>
 							</div>
 							<div class="menu-title">Đánh Giá</div>
 						</a>
@@ -78,7 +78,7 @@
 				<li class="nav-item">
 					<router-link to="/admin/don-hang">
 						<a class="nav-link" href="/admin/don-hang">
-							<div class="parent-icon"><i class="fa-solid fa-shopping-cart"></i>
+							<div class="parent-icon"><i class="fas fa-shopping-bag"></i>
 							</div>
 							<div class="menu-title">Đơn hàng</div>
 						</a>
@@ -87,7 +87,7 @@
 				<li class="nav-item">
 					<router-link to="/admin/thong-ke">
 						<a class="nav-link" href="/admin/thong-ke">
-							<div class="parent-icon"><i class="fa-solid fa-chart-line"></i>
+							<div class="parent-icon"><i class="fas fa-chart-bar"></i>
 							</div>
 							<div class="menu-title">Thống kê</div>
 						</a>
@@ -96,7 +96,7 @@
 				<li class="nav-item">
 					<router-link to="/admin/nguoi-dung">
 						<a class="nav-link" href="/admin/nguoi-dung">
-							<div class="parent-icon"><i class="fa-solid fa-user"></i>
+							<div class="parent-icon"><i class="fas fa-users-cog"></i>
 							</div>
 							<div class="menu-title">Người dùng</div>
 						</a>
@@ -105,7 +105,7 @@
 				<li class="nav-item">
 					<router-link to="/admin/chuc-vu">
 						<a class="nav-link" href="/admin/chuc-vu">
-							<div class="parent-icon"><i class="fa-solid fa-user"></i>
+							<div class="parent-icon"><i class="fas fa-user-tie"></i>
 							</div>
 							<div class="menu-title">Chức vụ</div>
 						</a>
@@ -114,7 +114,7 @@
 				<li class="nav-item">
 					<router-link to="/admin/quyen-truy-cap">
 						<a class="nav-link" href="/admin/quyen-truy-cap">
-							<div class="parent-icon"><i class="fa-solid fa-user"></i>
+							<div class="parent-icon"><i class="fas fa-user-shield"></i>
 							</div>
 							<div class="menu-title">Quyền truy cập</div>
 						</a>
@@ -123,7 +123,7 @@
 				<li class="nav-item">
 					<router-link to="/admin/phan-quyen">
 						<a class="nav-link" href="/admin/phan-quyen">
-							<div class="parent-icon"><i class="fa-solid fa-user"></i>
+							<div class="parent-icon"><i class="fas fa-user-lock"></i>
 							</div>
 							<div class="menu-title">Phân quyền</div>
 						</a>
@@ -134,8 +134,6 @@
 	</div>
 </template>
 <script>
-
-
 export default {
 
 }

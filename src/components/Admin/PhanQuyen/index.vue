@@ -5,6 +5,14 @@
                 <h3 class="card-title">Phân quyền cho chức vụ</h3>
             </div>
             <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-lg-3 col-xl-2">
+                        <button v-if="permissions.canCreate" class="btn btn-primary mb-3 mb-lg-0" data-bs-toggle="modal"
+                            data-bs-target="#taoPhanQuyenModal">
+                            <i class="bx bxs-plus-square"></i>Thêm phân quyền
+                        </button>
+                    </div>
+                </div>
                 <div class="permissions-grid">
                     <!-- Column 1: Positions List -->
                     <div class="grid-column">
@@ -25,12 +33,12 @@
                             <div v-for="permission in allPermissions" :key="permission.id" class="permission-item">
                                 <label class="form-check">
                                     <input type="checkbox" class="form-check-input" :value="permission.id"
-                                        :disabled="!selectedPositionId" v-model="selectedPermissions" />
+                                        :disabled="!selectedPositionId || !permissions.canAssign" v-model="selectedPermissions" />
                                     <span class="form-check-label">{{ permission.tenQuyen }}</span>
                                 </label>
                             </div>
                         </div>
-                        <div class="actions mt-4" v-if="selectedPositionId">
+                        <div class="actions mt-4" v-if="selectedPositionId && permissions.canAssign">
                             <button class="btn btn-primary w-100 mb-2" @click="handleAssignPermissions"
                                 :disabled="selectedPermissions.length === 0">
                                 Lưu phân quyền
@@ -78,6 +86,13 @@ export default {
         const allPermissions = ref([])
         const selectedPermissions = ref([])
         const currentPositionPermissions = ref([])
+        const permissions = ref({
+            canView: false,
+            canCreate: false,
+            canUpdate: false,
+            canDelete: false,
+            canAssign: false
+        });
 
         const loadPositions = async () => {
             try {
@@ -148,34 +163,82 @@ export default {
         }
 
         const handleRemoveAllPermissions = async () => {
-            if (!selectedPositionId.value || selectedPermissions.value.length === 0) return
-            if (!confirm('Bạn có chắc chắn muốn xóa tất cả quyền đã chọn?')) return
+            if (!selectedPositionId.value || selectedPermissions.value.length === 0) return;
+            if (!confirm('Bạn có chắc chắn muốn xóa tất cả quyền đã chọn?')) return;
 
             try {
-                const promises = selectedPermissions.value.map(permissionId =>
-                    axios.delete(
-                        `/api/admin/quyen/chuc-vu/${selectedPositionId.value}/phan-quyen/${permissionId}`,
-                        {
-                            headers: {
-                                'Authorization': `Bearer ${localStorage.getItem('token_admin')}`
-                            },
+                // Gọi API xóa nhiều quyền với POST method
+                await axios.post(
+                    `/api/admin/quyen/chuc-vu/${selectedPositionId.value}/xoa-quyen`,
+                    selectedPermissions.value,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token_admin')}`,
+                            'Content-Type': 'application/json'
                         }
-                    )
-                )
-                await Promise.all(promises)
-                toaster.success('Xóa quyền thành công')
-                selectedPermissions.value = []
-                await loadPermissions() // Reload permissions to sync state
+                    }
+                );
+                toaster.success('Xóa quyền thành công');
+                selectedPermissions.value = [];
+                await loadPermissions(); // Reload permissions to sync state
             } catch (error) {
-                toaster.error(error.response?.data?.message || 'Có lỗi xảy ra khi xóa quyền')
-                await loadPermissions() // Reload to ensure UI is in sync
+                toaster.error(error.response?.data?.message || 'Có lỗi xảy ra khi xóa quyền');
+                await loadPermissions(); // Reload to ensure UI is in sync
             }
-        }
+        };
 
-        onMounted(() => {
-            loadPositions()
-            loadAllPermissions()
-        })
+        const checkMultiplePermissions = async (maQuyenList) => {
+            try {
+                const queryString = maQuyenList.map(q => `maQuyen=${q}`).join('&');
+                const response = await axios.get(
+                    `/api/admin/quyen/chuc-vu/kiem-tra-nhieu-quyen?${queryString}`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token_admin')}`
+                        }
+                    }
+                );
+                // Return the permissions object directly from the response data
+                return response.data.data.permissions;
+            } catch (error) {
+                console.error('Error checking permissions:', error);
+                // Return an object with all permissions set to false as default
+                return {
+                    PERMISSION_VIEW: false,
+                    PERMISSION_CREATE: false,
+                    PERMISSION_UPDATE: false,
+                    PERMISSION_DELETE: false,
+                    PERMISSION_ASSIGN: false
+                };
+            }
+        };
+
+        onMounted(async () => {
+            // Check permissions when component is mounted
+            const permissionResults = await checkMultiplePermissions([
+                'PERMISSION_VIEW',
+                'PERMISSION_CREATE',
+                'PERMISSION_UPDATE',
+                'PERMISSION_DELETE',
+                'PERMISSION_ASSIGN'
+            ]);
+            
+            // Update permissions based on the API response
+            permissions.value = {
+                canView: permissionResults.PERMISSION_VIEW === true,
+                canCreate: permissionResults.PERMISSION_CREATE === true,
+                canUpdate: permissionResults.PERMISSION_UPDATE === true,
+                canDelete: permissionResults.PERMISSION_DELETE === true,
+                canAssign: permissionResults.PERMISSION_ASSIGN === true
+            };
+
+            if (permissions.value.canView) {
+                await loadPositions();
+                await loadAllPermissions();
+            } else {
+                toaster.error("Bạn không có quyền xem danh sách phân quyền!");
+            }
+        });
 
         return {
             selectedPositionId,
@@ -183,6 +246,7 @@ export default {
             allPermissions,
             selectedPermissions,
             currentPositionPermissions,
+            permissions,
             loadPermissions,
             handleAssignPermissions,
             handleRemoveAllPermissions
