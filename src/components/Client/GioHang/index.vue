@@ -104,71 +104,33 @@
 
                 <div class="cart-summary">
                     <div class="summary-content">
-                        <div class="summary-header">
-                            <h3><i class="fas fa-shopping-basket me-2"></i>Tóm tắt đơn hàng</h3>
+
+                        <h3>Tóm tắt đơn hàng</h3>
+
+                        <div class="summary-row">
+                            <span>Tổng tiền hàng:</span>
+                            <span>{{ formatCurrency(calculateSubtotal()) }}</span>
                         </div>
 
-                        <div class="summary-details">
-                            <div class="summary-row">
-                                <span class="label">Tổng tiền hàng:</span>
-                                <span class="value">{{ formatCurrency(calculateSubtotal()) }}</span>
-                            </div>
-
-                            <div class="summary-row">
-                                <span class="label">Phí vận chuyển:</span>
-                                <span class="value">{{ formatCurrency(shippingFee) }}</span>
-                            </div>
-
-                            <div class="summary-row discount" v-if="discount > 0">
-                                <span class="label">Giảm giá:</span>
-                                <span class="value">-{{ formatCurrency(discount) }}</span>
-                            </div>
-
-                            <div class="summary-total">
-                                <span class="label">Tổng thanh toán:</span>
-                                <span class="value">{{ formatCurrency(calculateTotal()) }}</span>
-                            </div>
+                        <div class="summary-row">
+                            <span>Phí vận chuyển:</span>
+                            <span>{{ formatCurrency(shippingFee) }}</span>
                         </div>
 
-                        <div class="payment-methods">
-                            <h4><i class="fas fa-credit-card me-2"></i>Phương thức thanh toán</h4>
-                            <div class="payment-options">
-                                <label class="payment-option">
-                                    <input type="radio" name="payment" value="cod" v-model="paymentMethod">
-                                    <span class="payment-check"></span>
-                                    <span class="payment-icon"><i class="fas fa-money-bill-wave"></i></span>
-                                    <span class="payment-label">Thanh toán khi nhận hàng</span>
-                                </label>
-
-                                <label class="payment-option">
-                                    <input type="radio" name="payment" value="banking" v-model="paymentMethod">
-                                    <span class="payment-check"></span>
-                                    <span class="payment-icon"><i class="fas fa-university"></i></span>
-                                    <span class="payment-label">Chuyển khoản ngân hàng</span>
-                                </label>
-
-                                <label class="payment-option">
-                                    <input type="radio" name="payment" value="momo" v-model="paymentMethod">
-                                    <span class="payment-check"></span>
-                                    <span class="payment-icon"><i class="fas fa-wallet"></i></span>
-                                    <span class="payment-label">Ví MoMo</span>
-                                </label>
-                            </div>
+                        <div class="summary-discount" v-if="discount > 0">
+                            <span>Giảm giá:</span>
+                            <span>-{{ formatCurrency(discount) }}</span>
                         </div>
 
-                        <div class="summary-actions">
-                            <button @click="checkout" class="btn-checkout">
-                                <i class="fas fa-check-circle me-2"></i>
-                                Tiến hành đặt hàng
-                            </button>
-                            <a href="/home-page" class="btn-continue-shopping">
-                                <i class="fas fa-arrow-left me-2"></i>
-                                Tiếp tục mua sắm
-                            </a>
+                        <div class="summary-total">
+                            <span>Tổng thanh toán:</span>
+                            <span>{{ formatCurrency(calculateTotal()) }}</span>
                         </div>
 
+                        <button @click="checkout" class="btn-checkout">Thiết lập đơn hàng</button>
+                        <a href="/home-page" class="btn-continue-shopping">Tiếp tục mua sắm</a>
                         <button v-if="selectedItems.length > 0" @click="deleteSelectedItems" class="btn-delete-selected">
-                            <i class="fas fa-trash"></i>
+                            <i class="bi bi-trash"></i>
                             Xóa sản phẩm đã chọn ({{ selectedItems.length }})
                         </button>
                     </div>
@@ -196,8 +158,7 @@ export default {
             showDeleteModal: false,
             selectedItem: null,
             selectedItems: [],
-            selectAll: false,
-            paymentMethod: 'cod', // Thêm phương thức thanh toán mặc định
+            selectAll: false
         };
     },
     mounted() {
@@ -706,252 +667,92 @@ export default {
 
 .cart-summary {
     background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .summary-content {
-    padding: 24px;
-}
-
-.summary-header {
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 2px solid #f8f9fa;
-}
-
-.summary-header h3 {
-    font-size: 20px;
-    color: #2c3e50;
-    font-weight: 600;
-    margin: 0;
-    display: flex;
-    align-items: center;
-}
-
-.summary-details {
-    background: #f8f9fa;
     padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 24px;
+}
+
+.summary-content h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
 }
 
 .summary-row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    color: #2c3e50;
+    margin-bottom: 15px;
+    color: #666;
 }
 
-.summary-row:not(:last-child) {
-    border-bottom: 1px dashed #e9ecef;
-}
-
-.summary-row .label {
-    font-weight: 500;
-    color: #6c757d;
-}
-
-.summary-row .value {
-    font-weight: 600;
-}
-
-.summary-row.discount {
-    color: #2ecc71;
+.summary-discount {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    color: #27ae60;
 }
 
 .summary-total {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 16px 0;
-    margin-top: 12px;
-    border-top: 2px solid #e9ecef;
-}
-
-.summary-total .label {
+    margin: 20px 0;
     font-size: 18px;
     font-weight: 600;
-    color: #2c3e50;
 }
 
-.summary-total .value {
-    font-size: 24px;
-    font-weight: 700;
-    color: #e74c3c;
-}
-
-.payment-methods {
-    margin-bottom: 24px;
-}
-
-.payment-methods h4 {
-    font-size: 16px;
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-}
-
-.payment-options {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.payment-option {
-    display: flex;
-    align-items: center;
-    padding: 16px;
-    background: #f8f9fa;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.payment-option:hover {
-    border-color: #3498db;
-    background: #f0f9ff;
-}
-
-.payment-option input[type="radio"] {
-    display: none;
-}
-
-.payment-check {
-    width: 20px;
-    height: 20px;
-    border: 2px solid #cbd5e0;
-    border-radius: 50%;
-    margin-right: 12px;
-    position: relative;
-    transition: all 0.3s ease;
-}
-
-.payment-check:before {
-    content: '';
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background: #3498db;
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    transition: all 0.3s ease;
-}
-
-.payment-option input[type="radio"]:checked + .payment-check {
-    border-color: #3498db;
-}
-
-.payment-option input[type="radio"]:checked + .payment-check:before {
-    transform: translate(-50%, -50%) scale(1);
-}
-
-.payment-icon {
-    width: 40px;
-    height: 40px;
-    background: #fff;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 12px;
-    font-size: 20px;
-    color: #3498db;
-}
-
-.payment-label {
-    font-weight: 500;
-    color: #2c3e50;
-}
-
-.btn-checkout {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 16px;
-    background: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-checkout:hover {
-    background: #c0392b;
-    transform: translateY(-2px);
-}
-
-.btn-continue-shopping {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 16px;
-    background: #f8f9fa;
-    color: #2c3e50;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.btn-continue-shopping:hover {
-    background: #e9ecef;
-    transform: translateY(-2px);
-}
-
-.summary-actions {
+.coupon-section {
     margin-bottom: 20px;
 }
 
-.btn-delete-selected {
+.coupon-input {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    padding: 12px 20px;
-    background: #f8f9fa;
-    color: #e74c3c;
-    border: 1px solid #e74c3c;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 600;
-    font-size: 14px;
-    margin-top: 20px;
+    margin-bottom: 15px;
 }
 
-.btn-delete-selected:hover {
-    background: #e74c3c;
+.coupon-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+}
+
+.btn-apply-coupon {
+    padding: 10px 15px;
+    background-color: #3498db;
     color: white;
-    transform: translateY(-2px);
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
 }
 
-.btn-delete-selected:disabled {
-    background: #f8f9fa;
-    color: #95a5a6;
-    border-color: #95a5a6;
-    cursor: not-allowed;
-    transform: none;
-}
-
-.btn-delete-selected i {
+.btn-checkout {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
     font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-checkout:hover {
+    background-color: #c0392b;
+}
+
+.btn-continue-shopping {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    text-align: center;
 }
 
 @media (max-width: 992px) {
@@ -1178,5 +979,45 @@ export default {
         padding: 0.625rem 1.25rem;
         min-width: 80px;
     }
+}
+
+.summary-actions {
+    margin-bottom: 20px;
+}
+
+.btn-delete-selected {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 20px;
+    background: #f8f9fa;
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: 20px;
+}
+
+.btn-delete-selected:hover {
+    background: #e74c3c;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-delete-selected:disabled {
+    background: #f8f9fa;
+    color: #95a5a6;
+    border-color: #95a5a6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-delete-selected i {
+    font-size: 16px;
 }
 </style>
