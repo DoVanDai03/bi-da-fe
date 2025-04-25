@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router"; // cài vue-router:
 const routes = [
     {
         path : '/',
+        redirect: "/home-page",
         component: ()=>import('../layout/wrapper/index.vue')
     },
     {

@@ -166,7 +166,7 @@ export default {
                 .catch((error) => {
                     if (error.response) {
                         // Server trả về lỗi
-                        toaster.error(error.response.data.message || "Đăng ký thất bại!");
+                        toaster.error(error.response.data.errors || "Đăng ký thất bại!" || error.response.data.message);
                     } else if (error.request) {
                         // Không nhận được response
                         toaster.error("Không thể kết nối đến server!");

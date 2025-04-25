@@ -82,11 +82,11 @@
                         <label>Số lượng</label>
                         <div class="quantity-selector">
                             <button class="quantity-btn" @click="decreaseQuantity">
-                                <i class="bi bi-dash">-</i>
+                                <i class="fas fa-minus"></i>
                             </button>
-                            <input type="number" v-model="quantity" min="1" class="quantity-input">
+                            <input type="text" v-model="quantity" class="quantity-input" readonly>
                             <button class="quantity-btn" @click="increaseQuantity">
-                                <i class="bi bi-plus">+</i>
+                                <i class="fas fa-plus"></i>
                             </button>
                         </div>
                     </div>
@@ -949,6 +949,22 @@ export default {
     border: none;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    background-color: #fff;
+}
+
+.quantity-input::-webkit-inner-spin-button,
+.quantity-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.quantity-input:focus {
+    outline: none;
 }
 
 .product-actions {

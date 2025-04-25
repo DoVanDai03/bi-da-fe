@@ -5,7 +5,8 @@
                 <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3">
                     <div class="col mx-auto">
                         <div class="mb-4 text-center">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/FPT_logo_2010.svg/1200px-FPT_logo_2010.svg.png" width="180" alt="" />
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/FPT_logo_2010.svg/1200px-FPT_logo_2010.svg.png"
+                                width="180" alt="" />
                         </div>
                         <div class="card">
                             <div class="card-body">
@@ -18,70 +19,55 @@
                                         <form class="row g-3" @submit.prevent="guiYeuCauQuenMatKhau">
                                             <div class="col-12">
                                                 <label for="email" class="form-label">Email</label>
-                                                <input 
-                                                    v-model="email" 
-                                                    type="email" 
-                                                    class="form-control" 
-                                                    id="email" 
-                                                    placeholder="Nhập email đã đăng ký" 
-                                                    required
-                                                >
+                                                <input v-model="email" type="email" class="form-control" id="email"
+                                                    placeholder="Nhập email đã đăng ký" required>
                                             </div>
                                             <div class="col-12" v-if="showCodeInput">
                                                 <label for="verificationCode" class="form-label">Mã xác nhận</label>
-                                                <input 
-                                                    v-model="verificationCode" 
-                                                    type="text" 
-                                                    class="form-control" 
-                                                    id="verificationCode" 
-                                                    placeholder="Nhập mã xác nhận" 
-                                                    required
-                                                >
-                                                <small class="text-muted">Mã xác nhận đã được gửi đến email của bạn (Có hiệu lực trong 15 phút)</small>
+                                                <input v-model="verificationCode" type="text" class="form-control"
+                                                    id="verificationCode" placeholder="Nhập mã xác nhận" required>
+                                                <small class="text-muted">Mã xác nhận đã được gửi đến email của bạn (Có
+                                                    hiệu lực trong 15 phút)</small>
                                             </div>
                                             <div class="col-12" v-if="showNewPassword">
                                                 <label for="newPassword" class="form-label">Mật khẩu mới</label>
                                                 <div class="input-group" id="show_hide_password">
-                                                    <input 
-                                                        v-model="newPassword" 
-                                                        type="password" 
-                                                        class="form-control border-end-0" 
-                                                        id="newPassword" 
-                                                        placeholder="Nhập mật khẩu mới" 
-                                                        required
-                                                    >
-                                                    <a href="javascript:;" class="input-group-text bg-transparent"><i class='bx bx-hide'></i></a>
+                                                    <input v-model="newPassword" type="password"
+                                                        class="form-control border-end-0" id="newPassword"
+                                                        placeholder="Nhập mật khẩu mới" required>
+                                                    <a href="javascript:;" class="input-group-text bg-transparent"><i
+                                                            class='bx bx-hide'></i></a>
                                                 </div>
                                             </div>
                                             <div class="col-12" v-if="showNewPassword">
-                                                <label for="confirmPassword" class="form-label">Xác nhận mật khẩu mới</label>
+                                                <label for="confirmPassword" class="form-label">Xác nhận mật khẩu
+                                                    mới</label>
                                                 <div class="input-group" id="show_hide_password_confirm">
-                                                    <input 
-                                                        v-model="confirmPassword" 
-                                                        type="password" 
-                                                        class="form-control border-end-0" 
-                                                        id="confirmPassword" 
-                                                        placeholder="Xác nhận mật khẩu mới" 
-                                                        required
-                                                    >
-                                                    <a href="javascript:;" class="input-group-text bg-transparent"><i class='bx bx-hide'></i></a>
+                                                    <input v-model="confirmPassword" type="password"
+                                                        class="form-control border-end-0" id="confirmPassword"
+                                                        placeholder="Xác nhận mật khẩu mới" required>
+                                                    <a href="javascript:;" class="input-group-text bg-transparent"><i
+                                                            class='bx bx-hide'></i></a>
                                                 </div>
                                             </div>
                                             <div class="col-12">
                                                 <div class="d-grid">
-                                                    <button type="button" class="btn btn-primary" :disabled="dangGui" @click="guiYeuCauQuenMatKhau" v-if="!showNewPassword">
+                                                    <button type="button" class="btn btn-primary" :disabled="dangGui"
+                                                        @click="guiYeuCauQuenMatKhau" v-if="!showNewPassword">
                                                         <span v-if="dangGui">
                                                             <i class="fas fa-spinner fa-spin me-2"></i>Đang gửi...
                                                         </span>
                                                         <span v-else>
-                                                            <i class="fas fa-paper-plane me-2"></i>{{ showCodeInput ? 'Xác nhận mã' : 'Gửi mã xác nhận' }}
+                                                            <i class="fas fa-paper-plane me-2"></i>{{ showCodeInput ?
+                                                            'Xác nhận mã' : 'Gửi mã xác nhận' }}
                                                         </span>
                                                     </button>
                                                 </div>
                                             </div>
                                             <div class="col-12" v-if="showNewPassword">
                                                 <div class="d-grid">
-                                                    <button type="button" class="btn btn-success" :disabled="dangGui" @click="doiMatKhau">
+                                                    <button type="button" class="btn btn-success" :disabled="dangGui"
+                                                        @click="doiMatKhau">
                                                         <span v-if="dangGui">
                                                             <i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...
                                                         </span>
@@ -216,7 +202,7 @@ export default {
                 return;
             }
             else {
-                this.dangGui = true;    
+                this.dangGui = true;
                 try {
                     const response = await axios.post('/api/quen-mat-khau/doi-mat-khau', {
                         email: this.email,
@@ -227,13 +213,19 @@ export default {
                         toaster.success('Đổi mật khẩu thành công');
                         this.$router.push('/dang-nhap');
                     } else {
-                        toaster.error(response.data.message || 'Đổi mật khẩu thất bại');
+                        toaster.error(error.response.data.message || 'Đổi mật khẩu thất bại' || error.response.data.errors);
                     }
                 }
                 catch (error) {
                     console.error('Lỗi:', error);
-                    toaster.error('Đã xảy ra lỗi, vui lòng thử lại');
+                    const errors = error.response?.data?.errors;
+                    if (Array.isArray(errors)) {
+                        errors.forEach(err => toaster.error(err));
+                    } else {
+                        toaster.error(error.response?.data?.message || 'Đổi mật khẩu thất bại');
+                    }
                 }
+
                 finally {
                     this.dangGui = false;
                 }
@@ -295,8 +287,13 @@ export default {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 a {
@@ -308,4 +305,4 @@ a {
 a:hover {
     color: #ff2222;
 }
-</style> 
+</style>
