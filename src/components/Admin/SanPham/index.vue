@@ -496,7 +496,7 @@ export default {
         },
         laySanPham() {
             axios
-                .get("/api/admin/san-pham", {
+                .get("/api/admin/san-pham/admin", {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token_admin')}`
                     },
