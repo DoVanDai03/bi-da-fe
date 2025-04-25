@@ -241,12 +241,13 @@
                                                 <span class="label">Màu sắc:</span>
                                                 <span class="value">{{ product.mauSac }}</span>
                                             </div>
+                                            
+                                        </div>
+                                        <div class="col-md-6">
                                             <div class="detail-row">
                                                 <span class="label">Chất liệu:</span>
                                                 <span class="value">{{ product.chatLieu }}</span>
                                             </div>
-                                        </div>
-                                        <div class="col-md-6">
                                             <div class="detail-row">
                                                 <span class="label">Số lượng:</span>
                                                 <span class="value">{{ product.soLuong }}</span>
@@ -259,10 +260,7 @@
                                                 <span class="label">Giảm giá:</span>
                                                 <span class="value text-danger">-{{ product.phanTramGiamGia }}%</span>
                                             </div>
-                                            <div class="detail-row total-price">
-                                                <span class="label">Thành tiền:</span>
-                                                <span class="value text-primary fw-bold">{{ formatPrice(product.thanhTien) }}đ</span>
-                                            </div>
+                                            
                                         </div>
                                     </div>
                                 </div>
