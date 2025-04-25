@@ -104,6 +104,7 @@ export default {
                         this.$router.push('/home-page');
                     } else {
                         localStorage.removeItem('token_khach_hang');
+                        this.$router.push('/dang-nhap');
                     }
                 })
                 .catch(() => {

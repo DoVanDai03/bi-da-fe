@@ -5,14 +5,6 @@
                 <h3 class="card-title">Phân quyền cho chức vụ</h3>
             </div>
             <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-lg-3 col-xl-2">
-                        <button v-if="permissions.canCreate" class="btn btn-primary mb-3 mb-lg-0" data-bs-toggle="modal"
-                            data-bs-target="#taoPhanQuyenModal">
-                            <i class="bx bxs-plus-square"></i>Thêm phân quyền
-                        </button>
-                    </div>
-                </div>
                 <div class="permissions-grid">
                     <!-- Column 1: Positions List -->
                     <div class="grid-column">

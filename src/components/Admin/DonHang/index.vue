@@ -1,10 +1,10 @@
 <template>
     <div class="container-fluid">
         <div class="row" v-if="permissions.canView">
-            <div class="col-12">
+            <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Quản lý đơn hàng</h3>
+                        <h5 class="mt-2">Quản lý đơn hàng</h5>
                     </div>
                     <div class="card-body">
                         <div class="row align-items-center">
@@ -28,10 +28,11 @@
                                         <th>Tên người nhận</th>
                                         <th>SĐT người nhận</th>
                                         <th>Trạng thái</th>
+                                        <th>Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="donHang in danhSachDonHang" :key="donHang.id">
+                                    <tr v-for="(donHang, index) in danhSachDonHang" :key="donHang.id">
                                         <td>{{ donHang.id }}</td>
                                         <td>{{ donHang.idKhachHang }}</td>
                                         <td>{{ donHang.maGiamGia || 'Không có' }}</td>
@@ -51,7 +52,16 @@
                                                 <option value="returned">Đã hoàn trả</option>
                                                 <option value="completed">Đã hoàn thành</option>
                                             </select>
-                                        </td>                                      
+                                        </td>
+                                        <td class="text-center">
+                                            <button v-if="permissions.canUpdate"
+                                                v-on:click="Object.assign(donHang, danhSachDonHang[index]); id_don_hang_update = donHang.id"
+                                                data-bs-toggle="modal" data-bs-target="#updateModal"
+                                                class="btn btn-info">Cập nhật</button>
+                                            <button v-if="permissions.canDelete" v-on:click="id_don_hang_delete = donHang.id"
+                                                data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                class="btn btn-danger ms-2">Xoá</button>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -118,12 +128,13 @@ export default {
         // Check permissions when component is created
         const permissions = await checkMultiplePermissions([
             'ORDER_VIEW',
-            'ORDER_UPDATE_STATUS'
+            'ORDER_UPDATE_STATUS',
+
         ]);
         
         this.permissions = {
             canView: permissions.ORDER_VIEW || false,
-            canUpdate: permissions.ORDER_UPDATE_STATUS || false
+            canUpdateStatus: permissions.ORDER_UPDATE_STATUS || false,
         };
         
         if (this.permissions.canView) {

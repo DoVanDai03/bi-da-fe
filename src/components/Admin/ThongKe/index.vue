@@ -1,5 +1,5 @@
 <template>
-    <div class="statistics-page">
+    <div class="statistics-page" v-if="permissions.canView">
         <div class="container-fluid py-4">
             <div v-if="isLoading" class="loading-overlay">
                 <div class="spinner-border text-primary" role="status">
@@ -243,19 +243,18 @@ export default {
     async created() {
         // Check permissions when component is created
         const permissions = await checkMultiplePermissions([
-            'xem_thong_ke'
+            'STATISTICS_VIEW',
+
         ]);
-        
+
         this.permissions = {
-            canView: permissions.xem_thong_ke || false,
-            canCreate: false, // No create permission needed for statistics
-            canUpdate: false, // No update permission needed for statistics
-            canDelete: false  // No delete permission needed for statistics
+            canView: permissions.STATISTICS_VIEW || false,
         };
-        
+
         if (this.permissions.canView) {
-            // Only load data if user has view permission
             await this.loadData();
+        } else {
+            toaster.error("Bạn không có quyền xem thống kê!");
         }
     },
     mounted() {

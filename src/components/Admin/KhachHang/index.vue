@@ -94,7 +94,7 @@
         </div>
     </div>
     <!-- table  -->
-    <div class="row">
+    <div class="row" v-if="permissions.canView">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
@@ -130,6 +130,12 @@
                                                 v-on:click="Object.assign(khach_hang_update, v); id_khach_hang_update = v.id"
                                                 data-bs-toggle="modal" data-bs-target="#updateModal"
                                                 class="btn btn-info">Cập nhật</button>
+                                            <button v-if="permissions.canUpdate"
+                                                v-on:click="toggleBlockUser(v.id)"
+                                                class="btn ms-2"
+                                                :class="v.isBlock == 1 ? 'btn-warning' : 'btn-success'">
+                                                {{ v.isBlock == 1 ? 'Khóa' : 'Mở khóa' }}
+                                            </button>
                                             <button v-if="permissions.canDelete" v-on:click="id_khach_hang_delete = v.id"
                                                 data-bs-toggle="modal" data-bs-target="#deleteModal"
                                                 class="btn btn-danger ms-2">Xoá</button>
@@ -299,6 +305,25 @@ export default {
             if (!dateString) return '';
             const date = new Date(dateString);
             return date.toLocaleDateString('vi-VN');
+        },
+        toggleBlockUser(id) {
+            axios
+                .put(`/api/admin/khach-hang/${id}/toggle-block`, {}, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token_admin')}`
+                    },
+                })
+                .then((res) => {
+                    if (res.data.status) {
+                        toaster.success(res.data.message);
+                        this.layKhachHang();
+                    } else {
+                        toaster.error(res.data.message);
+                    }
+                })
+                .catch((error) => {
+                    toaster.error('Có lỗi xảy ra khi thay đổi trạng thái khóa!');
+                });
         },
         layKhachHang() {
             axios

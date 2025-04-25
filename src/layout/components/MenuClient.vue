@@ -217,7 +217,7 @@ export default {
                     }
                 })
                     .then(res => {
-                        if (!res.data.status) {
+                        if (!res.data.status || res.data.user.isBlocked === 0) {
                             this.dangXuat();
                         }
                     })

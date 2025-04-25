@@ -57,7 +57,7 @@
         </div>
     </div>
     <!-- table  -->
-    <div class="row">
+    <div class="row" v-if="permissions.canView">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
@@ -75,7 +75,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <template v-for="(v, k) in danh_sach_thuong_hieu" :key="k">
+                                <template v-for="(v, k) in list_thuong_hieu" :key="k">
                                     <tr class="text-center align-middle">
                                         <td>{{ k + 1 }}</td>
                                         <td>{{ v.tenThuongHieu }}</td>
@@ -187,7 +187,7 @@ export default {
                 canUpdate: false,
                 canDelete: false
             },
-            danh_sach_thuong_hieu: [],
+            list_thuong_hieu: [],
             thuong_hieu_create: {},
             thuong_hieu_update: {},
             id_thuong_hieu_update: "",
@@ -226,8 +226,8 @@ export default {
                     },
                 })
                 .then((res) => {
-                    this.danh_sach_thuong_hieu = res.data.data;
-                    console.log(this.danh_sach_thuong_hieu);
+                    this.list_thuong_hieu = res.data.data;
+                    console.log(this.list_thuong_hieu);
                 });
         },
         themThuongHieu() {

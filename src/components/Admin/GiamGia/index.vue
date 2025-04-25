@@ -78,11 +78,11 @@
         </div>
     </div>
     <!-- table  -->
-    <div class="row">
+    <div class="row" v-if="permissions.canView">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mt-2">Quản lý mã giảm giá</h5>
+                    <h5 class="mt-2">Quản lý giảm giá</h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -243,24 +243,24 @@ export default {
     async created() {
         // Check permissions when component is created
         const permissions = await checkMultiplePermissions([
-            'REVIEW_VIEW',
-            'REVIEW_CREATE',
-            'REVIEW_UPDATE',
-            'REVIEW_DELETE'
+            'DISCOUNT_VIEW',
+            'DISCOUNT_CREATE',
+            'DISCOUNT_UPDATE',
+            'DISCOUNT_DELETE'
         ]);
         
         this.permissions = {
-            canView: permissions.REVIEW_VIEW || false,
-            canCreate: permissions.REVIEW_CREATE || false,
-            canUpdate: permissions.REVIEW_UPDATE || false,
-            canDelete: permissions.REVIEW_DELETE || false
+            canView: permissions.DISCOUNT_VIEW || false,
+            canCreate: permissions.DISCOUNT_CREATE || false,
+            canUpdate: permissions.DISCOUNT_UPDATE || false,
+            canDelete: permissions.DISCOUNT_DELETE || false
         };
         
         if (this.permissions.canView) {
             // Only load data if user has view permission
             await this.layGiamGia();
         } else {
-            toaster.error("Bạn không có quyền xem đánh giá!");
+            toaster.error("Bạn không có quyền xem giảm giá!");
         }
     },
     methods: {

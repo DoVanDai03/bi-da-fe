@@ -6,9 +6,9 @@
                 <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col-lg-3 col-xl-2">
-                            <button v-if="permissions.canCreate" class="btn btn-primary mb-3 mb-lg-0" data-bs-toggle="modal"
-                                data-bs-target="#taoDanhGiaModal">
-                                <span class="text-nowrap"><i class="bx bxs-plus-square"></i>Thêm đánh giá</span>
+                            <button v-if="permissions.canCreate" class="btn btn-primary mb-3 mb-lg-0"
+                                data-bs-toggle="modal" data-bs-target="#taoDanhGiaModal">
+                                <i class="bx bxs-plus-square"></i>Thêm đánh giá
                             </button>
                         </div>
                     </div>
@@ -93,7 +93,7 @@
         </div>
     </div>
     <!-- table  -->
-    <div class="row">
+    <div class="row" v-if="permissions.canView">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
@@ -136,8 +136,9 @@
                                                 v-on:click="Object.assign(danh_gia_update, v); id_danh_gia_update = v.id"
                                                 data-bs-toggle="modal" data-bs-target="#updateModal"
                                                 class="btn btn-info">Cập nhật</button>
-                                            <button v-if="permissions.canDelete" v-on:click="id_danh_gia_delete = v.id" data-bs-toggle="modal"
-                                                data-bs-target="#deleteModal" class="btn btn-danger ms-2">Xoá</button>
+                                            <button v-if="permissions.canDelete" v-on:click="id_danh_gia_delete = v.id"
+                                                data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                class="btn btn-danger ms-2">Xoá</button>
                                         </td>
                                     </tr>
                                 </template>

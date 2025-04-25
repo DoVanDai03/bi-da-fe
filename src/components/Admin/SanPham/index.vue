@@ -165,7 +165,7 @@
         </div>
     </div>
     <!-- table  -->
-    <div class="row">
+    <div class="row" v-if="permissions.canView">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">

@@ -9,7 +9,7 @@
                             <div class="col-lg-3 col-xl-2">
                                 <button v-if="permissions.canCreate" class="btn btn-primary mb-3 mb-lg-0" data-bs-toggle="modal"
                                     data-bs-target="#taoNguoiDungModal">
-                                    <span class="text-nowrap"><i class="bx bxs-plus-square"></i>Thêm người dùng</span>
+                                    <i class="bx bxs-plus-square"></i>Thêm người dùng
                                 </button>
                             </div>
                         </div>
@@ -94,7 +94,7 @@
             </div>
         </div>
         <!-- table  -->
-        <div class="row">
+        <div class="row" v-if="permissions.canView">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
@@ -304,7 +304,8 @@ export default {
         }
     },
     mounted() {
-        // Remove duplicate call to layChucVu
+        this.layChucVu();
+        this.layNguoiDung();
     },
     methods: {
         formatDate(date) {
@@ -364,7 +365,7 @@ export default {
         },
         async themNguoiDung() {
             try {
-                const response = await axios.post(`/api/admin`, this.nguoi_dung_create, {
+                const response = await axios.post(`/api/admin/them-moi`, this.nguoi_dung_create, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token_admin')}`
                     }
@@ -372,6 +373,7 @@ export default {
                 this.danh_sach_nguoi_dung.push(response.data.data.user);
                 this.nguoi_dung_create = {};
                 toaster.success("Thêm người dùng thành công!");
+                this.layNguoiDung();
             } catch (error) {
                 console.error('Error adding user:', error);
                 toaster.error("Thêm người dùng thất bại!");
@@ -390,6 +392,7 @@ export default {
                 }
                 this.nguoi_dung_update = {};
                 toaster.success("Cập nhật người dùng thành công!");
+                this.layNguoiDung();
             } catch (error) {
                 console.error('Error updating user:', error);
                 toaster.error("Cập nhật người dùng thất bại!");
@@ -405,6 +408,7 @@ export default {
                 this.danh_sach_nguoi_dung = this.danh_sach_nguoi_dung.filter(u => u.id !== this.id_nguoi_dung_delete);
                 this.id_nguoi_dung_delete = "";
                 toaster.success("Xoá người dùng thành công!");
+                this.layNguoiDung();
             } catch (error) {
                 console.error('Error deleting user:', error);
                 toaster.error("Xoá người dùng thất bại!");

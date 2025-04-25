@@ -6,8 +6,8 @@
                 <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col-lg-3 col-xl-2">
-                            <button v-if="permissions.canCreate" class="btn btn-primary mb-3 mb-lg-0" data-bs-toggle="modal"
-                                data-bs-target="#taoPhongModal">
+                            <button v-if="permissions.canCreate" class="btn btn-primary mb-3 mb-lg-0"
+                                data-bs-toggle="modal" data-bs-target="#taoDanhMucModal">
                                 <i class="bx bxs-plus-square"></i>Thêm danh mục
                             </button>
                         </div>
@@ -58,7 +58,7 @@
         </div>
     </div>
     <!-- table  -->
-    <div class="row">
+    <div class="row" v-if="permissions.canView">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
@@ -199,7 +199,7 @@ export default {
         // Check permissions when component is created
         const permissions = await checkMultiplePermissions([
             'CATEGORY_VIEW',
-            'CATEGORY_CREATE', 
+            'CATEGORY_CREATE',
             'CATEGORY_UPDATE',
             'CATEGORY_DELETE'
         ]);
