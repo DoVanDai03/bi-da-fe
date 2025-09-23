@@ -12,7 +12,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="modal fade" id="taoPhongModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    <div class="modal fade" id="taoDanhMucModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                         aria-hidden="true">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">

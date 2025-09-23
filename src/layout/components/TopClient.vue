@@ -33,7 +33,7 @@ export default {
 
 <style scoped>
 .top-banner {
-    background: linear-gradient(45deg, #1a237e, #0d47a1);
+    background: linear-gradient(45deg, #26262c, #0d47a1);
     padding: 10px 0;
     color: white;
 }

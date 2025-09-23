@@ -48,7 +48,7 @@
                     <div class="col-lg-3 col-md-6">
                         <div class="footer-widget">
                             <h4>Về chúng tôi</h4>
-                            <p>FPT-Sport là đơn vị cung cấp thiết bị thể thao hàng đầu Việt Nam với hơn 10 năm kinh nghiệm.</p>
+                            <p>Thời Trang - Store là đơn vị cung cấp thời trang hàng đầu Việt Nam với hơn 10 năm kinh nghiệm.</p>
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6">

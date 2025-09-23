@@ -28,7 +28,6 @@
                                         <th>Tên người nhận</th>
                                         <th>SĐT người nhận</th>
                                         <th>Trạng thái</th>
-                                        <th>Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -52,15 +51,6 @@
                                                 <option value="returned">Đã hoàn trả</option>
                                                 <option value="completed">Đã hoàn thành</option>
                                             </select>
-                                        </td>
-                                        <td class="text-center">
-                                            <button v-if="permissions.canUpdate"
-                                                v-on:click="Object.assign(donHang, danhSachDonHang[index]); id_don_hang_update = donHang.id"
-                                                data-bs-toggle="modal" data-bs-target="#updateModal"
-                                                class="btn btn-info">Cập nhật</button>
-                                            <button v-if="permissions.canDelete" v-on:click="id_don_hang_delete = donHang.id"
-                                                data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                                class="btn btn-danger ms-2">Xoá</button>
                                         </td>
                                     </tr>
                                 </tbody>

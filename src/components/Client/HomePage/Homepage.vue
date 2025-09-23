@@ -74,7 +74,7 @@
     <hr>
     <div class="container">
         <div class="mt-3 mb-3" style="font-size: 20px;">
-            <b class="align-middle">Khách hàng nói về Đại Việt</b>
+            <b class="align-middle">Khách hàng nói về Thời Trang - Store</b>
         </div>
         <div class="reviews-container">
             <div class="reviews-track">

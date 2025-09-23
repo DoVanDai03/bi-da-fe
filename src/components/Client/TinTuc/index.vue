@@ -2,40 +2,9 @@
     <div class="news-page">
         <div class="container py-5">
             <h1 class="text-center mb-5">Tin Tức & Sự Kiện</h1>
-            
-            <!-- Tìm kiếm và bộ lọc -->
-            <div class="search-filter-container mb-5">
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="search-box">
-                            <div class="input-group">
-                                <input 
-                                    type="text" 
-                                    class="form-control" 
-                                    placeholder="Tìm kiếm tin tức..." 
-                                    v-model="searchQuery"
-                                    @input="filterNews"
-                                >
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <select class="form-select" v-model="selectedCategory" @change="filterNews">
-                            <option value="">Tất cả danh mục</option>
-                            <option value="tin-tuc">Tin tức</option>
-                            <option value="su-kien">Sự kiện</option>
-                            <option value="tuyen-dung">Tuyển dụng</option>
-                            <option value="khuyen-mai">Khuyến mãi</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            
+                    
             <!-- Tin tức nổi bật -->
-            <div class="featured-news mb-5" v-if="!searchQuery && !selectedCategory">
+            <div class="featured-news mb-5">
                 <h3 class="section-title mb-4">Tin Tức Nổi Bật</h3>
                 <div class="row">
                     <div class="col-lg-8 mb-4">
@@ -252,27 +221,7 @@ export default {
         };
     },
     computed: {
-        filteredNews() {
-            let result = this.allNews;
-            
-            if (this.selectedCategory) {
-                result = result.filter(item => item.categorySlug === this.selectedCategory);
-            }
-            
-            if (this.searchQuery) {
-                const searchLower = this.searchQuery.toLowerCase();
-                result = result.filter(item => 
-                    item.title.toLowerCase().includes(searchLower) || 
-                    item.excerpt.toLowerCase().includes(searchLower)
-                );
-            }
-            
-            // Phân trang
-            const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-            const endIndex = startIndex + this.itemsPerPage;
-            
-            return result.slice(startIndex, endIndex);
-        },
+        
         totalPages() {
             let filteredItems = this.allNews;
             

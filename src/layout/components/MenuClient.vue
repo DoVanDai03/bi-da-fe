@@ -3,8 +3,8 @@
         <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <a class="navbar-brand" href="#">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/FPT_logo_2010.svg/1200px-FPT_logo_2010.svg.png"
-                        alt="FPT-Sport" height="50">
+                    <img src="https://theme.hstatic.net/200000000133/1001205759/14/logo.png?v=2279"
+                        alt="THOI TRANG - STORE" height="50">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent">
@@ -86,15 +86,15 @@
                 </div>
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="https://www.thethaodaiviet.vn/upload/banner/maychay-cover-1920x650.png"
+                        <img src="https://file.hstatic.net/200000000133/file/banner_treo_web_99006b249a274b9a9554abfdb1e0bf3f_master.jpg"
                             class="d-block w-100" alt="...">
                     </div>
                     <div class="carousel-item">
-                        <img src="https://www.thethaodaiviet.vn/upload/banner/banner-web-xe-1920x650-1.png"
+                        <img src="https://theme.hstatic.net/200000000133/1001205759/14/ldpage02_banner_1_image.jpg?v=2279"
                             class="d-block w-100" alt="...">
                     </div>
                     <div class="carousel-item">
-                        <img src="https://www.thethaodaiviet.vn/upload/banner/ghe-cover-1920x650-dvs.png"
+                        <img src="https://theme.hstatic.net/200000000133/1001205759/14/ldpage02_bannertop_image.jpg?v=2279"
                             class="d-block w-100" alt="...">
                     </div>
                 </div>

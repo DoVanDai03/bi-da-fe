@@ -57,7 +57,7 @@
 						</a>
 					</router-link>
 				</li>
-				<li class="nav-item">
+				<!-- <li class="nav-item">
 					<router-link to="/admin/khach-hang">
 						<a class="nav-link" href="/admin/khach-hang">
 							<div class="parent-icon"><i class="fas fa-user-friends"></i>
@@ -65,6 +65,28 @@
 							<div class="menu-title">Khách Hàng</div>
 						</a>
 					</router-link>
+				</li> -->
+				<li class="nav-item dropdown">
+					<a href="javascript:;" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
+						data-bs-toggle="dropdown">
+						<div class="parent-icon"><i class="fa-brands fa-ubuntu"></i>
+						</div>
+						<div class="menu-title">QL Người Dùng</div>
+					</a>
+					<ul class="dropdown-menu">
+						<li>
+							<router-link to="/admin/khach-hang">
+								<a class="dropdown-item">
+									<i class="bx bx-right-arrow-alt"></i>Khách Hàng</a>
+							</router-link>
+						</li>
+						<li>
+							<router-link to="/admin/nguoi-dung">
+								<a class="dropdown-item">
+									<i class="bx bx-right-arrow-alt"></i>Nhân Viên</a>
+							</router-link>
+						</li>
+					</ul>
 				</li>
 				<li class="nav-item">
 					<router-link to="/admin/danh-gia">
@@ -93,7 +115,7 @@
 						</a>
 					</router-link>
 				</li>
-				<li class="nav-item">
+				<!-- <li class="nav-item">
 					<router-link to="/admin/nguoi-dung">
 						<a class="nav-link" href="/admin/nguoi-dung">
 							<div class="parent-icon"><i class="fas fa-users-cog"></i>
@@ -101,7 +123,7 @@
 							<div class="menu-title">Người dùng</div>
 						</a>
 					</router-link>
-				</li>
+				</li> -->
 				<li class="nav-item">
 					<router-link to="/admin/chuc-vu">
 						<a class="nav-link" href="/admin/chuc-vu">
@@ -111,7 +133,7 @@
 						</a>
 					</router-link>
 				</li>
-				<li class="nav-item">
+				<!-- <li class="nav-item">
 					<router-link to="/admin/quyen-truy-cap">
 						<a class="nav-link" href="/admin/quyen-truy-cap">
 							<div class="parent-icon"><i class="fas fa-user-shield"></i>
@@ -119,7 +141,7 @@
 							<div class="menu-title">Quyền truy cập</div>
 						</a>
 					</router-link>
-				</li>
+				</li> -->
 				<li class="nav-item">
 					<router-link to="/admin/phan-quyen">
 						<a class="nav-link" href="/admin/phan-quyen">

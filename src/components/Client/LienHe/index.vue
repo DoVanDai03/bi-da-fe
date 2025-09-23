@@ -11,7 +11,7 @@
         <div class="container py-5">
             <div class="row g-4">
                 <!-- Thông tin liên hệ -->
-                <div class="col-lg-5 mb-4">
+                <div class="col-lg-12 mb-4">
                     <div class="contact-info card h-100 border-0 shadow-sm">
                         <div class="card-body p-4">
                             <h3 class="card-title mb-4">Thông Tin Liên Hệ</h3>
@@ -23,10 +23,9 @@
                                 <div class="info-content">
                                     <h5>Địa Chỉ</h5>
                                     <p class="mb-0">
-                                        <a href="https://www.google.com/maps?q=FPT+Software+Academy" target="_blank"
+                                        <a href="https://www.google.com/maps?q=%C4%90%E1%BA%A1i+h%E1%BB%8Dc+Duy+T%C3%A2n,+Ho%C3%A0+Kh%C3%A1nh+Nam,+Li%C3%AAn+Chi%E1%BB%83u,+%C4%90%C3%A0+N%E1%BA%B5ng" target="_blank"
                                             class="address-link text-decoration-none">
-                                            Tòa nhà FPT Complex, Đ. Nam Kỳ Khởi Nghĩa, Ngũ Hành Sơn, Đà Nẵng 550000,
-                                            Việt Nam
+                                            Đại học Duy Tân, Hoà Khánh Nam, Liên Chiểu, Đà Nẵng
                                         </a>
                                     </p>
                                 </div>
@@ -39,7 +38,7 @@
                                 <div class="info-content">
                                     <h5>Số Điện Thoại</h5>
                                     <p class="mb-0">
-                                        <a href="tel:+84123456789" class="text-decoration-none">+84 123 456 789</a>
+                                        <a href="tel:+84357287014" class="text-decoration-none">+84 357287014</a>
                                     </p>
                                 </div>
                             </div>
@@ -51,8 +50,8 @@
                                 <div class="info-content">
                                     <h5>Email</h5>
                                     <p class="mb-0">
-                                        <a href="mailto:nghiemnguyen3106@gmail.com"
-                                            class="text-decoration-none">nghiemnguyen3106@gmail.com</a>
+                                        <a href="mailto:dovandai2906@gmail.com"
+                                            class="text-decoration-none">dovandai2906@gmail.com</a>
                                     </p>
                                 </div>
                             </div>
@@ -82,78 +81,14 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Form liên hệ -->
-                <div class="col-lg-7">
-                    <div class="contact-form card border-0 shadow-sm">
-                        <div class="card-body p-4">
-                            <h3 class="card-title mb-4">Gửi Tin Nhắn Cho Chúng Tôi</h3>
-
-                            <form @submit.prevent="guiLienHe" ref="formLienHe">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" id="hoTen" name="hoTen"
-                                                v-model="formData.hoTen" required>
-                                            <label for="hoTen">Họ và tên</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <input type="email" class="form-control" id="email" name="email"
-                                                v-model="formData.email" required>
-                                            <label for="email">Email</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <div class="form-floating">
-                                            <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai"
-                                                v-model="formData.soDienThoai" required>
-                                            <label for="soDienThoai">Số điện thoại</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" id="tieuDe" name="tieuDe"
-                                                v-model="formData.tieuDe" required>
-                                            <label for="tieuDe">Tiêu đề</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <div class="form-floating">
-                                            <textarea class="form-control" id="noiDung" name="noiDung"
-                                                style="height: 150px" v-model="formData.noiDung" required></textarea>
-                                            <label for="noiDung">Nội dung</label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="mt-4">
-                                    <button type="submit" class="btn btn-primary btn-lg w-100" :disabled="dangGui">
-                                        <span v-if="dangGui">
-                                            <i class="fas fa-spinner fa-spin me-2"></i>Đang gửi...
-                                        </span>
-                                        <span v-else>
-                                            <i class="fas fa-paper-plane me-2"></i>Gửi tin nhắn
-                                        </span>
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
             </div>
-
+            <h5 class="text-center mt-5">Vị Trí Của Chúng Tôi</h5>
             <!-- Bản đồ -->
             <div class="map-container mt-5">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-0">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3835.7707229451805!2d108.2594906!3d15.9791958!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3142111c9cc9e8c7%3A0x41e0f97d36ba0d30!2sFPT%20Software%20Academy%20-%20Trung%20t%C3%A2m%20%C4%91%C3%A0o%20t%E1%BA%A1o%20l%E1%BA%ADp%20tr%C3%ACnh%20vi%C3%AAn!5e0!3m2!1svi!2svn!4v1681022024200!5m2!1svi!2svn"
+                            src="https://www.google.com/maps?q=%C4%90%E1%BA%A1i+h%E1%BB%8Dc+Duy+T%C3%A2n,+Ho%C3%A0+Kh%C3%A1nh+Nam,+Li%C3%AAn+Chi%E1%BB%83u,+%C4%90%C3%A0+N%E1%BA%B5ng&output=embed"
                             width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade">
                         </iframe>
