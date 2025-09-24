@@ -12,29 +12,15 @@
                         <div class="search-box-modern">
                             <div class="search-input-wrapper">
                                 <i class="bx bx-search search-icon"></i>
-                                <input 
-                                    type="text" 
-                                    v-model="searchKeyword" 
-                                    @keyup.enter="performSearch"
-                                    @input="onSearchInput"
-                                    placeholder="Nhập tên sản phẩm, thương hiệu..."
-                                    class="search-input-modern"
-                                    :class="{ 'has-content': searchKeyword }"
-                                >
-                                <button 
-                                    v-if="searchKeyword" 
-                                    @click="clearSearch" 
-                                    class="clear-input-btn"
-                                >
+                                <input type="text" v-model="searchKeyword" @keyup.enter="performSearch"
+                                    @input="onSearchInput" placeholder="Nhập tên sản phẩm, thương hiệu..."
+                                    class="search-input-modern" :class="{ 'has-content': searchKeyword }">
+                                <button v-if="searchKeyword" @click="clearSearch" class="clear-input-btn">
                                     <i class="bx bx-x"></i>
                                 </button>
                             </div>
-                            <button 
-                                @click="performSearch" 
-                                class="search-btn-modern" 
-                                :disabled="isSearching || !searchKeyword.trim()"
-                                :class="{ 'searching': isSearching }"
-                            >
+                            <button @click="performSearch" class="search-btn-modern"
+                                :disabled="isSearching || !searchKeyword.trim()" :class="{ 'searching': isSearching }">
                                 <span v-if="!isSearching">
                                     <i class="bx bx-search"></i>
                                     Tìm kiếm
@@ -45,7 +31,7 @@
                                 </span>
                             </button>
                         </div>
-                        
+
                         <!-- Quick Search Suggestions -->
                         <div v-if="showSuggestions && searchSuggestions.length > 0" class="search-suggestions">
                             <div class="suggestions-header">
@@ -53,19 +39,15 @@
                                 Gợi ý tìm kiếm
                             </div>
                             <div class="suggestions-list">
-                                <button 
-                                    v-for="suggestion in searchSuggestions" 
-                                    :key="suggestion"
-                                    @click="selectSuggestion(suggestion)"
-                                    class="suggestion-item"
-                                >
+                                <button v-for="suggestion in searchSuggestions" :key="suggestion"
+                                    @click="selectSuggestion(suggestion)" class="suggestion-item">
                                     <i class="bx bx-history"></i>
                                     {{ suggestion }}
                                 </button>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Search Results Summary -->
                     <div v-if="searchKeyword && searchResults.length > 0" class="search-summary">
                         <div class="summary-content">
@@ -82,6 +64,138 @@
                             Tìm kiếm mới
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Search Results Section -->
+        <div v-if="searchKeyword && (searchResults.length > 0 || isSearching)" class="search-results-section mb-5">
+            <!-- Loading State -->
+            <div v-if="isSearching" class="search-loading">
+                <div class="loading-animation">
+                    <div class="loading-circle"></div>
+                    <div class="loading-circle"></div>
+                    <div class="loading-circle"></div>
+                </div>
+                <h3>Đang tìm kiếm...</h3>
+                <p>Vui lòng chờ trong giây lát</p>
+            </div>
+
+            <!-- No Results State -->
+            <div v-else-if="searchResults.length === 0" class="no-results-state">
+                <div class="no-results-icon">
+                    <i class="bx bx-search-alt-2"></i>
+                </div>
+                <h3>Không tìm thấy sản phẩm</h3>
+                <p>Không có sản phẩm nào khớp với từ khóa <strong>"{{ searchKeyword }}"</strong></p>
+                <div class="no-results-suggestions">
+                    <h4>Gợi ý:</h4>
+                    <ul>
+                        <li>Kiểm tra chính tả từ khóa</li>
+                        <li>Thử từ khóa khác ngắn hơn</li>
+                        <li>Sử dụng từ đồng nghĩa</li>
+                    </ul>
+                </div>
+                <button @click="clearSearch" class="try-again-btn">
+                    <i class="bx bx-refresh"></i>
+                    Thử lại
+                </button>
+            </div>
+
+            <!-- Results Grid -->
+            <div v-else class="search-results-grid">
+                <div class="results-header">
+                    <div class="results-info">
+                        <h3><i class="bx bx-grid-alt"></i> Kết quả tìm kiếm</h3>
+                        <span class="results-count">{{ searchTotalItems }} sản phẩm</span>
+                    </div>
+                    <div class="view-options">
+                        <button class="view-btn active" data-view="grid">
+                            <i class="bx bx-grid-alt"></i>
+                        </button>
+                        <button class="view-btn" data-view="list">
+                            <i class="bx bx-list-ul"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="products-grid">
+                            <div v-for="(sp, spIndex) in searchResults" :key="'search-' + spIndex" class="product-item"
+                                :style="{ 'animation-delay': (spIndex * 0.1) + 's' }">
+                                <div class="product-card-modern">
+                                    <div class="product-image">
+                                        <img :src="sp.hinhAnh" :alt="sp.tenSanPham">
+                                        <div class="product-overlay">
+                                            <button @click="redirectToDetail(sp.id)" class="quick-view-btn">
+                                                <i class="bx bx-show"></i>
+                                                Xem nhanh
+                                            </button>
+                                        </div>
+                                        <div v-if="sp.giamGia" class="discount-tag">
+                                            <span>-{{ sp.giamGia.phamTramGiamGia }}%</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="product-info">
+                                        <h4 class="product-name">{{ sp.tenSanPham }}</h4>
+
+                                        <div class="product-meta">
+                                            <div class="stock-info"
+                                                :class="sp.soLuongTonKho > 0 ? 'in-stock' : 'out-of-stock'">
+                                                <i class="bx bx-package"></i>
+                                                <span>{{ sp.soLuongTonKho > 0 ? 'Còn hàng' : 'Hết hàng' }}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="product-pricing">
+                                            <div v-if="sp.giamGia" class="price-original">
+                                                {{ formatCurrency(sp.giaSanPham) }}
+                                            </div>
+                                            <div class="price-current">
+                                                {{ formatCurrency(sp.giaSanPham * (1 - (sp.giamGia?.phamTramGiamGia ||
+                                                0) / 100)) }}
+                                            </div>
+                                        </div>
+
+                                        <button @click="redirectToDetail(sp.id)" class="product-action-btn">
+                                            <i class="bx bx-cart-add"></i>
+                                            Xem chi tiết
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modern Pagination -->
+            <div v-if="searchResults.length > 0 && searchTotalPages > 1" class="modern-pagination">
+                <div class="pagination-info">
+                    <span>Trang {{ searchCurrentPage + 1 }} / {{ searchTotalPages }}</span>
+                </div>
+                <div class="pagination-controls">
+                    <button @click="loadSearchPage(searchCurrentPage - 1)" :disabled="searchCurrentPage === 0"
+                        class="pagination-btn prev">
+                        <i class="bx bx-chevron-left"></i>
+                        Trước
+                    </button>
+
+                    <div class="page-numbers">
+                        <button v-for="page in visiblePages" :key="page" @click="loadSearchPage(page - 1)"
+                            class="page-number" :class="{ active: page === searchCurrentPage + 1 }">
+                            {{ page }}
+                        </button>
+                    </div>
+
+                    <button @click="loadSearchPage(searchCurrentPage + 1)"
+                        :disabled="searchCurrentPage === searchTotalPages - 1" class="pagination-btn next">
+                        Sau
+                        <i class="bx bx-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -105,6 +219,7 @@
                 </template>
             </div>
         </div>
+
 
         <div v-if="selectedCategory" class="category-products-section mb-5">
             <div class="section-title mb-3">
@@ -134,7 +249,8 @@
                                 <h6 class="card-title">{{ sp.tenSanPham }}</h6>
                                 <div class="product-details">
                                     <div class="price-section">
-                                        <p class="stock-status" :class="sp.soLuongTonKho > 0 ? 'text-success' : 'text-danger'">
+                                        <p class="stock-status"
+                                            :class="sp.soLuongTonKho > 0 ? 'text-success' : 'text-danger'">
                                             <i class="bx bx-package"></i>
                                             {{ sp.soLuongTonKho > 0 ? 'Còn hàng' : 'Hết hàng' }}
                                             ({{ sp.soLuongTonKho }})
@@ -144,7 +260,63 @@
                                                 {{ formatCurrency(sp.giaSanPham) }}
                                             </span>
                                             <span class="discounted-price">
-                                                {{ formatCurrency(sp.giaSanPham * (1 - (sp.giamGia?.phamTramGiamGia || 0) / 100)) }}
+                                                {{ formatCurrency(sp.giaSanPham * (1 - (sp.giamGia?.phamTramGiamGia ||
+                                                0) / 100)) }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+        <!-- Newest Products Section -->
+        <div class="newest-products-section mb-5">
+            <div class="section-title mb-3">
+                <i class="bx bx-time me-2"></i>
+                SẢN PHẨM MỚI NHẤT
+            </div>
+            <div v-if="isLoadingNewest" class="loading-container">
+                <div class="loading-spinner"></div>
+                <p>Đang tải sản phẩm mới nhất...</p>
+            </div>
+            <div v-else-if="!san_pham_moi_nhat?.length" class="no-products">
+                <i class="bx bx-box-open"></i>
+                <p>Không có sản phẩm mới nào.</p>
+            </div>
+            <div v-else class="row g-4">
+                <template v-for="(sp, spIndex) in san_pham_moi_nhat" :key="'newest-' + spIndex">
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="product-card">
+                            <img :src="sp.hinhAnh" class="card-img-top" :alt="sp.tenSanPham">
+                            <div class="discount-badge" v-if="sp.giamGia">
+                                <span class="badge">-{{ sp.giamGia.phamTramGiamGia }}%</span>
+                            </div>
+                            <div class="new-badge">
+                                <span class="badge">Mới</span>
+                            </div>
+                            <div class="view-details">
+                                <a @click="redirectToDetail(sp.id)" href="javascript:void(0)">Xem chi tiết</a>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="card-title">{{ sp.tenSanPham }}</h6>
+                                <div class="product-details">
+                                    <div class="price-section">
+                                        <p class="stock-status"
+                                            :class="sp.soLuongTonKho > 0 ? 'text-success' : 'text-danger'">
+                                            <i class="bx bx-package"></i>
+                                            {{ sp.soLuongTonKho > 0 ? 'Còn hàng' : 'Hết hàng' }}
+                                            ({{ sp.soLuongTonKho }})
+                                        </p>
+                                        <p class="mb-0">
+                                            <span v-if="sp.giamGia" class="original-price">
+                                                {{ formatCurrency(sp.giaSanPham) }}
+                                            </span>
+                                            <span class="discounted-price">
+                                                {{ formatCurrency(sp.giaSanPham * (1 - (sp.giamGia?.phamTramGiamGia ||
+                                                0) / 100)) }}
                                             </span>
                                         </p>
                                     </div>
@@ -156,152 +328,14 @@
             </div>
         </div>
 
-        <!-- Search Results Section -->
-        <div v-if="searchKeyword && (searchResults.length > 0 || isSearching)" class="search-results-section mb-5">
-            <!-- Loading State -->
-            <div v-if="isSearching" class="search-loading">
-                <div class="loading-animation">
-                    <div class="loading-circle"></div>
-                    <div class="loading-circle"></div>
-                    <div class="loading-circle"></div>
-                </div>
-                <h3>Đang tìm kiếm...</h3>
-                <p>Vui lòng chờ trong giây lát</p>
-            </div>
-            
-            <!-- No Results State -->
-            <div v-else-if="searchResults.length === 0" class="no-results-state">
-                <div class="no-results-icon">
-                    <i class="bx bx-search-alt-2"></i>
-                </div>
-                <h3>Không tìm thấy sản phẩm</h3>
-                <p>Không có sản phẩm nào khớp với từ khóa <strong>"{{ searchKeyword }}"</strong></p>
-                <div class="no-results-suggestions">
-                    <h4>Gợi ý:</h4>
-                    <ul>
-                        <li>Kiểm tra chính tả từ khóa</li>
-                        <li>Thử từ khóa khác ngắn hơn</li>
-                        <li>Sử dụng từ đồng nghĩa</li>
-                    </ul>
-                </div>
-                <button @click="clearSearch" class="try-again-btn">
-                    <i class="bx bx-refresh"></i>
-                    Thử lại
-                </button>
-            </div>
-            
-            <!-- Results Grid -->
-            <div v-else class="search-results-grid">
-                <div class="results-header">
-                    <div class="results-info">
-                        <h3><i class="bx bx-grid-alt"></i> Kết quả tìm kiếm</h3>
-                        <span class="results-count">{{ searchTotalItems }} sản phẩm</span>
-                    </div>
-                    <div class="view-options">
-                        <button class="view-btn active" data-view="grid">
-                            <i class="bx bx-grid-alt"></i>
-                        </button>
-                        <button class="view-btn" data-view="list">
-                            <i class="bx bx-list-ul"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="products-grid">
-                    <div 
-                        v-for="(sp, spIndex) in searchResults" 
-                        :key="'search-' + spIndex"
-                        class="product-item"
-                        :style="{ 'animation-delay': (spIndex * 0.1) + 's' }"
-                    >
-                        <div class="product-card-modern">
-                            <div class="product-image">
-                                <img :src="sp.hinhAnh" :alt="sp.tenSanPham">
-                                <div class="product-overlay">
-                                    <button @click="redirectToDetail(sp.id)" class="quick-view-btn">
-                                        <i class="bx bx-show"></i>
-                                        Xem nhanh
-                                    </button>
-                                </div>
-                                <div v-if="sp.giamGia" class="discount-tag">
-                                    <span>-{{ sp.giamGia.phamTramGiamGia }}%</span>
-                                </div>
-                            </div>
-                            
-                            <div class="product-info">
-                                <h4 class="product-name">{{ sp.tenSanPham }}</h4>
-                                
-                                <div class="product-meta">
-                                    <div class="stock-info" :class="sp.soLuongTonKho > 0 ? 'in-stock' : 'out-of-stock'">
-                                        <i class="bx bx-package"></i>
-                                        <span>{{ sp.soLuongTonKho > 0 ? 'Còn hàng' : 'Hết hàng' }}</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="product-pricing">
-                                    <div v-if="sp.giamGia" class="price-original">
-                                        {{ formatCurrency(sp.giaSanPham) }}
-                                    </div>
-                                    <div class="price-current">
-                                        {{ formatCurrency(sp.giaSanPham * (1 - (sp.giamGia?.phamTramGiamGia || 0) / 100)) }}
-                                    </div>
-                                </div>
-                                
-                                <button @click="redirectToDetail(sp.id)" class="product-action-btn">
-                                    <i class="bx bx-cart-add"></i>
-                                    Xem chi tiết
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Modern Pagination -->
-            <div v-if="searchResults.length > 0 && searchTotalPages > 1" class="modern-pagination">
-                <div class="pagination-info">
-                    <span>Trang {{ searchCurrentPage + 1 }} / {{ searchTotalPages }}</span>
-                </div>
-                <div class="pagination-controls">
-                    <button 
-                        @click="loadSearchPage(searchCurrentPage - 1)" 
-                        :disabled="searchCurrentPage === 0"
-                        class="pagination-btn prev"
-                    >
-                        <i class="bx bx-chevron-left"></i>
-                        Trước
-                    </button>
-                    
-                    <div class="page-numbers">
-                        <button 
-                            v-for="page in visiblePages" 
-                            :key="page"
-                            @click="loadSearchPage(page - 1)"
-                            class="page-number"
-                            :class="{ active: page === searchCurrentPage + 1 }"
-                        >
-                            {{ page }}
-                        </button>
-                    </div>
-                    
-                    <button 
-                        @click="loadSearchPage(searchCurrentPage + 1)" 
-                        :disabled="searchCurrentPage === searchTotalPages - 1"
-                        class="pagination-btn next"
-                    >
-                        Sau
-                        <i class="bx bx-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <hr>
     <div class="container">
-        <div class="mt-3 mb-3" style="font-size: 20px;">
-            <b class="align-middle">Khách hàng nói về Thời Trang - Store</b>
-        </div>
+        <div class="section-title mb-3">
+            <i class="fa-solid fa-comments ms-2"></i>
+                <span class="ms-2 mt-2">Khách hàng nói về Thời Trang - Store</span>          
+            </div>
         <div class="reviews-container">
             <div class="reviews-track">
                 <template v-for="(value, index) in danh_sach_danh_gia" :key="index">
@@ -309,8 +343,6 @@
                         <div class="card review-card">
                             <div class="card-body">
                                 <div class="d-flex flex-column align-items-center">
-                                    <img src="https://i.pinimg.com/originals/03/19/e7/0319e75748160709ceefa7398a4a7070.jpg"
-                                        alt="Admin" class="rounded-circle p-1 bg-primary" width="110">
                                     <div class="mt-3">
                                         <h4 class="text-center">{{ value.user.hoVaTen }}</h4>
                                         <p class="text-secondary mb-1 review-text">
@@ -340,7 +372,11 @@ export default {
             isLoading: false,
             selectedCategory: null,
             carouselInterval: 5000, // 5 seconds per slide
-            
+
+            // Newest products data
+            san_pham_moi_nhat: [],
+            isLoadingNewest: false,
+
             // Search related data
             searchKeyword: '',
             searchResults: [],
@@ -351,11 +387,11 @@ export default {
             isSearching: false,
             showSuggestions: false,
             searchSuggestions: [
-                'Máy chạy bộ',
-                'Xe đạp tập',
-                'Máy tập cơ',
-                'Dụng cụ thể thao',
-                'Thực phẩm bổ sung'
+                'Áo sơ mi',
+                'Áo thun',
+                'Áo vest',
+                'Quần jean',
+                'Quần nỉ'
             ],
         };
     },
@@ -373,7 +409,7 @@ export default {
             const maxVisible = 5;
             const start = Math.max(0, this.searchCurrentPage - Math.floor(maxVisible / 2));
             const end = Math.min(this.searchTotalPages, start + maxVisible);
-            
+
             for (let i = start; i < end; i++) {
                 pages.push(i + 1);
             }
@@ -475,7 +511,7 @@ export default {
                 toaster.warning('Vui lòng nhập từ khóa tìm kiếm!');
                 return;
             }
-            
+
             this.searchCurrentPage = 0;
             this.loadSearchResults();
         },
@@ -486,7 +522,7 @@ export default {
                 page: this.searchCurrentPage,
                 size: this.searchPageSize
             };
-            
+
             axios.get('/api/user/tim-kiem', { params })
                 .then(res => {
                     if (res.data.status) {
@@ -494,7 +530,7 @@ export default {
                         this.searchTotalItems = res.data.totalItems;
                         this.searchTotalPages = res.data.totalPages;
                         this.searchCurrentPage = res.data.currentPage;
-                        
+
                         if (this.searchResults.length === 0) {
                             toaster.info('Không tìm thấy sản phẩm nào!');
                         }
@@ -530,9 +566,29 @@ export default {
             this.showSuggestions = false;
             this.performSearch();
         },
+        laySanPhamMoiNhat() {
+            this.isLoadingNewest = true;
+            axios.get('/api/user/moi-nhat?limit=8')
+                .then(res => {
+                    if (res.data.status) {
+                        this.san_pham_moi_nhat = res.data.data;
+                        console.log('Sản phẩm mới nhất:', this.san_pham_moi_nhat);
+                    } else {
+                        toaster.error(res.data.message || 'Có lỗi xảy ra khi tải sản phẩm mới nhất!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading newest products:', error);
+                    toaster.error('Có lỗi xảy ra khi tải sản phẩm mới nhất!');
+                })
+                .finally(() => {
+                    this.isLoadingNewest = false;
+                });
+        },
     },
     mounted() {
         this.layDanhGia();
+        this.laySanPhamMoiNhat(); // Load newest products
         axios.get('/api/user/danh-muc/home-page')
             .then((res) => {
                 if (res.data.status) {
@@ -565,9 +621,6 @@ export default {
 </script>
 <style scoped>
 /* Container styles */
-.container {
-    padding: 20px 0;
-}
 
 .section-title {
     font-size: 24px;
@@ -696,6 +749,40 @@ export default {
     background: #dc3545;
 }
 
+/* New badge for newest products */
+.new-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+}
+
+.new-badge .badge {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 4px;
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    animation: pulse-new 2s infinite;
+}
+
+@keyframes pulse-new {
+    0% {
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.5);
+    }
+
+    100% {
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    }
+}
+
 /* View details overlay */
 .view-details {
     position: absolute;
@@ -775,6 +862,51 @@ export default {
 
     .price-section .discounted-price {
         font-size: 16px;
+    }
+}
+
+/* Newest Products Section */
+.newest-products-section {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+    border-left: 4px solid #28a745;
+}
+
+.newest-products-section .section-title {
+    color: #28a745;
+    font-size: 24px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.newest-products-section .section-title i {
+    color: #28a745;
+    font-size: 28px;
+    margin-right: 10px;
+    animation: bounce-time 2s infinite;
+}
+
+@keyframes bounce-time {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-5px);
+    }
+
+    60% {
+        transform: translateY(-3px);
     }
 }
 
@@ -991,7 +1123,7 @@ export default {
     .review-text {
         height: 80px;
     }
-    
+
     #reviewsCarousel {
         padding: 20px;
     }
@@ -1041,6 +1173,7 @@ export default {
     0% {
         transform: translateX(0);
     }
+
     100% {
         transform: translateX(-50%);
     }
@@ -1048,6 +1181,86 @@ export default {
 
 .reviews-container:hover .reviews-track {
     animation-play-state: paused;
+}
+
+/* Enhanced Reviews Styling */
+.reviews-container {
+    background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    padding: 30px 16px;
+}
+
+.reviews-track {
+    gap: 24px;
+    padding: 4px;
+    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+.review-item {
+    flex: 0 0 320px;
+}
+
+.review-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(17, 24, 39, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.review-card::before {
+    content: '“';
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    font-size: 80px;
+    color: rgba(220, 53, 69, 0.12);
+    line-height: 1;
+    pointer-events: none;
+}
+
+.review-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 40px rgba(17, 24, 39, 0.12);
+}
+
+.review-card .card-body {
+    padding: 22px 18px;
+}
+
+.review-text {
+    font-style: italic;
+    color: #4b5563;
+    background: #f8fafc;
+    border-left: 3px solid #dc3545;
+    border-radius: 8px;
+    padding: 12px 14px;
+    height: auto;
+    max-height: 120px;
+    overflow: auto;
+}
+
+.review-text::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+
+.review-text::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+}
+
+.review-text::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+@media (max-width: 768px) {
+    .review-item {
+        flex: 0 0 260px;
+    }
 }
 
 /* Modern Search Section */
@@ -1327,7 +1540,6 @@ export default {
 .search-results-section {
     background: #f8f9fa;
     border-radius: 20px;
-    padding: 30px;
     margin-bottom: 30px;
 }
 
@@ -1352,8 +1564,13 @@ export default {
     animation: bounce 1.4s ease-in-out infinite both;
 }
 
-.loading-circle:nth-child(1) { animation-delay: -0.32s; }
-.loading-circle:nth-child(2) { animation-delay: -0.16s; }
+.loading-circle:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.loading-circle:nth-child(2) {
+    animation-delay: -0.16s;
+}
 
 .search-loading h3 {
     color: #333;
@@ -1506,7 +1723,6 @@ export default {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 25px;
-    margin-bottom: 40px;
 }
 
 .product-item {
@@ -1758,14 +1974,23 @@ export default {
 
 /* Animations */
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes bounce {
-    0%, 80%, 100% {
+
+    0%,
+    80%,
+    100% {
         transform: scale(0);
     }
+
     40% {
         transform: scale(1);
     }
@@ -1775,9 +2000,11 @@ export default {
     0% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.05);
     }
+
     100% {
         transform: scale(1);
     }
@@ -1788,6 +2015,7 @@ export default {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1799,6 +2027,7 @@ export default {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1810,6 +2039,7 @@ export default {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1821,6 +2051,7 @@ export default {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1832,52 +2063,52 @@ export default {
     .search-section {
         padding: 30px 15px;
     }
-    
+
     .search-title h2 {
         font-size: 2rem;
     }
-    
+
     .search-box-modern {
         flex-direction: column;
         gap: 15px;
         padding: 15px;
     }
-    
+
     .search-input-wrapper {
         width: 100%;
     }
-    
+
     .search-btn-modern {
         width: 100%;
     }
-    
+
     .search-summary {
         flex-direction: column;
         gap: 15px;
         text-align: center;
     }
-    
+
     .summary-content {
         flex-direction: column;
         gap: 10px;
     }
-    
+
     .results-header {
         flex-direction: column;
         gap: 15px;
         align-items: flex-start;
     }
-    
+
     .products-grid {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         gap: 20px;
     }
-    
+
     .modern-pagination {
         flex-direction: column;
         gap: 15px;
     }
-    
+
     .pagination-controls {
         flex-wrap: wrap;
         justify-content: center;
@@ -1888,15 +2119,15 @@ export default {
     .search-title h2 {
         font-size: 1.5rem;
     }
-    
+
     .search-title p {
         font-size: 1rem;
     }
-    
+
     .products-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .product-image {
         height: 200px;
     }

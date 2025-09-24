@@ -86,15 +86,15 @@
                 </div>
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="https://file.hstatic.net/200000000133/file/banner_treo_web_99006b249a274b9a9554abfdb1e0bf3f_master.jpg"
+                        <img src="https://media.routine.vn/1920x0/prod/media/banner-01-png-hvlo.webp"
                             class="d-block w-100" alt="...">
                     </div>
                     <div class="carousel-item">
-                        <img src="https://theme.hstatic.net/200000000133/1001205759/14/ldpage02_banner_1_image.jpg?v=2279"
+                        <img src="https://media.routine.vn/1920x0/prod/media/banner-01-png-gbr5.webp"
                             class="d-block w-100" alt="...">
                     </div>
                     <div class="carousel-item">
-                        <img src="https://theme.hstatic.net/200000000133/1001205759/14/ldpage02_bannertop_image.jpg?v=2279"
+                        <img src="https://media.routine.vn/1920x0/prod/media/smart-shirt-cover-web-copy-png-b369.webp"
                             class="d-block w-100" alt="...">
                     </div>
                 </div>

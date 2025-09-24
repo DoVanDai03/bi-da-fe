@@ -4,67 +4,83 @@ const routes = [
     {
         path : '/',
         redirect: "/home-page",
-        component: ()=>import('../layout/wrapper/index.vue')
+        component: ()=>import('../layout/wrapper/index.vue'),
+        meta: { layout: 'home' }
     },
     {
         path : '/admin/thuong-hieu',
-        component: ()=>import('../components/Admin/ThuongHieu/index.vue')
+        component: ()=>import('../components/Admin/ThuongHieu/index.vue'),
+        meta: { layout: 'home' }
     },
     {
         path : '/admin/danh-muc',
-        component: ()=>import('../components/Admin/DanhMuc/index.vue')
+        component: ()=>import('../components/Admin/DanhMuc/index.vue'),
+        meta: { layout: 'home' }
     },
     {
         path : '/admin/nha-cung-cap',
-        component: ()=>import('../components/Admin/NhaCungCap/index.vue')
+        component: ()=>import('../components/Admin/NhaCungCap/index.vue'),
+        meta: { layout: 'home' }
     },
     {
         path : '/admin/giam-gia',
-        component: ()=>import('../components/Admin/GiamGia/index.vue')
+        component: ()=>import('../components/Admin/GiamGia/index.vue'),
+        meta: { layout: 'home' }
     },
     {
         path : '/admin/san-pham',
-        component: ()=>import('../components/Admin/SanPham/index.vue')
+        component: ()=>import('../components/Admin/SanPham/index.vue'),
+        meta: { layout: 'home' }
     },
     {
         path : '/admin/danh-gia',
-        component: ()=>import('../components/Admin/DanhGia/index.vue')
+        component: ()=>import('../components/Admin/DanhGia/index.vue'),
+        meta: { layout: 'home' }
     },
     {
         path : '/admin/khach-hang',
-        component: ()=>import('../components/Admin/KhachHang/index.vue')
+        component: ()=>import('../components/Admin/KhachHang/index.vue'),
+        meta: { layout: 'home' }
     },
     {
         path : '/admin/don-hang',
-        component: ()=>import('../components/Admin/DonHang/index.vue')
+        component: ()=>import('../components/Admin/DonHang/index.vue'),
+        meta: { layout: 'home' }
     },
     {
         path : '/admin/thong-ke',
-        component: ()=>import('../components/Admin/ThongKe/index.vue')
+        component: ()=>import('../components/Admin/ThongKe/index.vue'),
+        meta: { layout: 'home' }
     },
     {
         path : '/admin/nguoi-dung',
-        component: ()=>import('../components/Admin/NguoiDung/index.vue')
+        component: ()=>import('../components/Admin/NguoiDung/index.vue'),
+        meta: { layout: 'home' }
     },
     {
         path : '/admin/chuc-vu',
-        component: ()=>import('../components/Admin/ChucVu/index.vue')
+        component: ()=>import('../components/Admin/ChucVu/index.vue'),
+        meta: { layout: 'home' }
     },
     {
         path : '/admin/quyen-truy-cap',
-        component: ()=>import('../components/Admin/QuyenTruyCap/index.vue')
+        component: ()=>import('../components/Admin/QuyenTruyCap/index.vue'),
+        meta: { layout: 'home' }
     },
     {
         path : '/admin/phan-quyen',
-        component: ()=>import('../components/Admin/PhanQuyen/index.vue')
+        component: ()=>import('../components/Admin/PhanQuyen/index.vue'),
+        meta: { layout: 'home' }
     },
     {
         path : '/admin/bai-viet',
-        component: ()=>import('../components/Admin/BaiViet/index.vue')
+        component: ()=>import('../components/Admin/BaiViet/index.vue'),
+        meta: { layout: 'home' }
     },
     {
         path : '/admin/thong-tin-tai-khoan',
-        component: ()=>import('../components/Admin/ThongTinTaiKhoan/index.vue')
+        component: ()=>import('../components/Admin/ThongTinTaiKhoan/index.vue'),
+        meta: { layout: 'client' }
     },
     {
         path : '/home-page',
@@ -86,7 +102,6 @@ const routes = [
         component: ()=>import('../components/Client/LienHe/index.vue'),
         meta: { layout: 'client' }
     },
-
     {
         path : '/chi-tiet-san-pham/:id',
         component: ()=>import('../components/Client/ChiTietSanPham/index.vue'),
@@ -148,7 +163,6 @@ const routes = [
         component: ()=>import('../components/Client/DangKy/kichHoatTaiKhoan.vue'),
         meta: { layout: 'Login' }
     },
-
 ]
 
 const router = createRouter({
