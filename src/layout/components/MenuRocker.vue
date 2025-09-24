@@ -151,6 +151,15 @@
 						</a>
 					</router-link>
 				</li>	
+				<li class="nav-item">
+					<router-link to="/admin/bai-viet">
+						<a class="nav-link" href="/admin/bai-viet">
+							<div class="parent-icon"><i class="fas fa-user-lock"></i>
+							</div>
+							<div class="menu-title">Bài viết</div>
+						</a>
+					</router-link>
+				</li>
 			</ul>
 		</nav>
 	</div>

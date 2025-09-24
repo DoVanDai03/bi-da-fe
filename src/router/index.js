@@ -59,6 +59,10 @@ const routes = [
         component: ()=>import('../components/Admin/PhanQuyen/index.vue')
     },
     {
+        path : '/admin/bai-viet',
+        component: ()=>import('../components/Admin/BaiViet/index.vue')
+    },
+    {
         path : '/admin/thong-tin-tai-khoan',
         component: ()=>import('../components/Admin/ThongTinTaiKhoan/index.vue')
     },
@@ -70,6 +74,11 @@ const routes = [
     {
         path : '/tin-tuc',
         component: ()=>import('../components/Client/TinTuc/index.vue'),
+        meta: { layout: 'client' }
+    },
+    {
+        path : '/tin-tuc/:id',
+        component: ()=>import('../components/Client/TinTuc/chiTietTinTuc.vue'),
         meta: { layout: 'client' }
     },
     {
@@ -132,6 +141,11 @@ const routes = [
     {
         path : '/quen-mat-khau',
         component: ()=>import('../components/Client/QuenMatKhau/index.vue'),
+        meta: { layout: 'Login' }
+    },
+    {
+        path : '/xac-minh',
+        component: ()=>import('../components/Client/DangKy/kichHoatTaiKhoan.vue'),
         meta: { layout: 'Login' }
     },
 
