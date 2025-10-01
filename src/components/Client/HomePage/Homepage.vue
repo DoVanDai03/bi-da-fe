@@ -334,7 +334,7 @@
     <div class="container">
         <div class="section-title mb-3">
             <i class="fa-solid fa-comments ms-2"></i>
-                <span class="ms-2 mt-2">Khách hàng nói về Thời Trang - Store</span>          
+                <span class="ms-2 mt-2">Khách hàng nói về Xbilliard - Store</span>          
             </div>
         <div class="reviews-container">
             <div class="reviews-track">
@@ -387,11 +387,12 @@ export default {
             isSearching: false,
             showSuggestions: false,
             searchSuggestions: [
-                'Áo sơ mi',
-                'Áo thun',
-                'Áo vest',
-                'Quần jean',
-                'Quần nỉ'
+                'Gậy Bi-a Allin',
+                'Gậy Bi-a Wolf Cue',
+                'Bao Đựng Cơ',
+                'Găng tay',
+                'Tẩy',
+                'Lơ'
             ],
         };
     },

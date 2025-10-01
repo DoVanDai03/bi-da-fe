@@ -3,7 +3,7 @@
         <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <a class="navbar-brand" href="#">
-                    <img src="https://theme.hstatic.net/200000000133/1001205759/14/logo.png?v=2279"
+                    <img src="https://xbilliard.vn/wp-content/uploads/2025/02/cropped-Artboard-1-copy-2-1536x932.png"
                         alt="THOI TRANG - STORE" height="50">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -86,15 +86,15 @@
                 </div>
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="https://media.routine.vn/1920x0/prod/media/banner-01-png-hvlo.webp"
+                        <img src="https://xbilliard.vn/wp-content/uploads/2025/07/313-web.jpg"
                             class="d-block w-100" alt="...">
                     </div>
                     <div class="carousel-item">
-                        <img src="https://media.routine.vn/1920x0/prod/media/banner-01-png-gbr5.webp"
+                        <img src="https://xbilliard.vn/wp-content/uploads/2025/06/281-web.jpg"
                             class="d-block w-100" alt="...">
                     </div>
                     <div class="carousel-item">
-                        <img src="https://media.routine.vn/1920x0/prod/media/smart-shirt-cover-web-copy-png-b369.webp"
+                        <img src="https://xbilliard.vn/wp-content/uploads/2024/08/24-Web-150kb.jpg"
                             class="d-block w-100" alt="...">
                     </div>
                 </div>

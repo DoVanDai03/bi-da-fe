@@ -23,9 +23,9 @@
                                 <div class="info-content">
                                     <h5>Địa Chỉ</h5>
                                     <p class="mb-0">
-                                        <a href="https://www.google.com/maps?q=%C4%90%E1%BA%A1i+h%E1%BB%8Dc+Duy+T%C3%A2n,+Ho%C3%A0+Kh%C3%A1nh+Nam,+Li%C3%AAn+Chi%E1%BB%83u,+%C4%90%C3%A0+N%E1%BA%B5ng" target="_blank"
+                                        <a href="https://www.google.com/maps?q=475A+%C4%90i%E1%BB%87n+Bi%C3%AAn+Ph%E1%BB%A7,+Ph%C6%B0%E1%BB%9Dng+25,+B%C3%ACnh+Th%E1%BA%A1nh,+H%E1%BB%93+Ch%C3%AD+Minh" target="_blank"
                                             class="address-link text-decoration-none">
-                                            Đại học Duy Tân, Hoà Khánh Nam, Liên Chiểu, Đà Nẵng
+                                            475A Điện Biên Phủ, Phường 25, Bình Thạnh, Hồ Chí Minh
                                         </a>
                                     </p>
                                 </div>
@@ -38,7 +38,7 @@
                                 <div class="info-content">
                                     <h5>Số Điện Thoại</h5>
                                     <p class="mb-0">
-                                        <a href="tel:+84357287014" class="text-decoration-none">+84 357287014</a>
+                                        <a href="tel:+84379977438" class="text-decoration-none">+84 379977438</a>
                                     </p>
                                 </div>
                             </div>
@@ -50,8 +50,8 @@
                                 <div class="info-content">
                                     <h5>Email</h5>
                                     <p class="mb-0">
-                                        <a href="mailto:dovandai2906@gmail.com"
-                                            class="text-decoration-none">dovandai2906@gmail.com</a>
+                                        <a href="mailto:babystark16@gmail.com"
+                                            class="text-decoration-none">babystark16@gmail.com</a>
                                     </p>
                                 </div>
                             </div>
@@ -88,7 +88,7 @@
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-0">
                         <iframe
-                            src="https://www.google.com/maps?q=%C4%90%E1%BA%A1i+h%E1%BB%8Dc+Duy+T%C3%A2n,+Ho%C3%A0+Kh%C3%A1nh+Nam,+Li%C3%AAn+Chi%E1%BB%83u,+%C4%90%C3%A0+N%E1%BA%B5ng&output=embed"
+                            src="https://www.google.com/maps?q=475A+%C4%90i%E1%BB%87n+Bi%C3%AAn+Ph%E1%BB%A7,+Ph%C6%B0%E1%BB%9Dng+25,+B%C3%ACnh+Th%E1%BA%A1nh,+H%E1%BB%93+Ch%C3%AD+Minh&output=embed"
                             width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade">
                         </iframe>

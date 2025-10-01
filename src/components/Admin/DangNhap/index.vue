@@ -5,7 +5,7 @@
                 <div class="row row-cols-1">
                     <div class="col mx-auto" style="max-width: 460px;">
                         <div class="text-center mb-4 brand-wrap">
-                            <img src="https://theme.hstatic.net/200000000133/1001205759/14/logo.png?v=2279" width="160" alt="Logo" />
+                            <img src="https://xbilliard.vn/wp-content/uploads/2025/02/cropped-Artboard-1-copy-2-1536x932.png" width="160" alt="Logo" />
                             <div class="brand-tagline">F/W COLLECTION • ADMIN CONSOLE</div>
                         </div>
                         <div class="card glass-card">
@@ -147,7 +147,7 @@ export default {
 
 .fashion-bg {
     background-image: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.65)),
-                      url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1960&auto=format&fit=crop');
+                      url('https://xbilliard.vn/wp-content/uploads/2025/07/313-web.jpg');
     background-size: cover;
     background-position: center;
     color: #eaeaea;

@@ -14,7 +14,7 @@
                     </div>
                     <div class="modal fade" id="taoSanPhamModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                         aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
+                        <div class="modal-dialog modal-xl">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h1 class="modal-title fs-5" id="exampleModalLabel">
@@ -25,32 +25,32 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-2 mt-2">
                                                 <label>Tên sản phẩm</label>
                                                 <input v-model="san_pham_create.tenSanPham" type="text"
                                                     class="form-control mt-2" required />
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-2 mt-2">
                                                 <label>Mã sản phẩm</label>
                                                 <input v-model="san_pham_create.maSanPham" type="text" class="form-control mt-2" required />
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-2 mt-2">
                                                 <label>Xuất xứ</label>
                                                 <input v-model="san_pham_create.xuatXu" type="text" class="form-control mt-2" required />
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-2 mt-2">
                                                 <label>Bảo hành</label>
                                                 <input v-model="san_pham_create.baoHanh" type="text" class="form-control mt-2" required />
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-2 mt-2">
                                                 <label>Danh mục</label>
                                                 <select v-model="san_pham_create.idDanhMuc" class="form-control mt-2" required>
@@ -60,7 +60,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-2 mt-2">
                                                 <label>Thương hiệu</label>
                                                 <select v-model="san_pham_create.idThuongHieu" class="form-control mt-2" required>
@@ -70,7 +70,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-2 mt-2">
                                                 <label>Giảm giá</label>
                                                 <select v-model="san_pham_create.idGiamGia" class="form-control mt-2">
@@ -80,7 +80,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-2 mt-2">
                                                 <label>Nhà cung cấp</label>
                                                 <select v-model="san_pham_create.idNhaCungCap" class="form-control mt-2" required>
@@ -90,55 +90,49 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-2 mt-2">
                                                 <label>Giá sản phẩm</label>
                                                 <input v-model="san_pham_create.giaSanPham" type="number"
                                                     class="form-control mt-2" required />
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-2 mt-2">
                                                 <label>Số lượng tồn kho</label>
                                                 <input v-model="san_pham_create.soLuongTonKho" type="number"
                                                     class="form-control mt-2" required />
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-2 mt-2">
                                                 <label>Kích cỡ</label>
                                                 <input v-model="san_pham_create.kichCo" type="text"
                                                     class="form-control mt-2" required />
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-2 mt-2">
                                                 <label>Màu sắc</label>
                                                 <input v-model="san_pham_create.mauSac" type="text"
                                                     class="form-control mt-2" required />
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-2 mt-2">
                                                 <label>Chất liệu</label>
                                                 <input v-model="san_pham_create.chatLieu" type="text"
                                                     class="form-control mt-2" required />
                                             </div>
                                         </div>
-                                        <div class="col-lg-12">
-                                            <div class="mb-2 mt-2">
-                                                <label>Mô tả</label>
-                                                <textarea v-model="san_pham_create.moTa" class="form-control mt-2" rows="3"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-2 mt-2">
                                                 <label>Hình ảnh</label>
                                                 <input v-model="san_pham_create.hinhAnh" type="text" class="form-control mt-2" placeholder="Nhập link hình ảnh" />
                                                 <img v-if="san_pham_create.hinhAnh" :src="san_pham_create.hinhAnh" class="mt-2" style="max-width: 200px;" />
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-2 mt-2">
                                                 <label>Trạng thái</label>
                                                 <select v-model="san_pham_create.trangThai" class="form-control mt-2" required>
@@ -147,6 +141,13 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <div class="col-lg-12">
+                                            <div class="mb-2 mt-2">
+                                                <label>Mô tả</label>
+                                                <textarea v-model="san_pham_create.moTa" class="form-control mt-2" rows="3"></textarea>
+                                            </div>
+                                        </div>
+                                        
                                     </div>
                                 </div>
                                 <div class="modal-footer">
