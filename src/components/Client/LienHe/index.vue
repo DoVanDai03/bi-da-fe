@@ -307,7 +307,7 @@ ${this.thongTinDaGui.noiDung}
 }
 
 .hero-section {
-    background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+    background: linear-gradient(135deg, #530e29 0%, rgb(224, 6, 61) 100%);
     color: white;
     padding: 4rem 0;
     margin-bottom: 2rem;

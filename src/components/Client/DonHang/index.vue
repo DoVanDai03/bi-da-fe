@@ -166,7 +166,8 @@ export default {
             couponCode: "",
             couponError: "",
             discountPercent: 0,
-            maxDiscountAmount: 0
+            maxDiscountAmount: 0,
+            oderKhongDangNhap : {}
         };
     },
     computed: {
@@ -275,16 +276,18 @@ export default {
                 return;
             }
 
-            const userInfo = JSON.parse(localStorage.getItem('user_info'));
+            const userInfo = JSON.parse(localStorage.getItem('user_info') || 'null');
             const token = localStorage.getItem('token_khach_hang');
 
-            if (!userInfo || !token) {
-                toaster.error('Vui lòng đăng nhập để đặt hàng!');
-                return;
-            }
+            // if (!userInfo || !token) {
+            //     toaster.error('Vui lòng đăng nhập để đặt hàng!');
+            //     return;
+            // }
 
             const orderData = {
-                idKhachHang: userInfo.id,
+                idKhachHang : userInfo?.id || Number(`${Date.now()}${Math.floor(Math.random() * 1000)}`),
+
+
                 tenNguoiNhan: this.tenNguoiNhan,
                 sdtNguoiNhan: this.sdtNguoiNhan,
                 diaChiGiao: this.deliveryAddress,
@@ -299,9 +302,8 @@ export default {
             };
 
             axios.post('/api/user/chi-tiet-don-hang/tao-don-hang', orderData, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                // Chỉ đính kèm header khi có token (đăng nhập)
+                ...(token ? { headers: { 'Authorization': `Bearer ${token}` } } : {})
             })
                 .then(res => {
                     if (res.data.status) {
@@ -310,8 +312,22 @@ export default {
                             this.initiateVNPayPayment(res.data.data.id, this.calculateTotal());
                         } else {
                             // Nếu thanh toán khi nhận hàng
-                            localStorage.removeItem('cart_items');
-                            this.$router.push('/lich-su-don-hang');
+                            const userInfo = JSON.parse(localStorage.getItem('user_info') || 'null');
+                            const token = localStorage.getItem('token_khach_hang');
+
+                            if (userInfo && token) {
+                                // Đã đăng nhập: chuyển về lịch sử đơn hàng chuẩn
+                                localStorage.removeItem('cart_items');
+                                this.$router.push('/lich-su-don-hang');
+                            } else {
+                                // Chưa đăng nhập: lưu handoff và chuyển trang dành cho khách vãng lai
+                                this.oderKhongDangNhap = res.data.data;
+                                try {
+                                    localStorage.setItem('oder_khong_dang_nhap', JSON.stringify(this.oderKhongDangNhap));
+                                } catch (_) {}
+                                localStorage.removeItem('cart_items');
+                                this.$router.push('/lich-su-don-hang-cho-khong-dang-nhap');
+                            }
                         }
                     } else {
                         toaster.error(res.data.message || 'Có lỗi xảy ra khi đặt hàng!');
@@ -331,9 +347,7 @@ export default {
                     orderInfo: `Thanh toan don hang: ${orderId}`,
                     returnUrl: `${window.location.origin}/thong-tin-thanh-toan`
                 }, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    ...(token ? { headers: { 'Authorization': `Bearer ${token}` } } : {})
                 });
 
                 if (response.data.status && response.data.data.paymentUrl) {
@@ -365,9 +379,7 @@ export default {
             const token = localStorage.getItem('token_khach_hang');
             axios.get('/api/user/chi-tiet-don-hang/vnpay-payment', {
                 params: queryParams,
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                ...(token ? { headers: { 'Authorization': `Bearer ${token}` } } : {})
             })
             .then(res => {
                 if (res.data.status) {

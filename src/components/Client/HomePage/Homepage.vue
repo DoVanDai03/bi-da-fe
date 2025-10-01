@@ -1267,7 +1267,7 @@ export default {
 /* Modern Search Section */
 .search-section {
     margin-bottom: 40px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #460b22 0%, #ce0642 100%);
     border-radius: 20px;
     padding: 40px 20px;
     position: relative;

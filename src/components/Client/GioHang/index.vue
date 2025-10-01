@@ -286,14 +286,14 @@ export default {
                 return;
             }
 
-            const userInfo = JSON.parse(localStorage.getItem('user_info'));
-            const token = localStorage.getItem('token_khach_hang');
+            // const userInfo = JSON.parse(localStorage.getItem('user_info'));
+            // const token = localStorage.getItem('token_khach_hang');
 
-            if (!userInfo || !token) {
-                toaster.error('Vui lòng đăng nhập để thanh toán!');
-                this.$router.push('/dang-nhap');
-                return;
-            }
+            // if (!userInfo || !token) {
+            //     toaster.error('Vui lòng đăng nhập để thanh toán!');
+            //     this.$router.push('/dang-nhap');
+            //     return;
+            // }
 
             // Chuyển hướng đến trang thanh toán
             this.$router.push('/don-hang');
