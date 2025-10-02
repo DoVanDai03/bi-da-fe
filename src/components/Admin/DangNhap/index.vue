@@ -205,9 +205,12 @@ export default {
     color: #f1f1f1;
 }
 
-.fashion-input::placeholder {
-    color: #9b9b9b;
-}
+/* Force white placeholder across browsers */
+.fashion-input::placeholder { color: #ffffff !important; opacity: 1; }
+.fashion-input::-webkit-input-placeholder { color: #ffffff !important; opacity: 1; }
+.fashion-input:-ms-input-placeholder { color: #ffffff !important; opacity: 1; }
+.fashion-input::-ms-input-placeholder { color: #ffffff !important; opacity: 1; }
+.fashion-input::-moz-placeholder { color: #ffffff !important; opacity: 1; }
 
 .fashion-input:focus {
     outline: none;
@@ -278,4 +281,7 @@ export default {
     60% { left: 120%; }
     100% { left: 120%; }
 }
+
+/* Ensure form labels are white for contrast on dark background */
+.form-label { color: #ffffff; }
 </style>

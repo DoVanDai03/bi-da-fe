@@ -149,7 +149,12 @@ export default {
 .subtitle { color: #cfcfcf; margin: 8px 0 0; }
 .link-underline { color: #f5d67b; text-decoration: none; border-bottom: 1px solid rgba(245,214,123,.4); }
 .fashion-input { padding: 12px 14px; height: auto; border-radius: 12px; border: 1px solid rgba(255,255,255,.15); background: rgba(0,0,0,.3); color: #f1f1f1; }
-.fashion-input::placeholder { color: #9b9b9b; }
+/* Force white placeholder across browsers */
+.fashion-input::placeholder { color: #ffffff !important; opacity: 1; }
+.fashion-input::-webkit-input-placeholder { color: #ffffff !important; opacity: 1; }
+.fashion-input:-ms-input-placeholder { color: #ffffff !important; opacity: 1; }
+.fashion-input::-ms-input-placeholder { color: #ffffff !important; opacity: 1; }
+.fashion-input::-moz-placeholder { color: #ffffff !important; opacity: 1; }
 .fashion-input:focus { outline: none; box-shadow: 0 0 0 4px rgba(245,214,123,.15); border-color: rgba(245,214,123,.6); }
 .fashion-input-group { border-radius: 12px; background: rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.15); }
 .fashion-input-group .input-group-text { cursor: pointer; border: none; color: #e0e0e0; }
@@ -227,4 +232,7 @@ a {
 a:hover {
     color: #ff2222;
 }
+
+/* Ensure form labels are white for contrast on dark background */
+.form-label { color: #ffffff; }
 </style>

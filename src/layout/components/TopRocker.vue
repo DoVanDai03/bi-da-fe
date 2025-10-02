@@ -26,7 +26,7 @@
 			<!-- User Profile Menu -->
 			<div class="user-box dropdown ms-3">
 				<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret rounded-pill bg-light p-2 px-3"
-					href="javascript:;" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					href="javascript:;" role="button" @click.prevent="toggleAdminDropdown" :aria-expanded="isAdminDropdownOpen" id="adminDropdown">
 					<img :src="adminInfo.hinhAnh || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(adminInfo.hoTen || 'Admin') + '&background=4e73df&color=fff'"
 						class="user-img rounded-circle me-2" width="40" height="40" alt="user avatar">
 					<div class="user-info">
@@ -34,9 +34,9 @@
 						<p class="designation text-secondary mb-0 small">{{ adminInfo.chucVu || 'Quản trị viên' }}</p>
 					</div>
 				</a>
-				<ul class="dropdown-menu dropdown-menu-end shadow-lg mt-2">
+				<ul class="dropdown-menu dropdown-menu-end shadow-lg mt-2" :class="{ 'show': isAdminDropdownOpen }" aria-labelledby="adminDropdown" @click.stop>
 					<li>
-						<router-link to="/admin/thong-tin-tai-khoan" class="dropdown-item">
+						<router-link to="/admin/thong-tin-tai-khoan" class="dropdown-item" @click="closeAdminDropdown">
 							<div class="d-flex align-items-center">
 								<div class="icon-box bg-light-primary rounded-circle me-2 text-center"
 									style="width: 36px; height: 36px; line-height: 36px;">
@@ -75,11 +75,16 @@ export default {
 				chucVu: '',
 				hinhAnh: '',
 				email: ''
-			}
+			},
+			isAdminDropdownOpen: false
 		}
 	},
 	mounted() {
 		this.getAdminInfoFromAPI();
+		document.addEventListener('click', this.handleAdminClickOutside);
+	},
+	beforeDestroy() {
+		document.removeEventListener('click', this.handleAdminClickOutside);
 	},
 	methods: {
 		getAdminInfoFromAPI() {
@@ -108,7 +113,20 @@ export default {
 					console.error('Lỗi khi lấy thông tin admin từ API', error);
 				});
 		},
+		toggleAdminDropdown() {
+			this.isAdminDropdownOpen = !this.isAdminDropdownOpen;
+		},
+		closeAdminDropdown() {
+			this.isAdminDropdownOpen = false;
+		},
+		handleAdminClickOutside(event) {
+			const dropdown = this.$el.querySelector('.user-box');
+			if (dropdown && !dropdown.contains(event.target)) {
+				this.isAdminDropdownOpen = false;
+			}
+		},
 		handleLogout() {
+			this.isAdminDropdownOpen = false;
 			// Xóa token và thông tin admin từ localStorage
 			localStorage.removeItem('token_admin');
 			localStorage.removeItem('admin_info');
@@ -160,5 +178,14 @@ export default {
 	border: none;
 	border-radius: 10px;
 	min-width: 280px;
+}
+
+/* Ensure dropdown toggles with Vue class */
+.dropdown-menu.show {
+	display: block !important;
+}
+
+.user-box {
+	position: relative;
 }
 </style>
