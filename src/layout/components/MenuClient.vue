@@ -60,23 +60,7 @@
                 </div>
             </div>
         </nav>
-        <!-- <div class="category-menu">
-            <div class="container">
-                <div class="row">
-                    <template v-for="(value, index) in danh_sach_danh_muc" :key="index">
-                        <div class="col">
-                            <ul class="category-list">
-                                <li>
-                                    <router-link :to="{ path: '/san-pham', query: { danh_muc_id: value.id } }">
-                                        <i class="fas fa-running"></i> {{ value.name }}
-                                    </router-link>
-                                </li>
-                            </ul>
-                        </div>
-                    </template>
-</div>
-</div>
-</div> -->
+
         <div class="slider">
             <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-indicators">
@@ -87,15 +71,15 @@
                 <div class="carousel-inner">
                     <div class="carousel-item active">
                         <img src="https://xbilliard.vn/wp-content/uploads/2025/07/313-web.jpg"
-                            class="d-block w-100" alt="...">
+                            class="d-block w-100 " style="height : 650px" alt="...">
                     </div>
                     <div class="carousel-item">
                         <img src="https://xbilliard.vn/wp-content/uploads/2025/06/281-web.jpg"
-                            class="d-block w-100" alt="...">
+                            class="d-block w-100 " style="height : 650px" alt="...">
                     </div>
                     <div class="carousel-item">
                         <img src="https://xbilliard.vn/wp-content/uploads/2024/08/24-Web-150kb.jpg"
-                            class="d-block w-100" alt="...">
+                            class="d-block w-100 " style="height : 650px" alt="...">
                     </div>
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
@@ -242,99 +226,166 @@ export default {
 
 <style scoped>
 .header {
-    background: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .navbar {
-    padding: 15px 0;
-    border-bottom: 1px solid #eee;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .navbar-brand img {
     max-height: 50px;
-    transition: transform 0.3s;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
 }
 
 .navbar-brand img:hover {
-    transform: scale(1.05);
+    transform: scale(1.08) rotate(2deg);
 }
 
 .nav-link {
-    color: #333;
-    font-weight: 500;
-    padding: 8px 15px;
-    transition: all 0.3s;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 12px 20px;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
+    border-radius: 25px;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 68, 68, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.nav-link:hover::before {
+    left: 100%;
 }
 
 .nav-link i {
-    font-size: 16px;
+    font-size: 18px;
+    transition: transform 0.3s;
 }
 
 .nav-link:hover,
 .nav-link.active {
     color: #ff4444;
-    transform: translateY(-2px);
+    background: rgba(255, 68, 68, 0.08);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 68, 68, 0.2);
 }
 
-.search-box {
+.nav-link:hover i {
+    transform: scale(1.2);
+}
+
+/* Cart Styling */
+.cart-box {
     position: relative;
-    width: 400px;
-}
-
-.search-box input {
-    padding-right: 35px;
-    padding-left: 20px;
-    border-radius: 25px;
-    border: 2px solid #eee;
-    transition: all 0.3s;
-    height: 45px;
-    font-size: 15px;
-}
-
-.search-box input:focus {
-    border-color: #ff4444;
-    box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1);
-}
-
-.search-box i {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #666;
-    transition: color 0.3s;
-    font-size: 16px;
 }
 
 .cart-box a {
-    color: #333;
-    font-size: 20px;
-    transition: color 0.3s;
+    color: #2c3e50;
+    font-size: 24px;
+    transition: all 0.3s;
+    padding: 12px;
+    border-radius: 50%;
+    background: rgba(255, 68, 68, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 55px;
+    height: 55px;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+.cart-box a::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 68, 68, 0.1);
+    border-radius: 50%;
+    transition: all 0.4s;
+    transform: translate(-50%, -50%);
+}
+
+.cart-box a:hover::before {
+    width: 100%;
+    height: 100%;
 }
 
 .cart-box a:hover {
     color: #ff4444;
+    background: rgba(255, 68, 68, 0.15);
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(255, 68, 68, 0.3);
 }
 
 .cart-count {
     position: absolute;
-    top: -8px;
-    right: -8px;
-    background: #ff4444;
+    top: -5px;
+    right: -5px;
+    background: linear-gradient(135deg, #ff4444, #ff6b6b);
     color: white;
     border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 12px;
-    min-width: 18px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 22px;
     text-align: center;
+    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.4);
+    animation: pulse 2s infinite;
 }
 
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* User Box Styling */
 .user-box {
     cursor: pointer;
+    transition: all 0.3s;
+}
+
+.user-box .dropdown-toggle {
+    padding: 8px 16px;
+    border-radius: 25px;
+    background: rgba(255, 68, 68, 0.05);
+    border: 2px solid transparent;
+    transition: all 0.3s;
+    text-decoration: none;
+    color: #2c3e50;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.user-box .dropdown-toggle:hover {
+    background: rgba(255, 68, 68, 0.1);
+    border-color: rgba(255, 68, 68, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 68, 68, 0.15);
 }
 
 .user-img {
@@ -342,52 +393,135 @@ export default {
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #eee;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transition: all 0.3s;
 }
 
 .user-box:hover .user-img {
     border-color: #ff4444;
+    transform: scale(1.05);
 }
 
-.category-menu {
-    background: #f8f9fa;
-    padding: 15px 0;
-    border-top: 1px solid #eee;
+/* Login/Register Buttons - The Main Focus */
+.d-flex.gap-2 {
+    gap: 12px !important;
 }
 
-.category-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-}
-
-.category-list li a {
-    color: #333;
+.btn {
+    padding: 14px 32px;
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 25px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
     text-decoration: none;
-    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 130px;
+    border: 2px solid;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    transition: left 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: -1;
+}
+
+/* Login Button (Outline) */
+.btn-outline-primary {
+    color: #ff4444;
+    border-color: #ff4444;
+    background: transparent;
+    box-shadow: 0 4px 15px rgba(255, 68, 68, 0.2);
+}
+
+.btn-outline-primary::before {
+    background: linear-gradient(135deg, #ff4444, #ff6b6b);
+}
+
+.btn-outline-primary:hover {
+    color: white;
+    border-color: #ff4444;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 35px rgba(255, 68, 68, 0.4);
+}
+
+.btn-outline-primary:hover::before {
+    left: 0;
+}
+
+/* Register Button (Filled) */
+.btn-primary {
+    color: white;
+    border-color: #ff4444;
+    background: linear-gradient(135deg, #ff4444, #ff6b6b);
+    box-shadow: 0 4px 15px rgba(255, 68, 68, 0.3);
+}
+
+.btn-primary::before {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+}
+
+.btn-primary:hover {
+    color: white;
+    border-color: #ff6b6b;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 35px rgba(255, 68, 68, 0.5);
+}
+
+.btn-primary:hover::before {
+    left: 0;
+}
+
+/* Button Active States */
+.btn:active {
+    transform: translateY(-1px) scale(1.02);
+}
+
+/* Dropdown Menu Styling */
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    border-radius: 15px;
+    padding: 10px 0;
+    margin-top: 10px;
+}
+
+.dropdown-item {
+    padding: 12px 20px;
     transition: all 0.3s;
+    color: #2c3e50;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 15px;
-    border-radius: 20px;
+    gap: 10px;
 }
 
-.category-list li a i {
-    font-size: 18px;
-}
-
-.category-list li a:hover {
+.dropdown-item:hover {
+    background: rgba(255, 68, 68, 0.08);
     color: #ff4444;
-    background: rgba(255, 68, 68, 0.1);
+    transform: translateX(5px);
 }
 
+.dropdown-item i {
+    width: 16px;
+    font-size: 14px;
+}
+
+/* Slider Improvements */
 .slider {
-    margin-top: 20px;
+    margin-top: 0;
+    border-radius: 0 0 20px 20px;
+    overflow: hidden;
 }
 
 .carousel-item {
@@ -397,88 +531,134 @@ export default {
 .carousel-item img {
     height: 500px;
     object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.carousel-item:hover img {
+    transform: scale(1.02);
 }
 
 .carousel-caption {
-    background: rgba(0, 0, 0, 0.5);
-    padding: 30px;
-    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 20px;
     max-width: 600px;
     margin: 0 auto;
     bottom: 50%;
     transform: translateY(50%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .carousel-caption h2 {
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .carousel-caption p {
     font-size: 1.1rem;
     margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .carousel-caption .btn {
-    padding: 10px 30px;
+    padding: 12px 35px;
     border-radius: 25px;
-    background: #ff4444;
+    background: linear-gradient(135deg, #ff4444, #ff6b6b);
     border: none;
     transition: all 0.3s;
+    box-shadow: 0 8px 25px rgba(255, 68, 68, 0.4);
 }
 
 .carousel-caption .btn:hover {
-    background: #ff2222;
-    transform: translateY(-2px);
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 35px rgba(255, 68, 68, 0.6);
 }
 
 .carousel-indicators {
-    bottom: 20px;
+    bottom: 30px;
 }
 
 .carousel-indicators button {
-    width: 12px;
-    height: 12px;
+    width: 15px;
+    height: 15px;
     border-radius: 50%;
-    margin: 0 5px;
-    background: rgba(255, 255, 255, 0.5);
-    border: none;
+    margin: 0 8px;
+    background: rgba(255, 255, 255, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    transition: all 0.3s;
 }
 
 .carousel-indicators button.active {
     background: #ff4444;
+    border-color: #ff4444;
+    transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.5);
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
-    .search-box {
+    .navbar {
+        padding: 15px 0;
+    }
+    
+    .nav-link {
+        padding: 10px 15px;
+        margin: 2px 0;
+    }
+    
+    .d-flex.gap-2 {
+        flex-direction: column;
         width: 100%;
-        margin: 10px 0;
+        margin-top: 15px;
     }
-
-    .search-box input {
-        height: 40px;
+    
+    .btn {
+        width: 100%;
+        margin: 5px 0;
     }
-
-    .category-list {
-        flex-wrap: wrap;
-        gap: 15px;
+    
+    .cart-box {
+        margin-bottom: 15px;
     }
-
+    
     .carousel-item img {
         height: 300px;
     }
-
+    
     .carousel-caption {
-        padding: 15px;
+        padding: 20px;
+        bottom: 20px;
+        transform: none;
     }
-
+    
     .carousel-caption h2 {
         font-size: 1.8rem;
     }
-
+    
     .carousel-caption p {
         font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .btn {
+        padding: 10px 20px;
+        font-size: 13px;
+        min-width: 100px;
+    }
+    
+    .navbar-brand img {
+        max-height: 40px;
+    }
+    
+    .cart-box a {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
     }
 }
 </style>

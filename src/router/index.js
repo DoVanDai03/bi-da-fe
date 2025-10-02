@@ -127,11 +127,11 @@ const routes = [
         component: ()=>import('../components/Client/LichSuDonHang/index.vue'),
         meta: { layout: 'client' }
     },
-    {
-        path : '/lich-su-don-hang-cho-khong-dang-nhap',
-        component: ()=>import('../components/Client/LichSuDonHang/index_choKhongDangNhap.vue'),
-        meta: { layout: 'client' }
-    },
+    // {
+    //     path : '/lich-su-don-hang-cho-khong-dang-nhap',
+    //     component: ()=>import('../components/Client/LichSuDonHang/index_choKhongDangNhap.vue'),
+    //     meta: { layout: 'client' }
+    // },
     {
         path : '/thong-tin-tai-khoan',
         component: ()=>import('../components/Client/ThongTinTaiKhoan/index.vue'),

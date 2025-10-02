@@ -50,7 +50,8 @@
                 </div>
 
                 <div class="price-section">
-                    <div class="current-price">{{ formatCurrency(san_pham.giamGia ? san_pham.giaSanPham * (1 - san_pham.giamGia.phamTramGiamGia / 100) : san_pham.giaSanPham) }}</div>
+                    <div class="current-price">{{ formatCurrency(san_pham.giamGia ? san_pham.giaSanPham * (1 -
+                        san_pham.giamGia.phamTramGiamGia / 100) : san_pham.giaSanPham) }}</div>
                     <div class="price-details" v-if="san_pham.giamGia">
                         <span class="original-price">{{ formatCurrency(san_pham.giaSanPham) }}</span>
                         <span class="discount-badge">-{{ san_pham.giamGia.phamTramGiamGia }}%</span>
@@ -107,22 +108,14 @@
 
         <div class="product-tabs">
             <div class="tab-header">
-                <button 
-                    class="tab-btn" 
-                    :class="{ active: activeTab === 'description' }"
+                <button class="tab-btn" :class="{ active: activeTab === 'description' }"
                     @click="activeTab = 'description'">
                     Mô tả sản phẩm
                 </button>
-                <button 
-                    class="tab-btn" 
-                    :class="{ active: activeTab === 'specs' }"
-                    @click="activeTab = 'specs'">
+                <button class="tab-btn" :class="{ active: activeTab === 'specs' }" @click="activeTab = 'specs'">
                     Thông số kỹ thuật
                 </button>
-                <button 
-                    class="tab-btn" 
-                    :class="{ active: activeTab === 'reviews' }"
-                    @click="switchToReviews">
+                <button class="tab-btn" :class="{ active: activeTab === 'reviews' }" @click="switchToReviews">
                     Đánh giá
                 </button>
             </div>
@@ -174,36 +167,26 @@
                 <div class="tab-pane" :class="{ active: activeTab === 'reviews' }">
                     <div class="reviews-section">
                         <h3>Đánh giá từ khách hàng</h3>
-                        
+
                         <!-- Review Form -->
                         <div class="review-form" v-if="isLoggedIn">
                             <h4>Viết đánh giá của bạn</h4>
                             <div class="form-group">
                                 <label>Nội dung đánh giá:</label>
-                                <textarea 
-                                    v-model="newReview.danhGia" 
-                                    class="form-control" 
-                                    rows="3"
+                                <textarea v-model="newReview.danhGia" class="form-control" rows="3"
                                     placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này...">
                                 </textarea>
                             </div>
                             <div class="form-group mt-3">
                                 <label>Hình ảnh (tùy chọn):</label>
-                                <input 
-                                    type="text" 
-                                    class="form-control"
-                                    v-model="newReview.hinhAnh"
+                                <input type="text" class="form-control" v-model="newReview.hinhAnh"
                                     placeholder="Nhập URL hình ảnh (nếu có)">
                             </div>
                             <div v-if="newReview.hinhAnh" class="image-preview mt-2">
-                                <img :src="newReview.hinhAnh" alt="Preview" 
-                                    @error="handleImageError" 
+                                <img :src="newReview.hinhAnh" alt="Preview" @error="handleImageError"
                                     class="preview-image">
                             </div>
-                            <button 
-                                @click="submitReview" 
-                                class="btn btn-primary mt-3"
-                                :disabled="isSubmittingReview">
+                            <button @click="submitReview" class="btn btn-primary mt-3" :disabled="isSubmittingReview">
                                 {{ isSubmittingReview ? 'Đang gửi...' : 'Gửi đánh giá' }}
                             </button>
                         </div>
@@ -257,7 +240,7 @@
                             </div>
                             <div class="card-body">
                                 <h6 class="card-title">{{ value.tenSanPham }}</h6>
-                                <div class="product-details">                                   
+                                <div class="product-details">
                                     <div class="price-section">
                                         <p class="stock-status"
                                             :class="value.soLuongTonKho > 0 ? 'text-success' : 'text-danger'">
@@ -294,30 +277,24 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Nội dung đánh giá:</label>
-                            <textarea 
-                                v-model="updateReview.danhGia" 
-                                class="form-control" 
-                                rows="3"
+                            <textarea v-model="updateReview.danhGia" class="form-control" rows="3"
                                 placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này...">
-                            </textarea>
+                    </textarea>
                         </div>
                         <div class="form-group mt-3">
                             <label>Hình ảnh (tùy chọn):</label>
-                            <input 
-                                type="text" 
-                                class="form-control"
-                                v-model="updateReview.hinhAnh"
+                            <input type="text" class="form-control" v-model="updateReview.hinhAnh"
                                 placeholder="Nhập URL hình ảnh (nếu có)">
                         </div>
                         <div v-if="updateReview.hinhAnh" class="image-preview mt-2">
-                            <img :src="updateReview.hinhAnh" alt="Preview" 
-                                @error="handleImageError" 
+                            <img :src="updateReview.hinhAnh" alt="Preview" @error="handleImageError"
                                 class="preview-image">
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="button" class="btn btn-primary" @click="submitUpdateReview" :disabled="isSubmittingReview">
+                        <button type="button" class="btn btn-primary" @click="submitUpdateReview"
+                            :disabled="isSubmittingReview">
                             {{ isSubmittingReview ? 'Đang cập nhật...' : 'Cập nhật' }}
                         </button>
                     </div>
@@ -338,7 +315,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="button" class="btn btn-danger" @click="submitDeleteReview" :disabled="isSubmittingReview">
+                        <button type="button" class="btn btn-danger" @click="submitDeleteReview"
+                            :disabled="isSubmittingReview">
                             {{ isSubmittingReview ? 'Đang xóa...' : 'Xóa' }}
                         </button>
                     </div>
@@ -454,7 +432,7 @@ export default {
         },
         async applyDiscountCode() {
             if (!this.discountCode) return;
-            
+
             try {
                 const orderDetails = [{
                     giaSanPham: this.san_pham.giaSanPham,
@@ -489,86 +467,92 @@ export default {
         },
 
         themVaoGioHang() {
-            if (this.san_pham.soLuongTonKho <= 0) {
-                toaster.error('Sản phẩm đã hết hàng!');
+            if (!this.isLoggedIn) {
+                toaster.error('Vui lòng đăng nhập để thêm vào giỏ hàng!');
+                this.$router.push('/dang-nhap');
                 return;
-            }
-
-            const userInfo = JSON.parse(localStorage.getItem('user_info'));
-            const token = localStorage.getItem('token_khach_hang');
-            
-            // Tính giá tiền sau khi áp dụng mã giảm giá (nếu có)
-            const giaSauGiamGia = this.isDiscountApplied ? this.finalPrice : 
-                (this.san_pham.giamGia ? this.san_pham.giaSanPham * (1 - this.san_pham.giamGia.phamTramGiamGia / 100) : this.san_pham.giaSanPham);
-            
-            const thanhTien = giaSauGiamGia * this.quantity;
-            
-            if (userInfo && token) {
-                // Thêm vào giỏ hàng qua API
-                axios.post('/api/user/gio-hang/them-san-pham', null, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                    params: {
-                        idKhachHang: userInfo.id,
-                        idSanPham: this.san_pham.id,
-                        soLuong: this.quantity,
-                        thanhTien: thanhTien,
-                        maGiamGia: this.isDiscountApplied ? this.discountCode : null
-                    }
-                })
-                .then(res => {
-                    if (res.data.status) {
-                        toaster.success('Thêm vào giỏ hàng thành công!');
-                        this.$root.$emit('update-cart');
-    
-                    } else {
-                        toaster.error(res.data.message || 'Có lỗi xảy ra!');
-                    }
-                })
-                .catch(error => {
-                    console.error(error);
-                    toaster.error('Có lỗi xảy ra khi thêm vào giỏ hàng!');
-                });
             } else {
-                // Thêm vào giỏ hàng localStorage
-                let cartItems = JSON.parse(localStorage.getItem('cart_items') || '[]');
-                const existingItem = cartItems.find(item => item.id === this.san_pham.id);
-                
-                if (existingItem) {
-                    if (existingItem.soLuong >= this.san_pham.soLuongTonKho) {
-                        toaster.error('Số lượng sản phẩm trong giỏ hàng đã đạt tối đa!');
-                        return;
-                    }
-                    existingItem.soLuong += this.quantity;
-                    existingItem.thanhTien = giaSauGiamGia * existingItem.soLuong;
-                    if (this.isDiscountApplied) {
-                        existingItem.maGiamGia = this.discountCode;
-                        existingItem.giaGoc = this.san_pham.giaSanPham;
-                        existingItem.giaSauGiam = giaSauGiamGia;
-                    }
-                } else {
-                    cartItems.push({
-                        id: this.san_pham.id,
-                        tenSanPham: this.san_pham.tenSanPham,
-                        giaSanPham: giaSauGiamGia,
-                        giaGoc: this.san_pham.giaSanPham,
-                        hinhAnh: this.san_pham.hinhAnh,
-                        soLuong: this.quantity,
-                        thanhTien: thanhTien,
-                        maGiamGia: this.isDiscountApplied ? this.discountCode : null,
-                        giaSauGiam: this.isDiscountApplied ? giaSauGiamGia : null,
-                        giamGia: this.san_pham.giamGia ? {
-                            phamTramGiamGia: this.san_pham.giamGia.phamTramGiamGia,
-                            thanhTien: giaSauGiamGia
-                        } : null,
-                        soLuongTonKho: this.san_pham.soLuongTonKho
-                    });
+                if (this.san_pham.soLuongTonKho <= 0) {
+                    toaster.error('Sản phẩm đã hết hàng!');
+                    return;
                 }
-                
-                localStorage.setItem('cart_items', JSON.stringify(cartItems));
-                toaster.success('Thêm vào giỏ hàng thành công!');
-                this.$root.$emit('update-cart');
+
+                const userInfo = JSON.parse(localStorage.getItem('user_info'));
+                const token = localStorage.getItem('token_khach_hang');
+
+                // Tính giá tiền sau khi áp dụng mã giảm giá (nếu có)
+                const giaSauGiamGia = this.isDiscountApplied ? this.finalPrice :
+                    (this.san_pham.giamGia ? this.san_pham.giaSanPham * (1 - this.san_pham.giamGia.phamTramGiamGia / 100) : this.san_pham.giaSanPham);
+
+                const thanhTien = giaSauGiamGia * this.quantity;
+
+                if (userInfo && token) {
+                    // Thêm vào giỏ hàng qua API
+                    axios.post('/api/user/gio-hang/them-san-pham', null, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        },
+                        params: {
+                            idKhachHang: userInfo.id,
+                            idSanPham: this.san_pham.id,
+                            soLuong: this.quantity,
+                            thanhTien: thanhTien,
+                            maGiamGia: this.isDiscountApplied ? this.discountCode : null
+                        }
+                    })
+                        .then(res => {
+                            if (res.data.status) {
+                                toaster.success('Thêm vào giỏ hàng thành công!');
+                                this.$root.$emit('update-cart');
+
+                            } else {
+                                toaster.error(res.data.message || 'Có lỗi xảy ra!');
+                            }
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            toaster.error('Có lỗi xảy ra khi thêm vào giỏ hàng!');
+                        });
+                } else {
+                    // Thêm vào giỏ hàng localStorage
+                    let cartItems = JSON.parse(localStorage.getItem('cart_items') || '[]');
+                    const existingItem = cartItems.find(item => item.id === this.san_pham.id);
+
+                    if (existingItem) {
+                        if (existingItem.soLuong >= this.san_pham.soLuongTonKho) {
+                            toaster.error('Số lượng sản phẩm trong giỏ hàng đã đạt tối đa!');
+                            return;
+                        }
+                        existingItem.soLuong += this.quantity;
+                        existingItem.thanhTien = giaSauGiamGia * existingItem.soLuong;
+                        if (this.isDiscountApplied) {
+                            existingItem.maGiamGia = this.discountCode;
+                            existingItem.giaGoc = this.san_pham.giaSanPham;
+                            existingItem.giaSauGiam = giaSauGiamGia;
+                        }
+                    } else {
+                        cartItems.push({
+                            id: this.san_pham.id,
+                            tenSanPham: this.san_pham.tenSanPham,
+                            giaSanPham: giaSauGiamGia,
+                            giaGoc: this.san_pham.giaSanPham,
+                            hinhAnh: this.san_pham.hinhAnh,
+                            soLuong: this.quantity,
+                            thanhTien: thanhTien,
+                            maGiamGia: this.isDiscountApplied ? this.discountCode : null,
+                            giaSauGiam: this.isDiscountApplied ? giaSauGiamGia : null,
+                            giamGia: this.san_pham.giamGia ? {
+                                phamTramGiamGia: this.san_pham.giamGia.phamTramGiamGia,
+                                thanhTien: giaSauGiamGia
+                            } : null,
+                            soLuongTonKho: this.san_pham.soLuongTonKho
+                        });
+                    }
+
+                    localStorage.setItem('cart_items', JSON.stringify(cartItems));
+                    toaster.success('Thêm vào giỏ hàng thành công!');
+                    this.$root.$emit('update-cart');
+                }
             }
         },
         muaNgay() {
@@ -596,7 +580,7 @@ export default {
         },
         isValidImageUrl(url) {
             if (!url) return false;
-            
+
             // Kiểm tra xem URL có hợp lệ không
             try {
                 new URL(url);
@@ -735,7 +719,7 @@ export default {
             try {
                 const token = localStorage.getItem('token_khach_hang');
                 const userInfo = JSON.parse(localStorage.getItem('user_info'));
-                
+
                 const response = await axios.delete(
                     `/api/user/danh-gia/${this.selectedReviewId}?idKhachHang=${userInfo.id}`,
                     {
