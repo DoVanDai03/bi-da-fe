@@ -164,6 +164,11 @@ const routes = [
         meta: { layout: 'Login' }
     },
     {
+        path : '/reset-password',
+        component: ()=>import('../components/Client/ResetPassword/index.vue'),
+        meta: { layout: 'Login' }
+    },
+    {
         path : '/xac-minh',
         component: ()=>import('../components/Client/DangKy/kichHoatTaiKhoan.vue'),
         meta: { layout: 'Login' }

@@ -34,16 +34,17 @@
                         </div>
                         <div class="user-box dropdown" v-if="isLoggedIn">
                             <a class="d-flex align-items-center dropdown-toggle" href="#" role="button"
-                                data-bs-toggle="dropdown">
+                                @click.prevent="toggleDropdown" :aria-expanded="isDropdownOpen" id="userDropdown">
                                 <img :src="userInfo.avatar || 'https://i.pinimg.com/originals/03/19/e7/0319e75748160709ceefa7398a4a7070.jpg'"
                                     class="user-img" alt="user">
                                 <span class="ms-2">{{ userInfo.hoVaTen || 'Tài khoản' }}</span>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><router-link class="dropdown-item" to="/thong-tin-tai-khoan"><i
+                            <ul class="dropdown-menu dropdown-menu-end" :class="{ 'show': isDropdownOpen }" 
+                                aria-labelledby="userDropdown" @click.stop>
+                                <li><router-link class="dropdown-item" to="/thong-tin-tai-khoan" @click="closeDropdown"><i
                                             class="fas fa-user"></i> Thông tin tài khoản</router-link></li>
                                 <li>
-                                    <router-link class="dropdown-item" to="/lich-su-don-hang">
+                                    <router-link class="dropdown-item" to="/lich-su-don-hang" @click="closeDropdown">
                                         <i class="fas fa-history"></i>
                                         Lịch sử đơn hàng
                                     </router-link>
@@ -107,18 +108,23 @@ export default {
             cartItems: [],
             isLoading: false,
             cartItemCount: 0,
+            isDropdownOpen: false,
         }
     },
     beforeDestroy() {
         // Cleanup listeners
         this.$root.$off('login-success');
         window.removeEventListener('storage', this.kiemTraDangNhap);
+        document.removeEventListener('click', this.handleClickOutside);
     },
     mounted() {
         // Chỉ khởi tạo kiểm tra token nếu không phải là admin
         if (!this.isAdminRoute()) {
             this.initializeCustomerChecks();
         }
+        
+        // Thêm event listener để đóng dropdown khi click bên ngoài
+        document.addEventListener('click', this.handleClickOutside);
     },
     methods: {
         isAdminRoute() {
@@ -127,6 +133,18 @@ export default {
         initializeCustomerChecks() {
             this.kiemTraDangNhap();
             this.loadCartItems();
+        },
+        toggleDropdown() {
+            this.isDropdownOpen = !this.isDropdownOpen;
+        },
+        closeDropdown() {
+            this.isDropdownOpen = false;
+        },
+        handleClickOutside(event) {
+            const dropdown = this.$el.querySelector('.user-box');
+            if (dropdown && !dropdown.contains(event.target)) {
+                this.isDropdownOpen = false;
+            }
         },
         loadCartItems() {
             this.isLoading = true;
@@ -367,6 +385,7 @@ export default {
 .user-box {
     cursor: pointer;
     transition: all 0.3s;
+    position: relative;
 }
 
 .user-box .dropdown-toggle {
@@ -495,6 +514,29 @@ export default {
     border-radius: 15px;
     padding: 10px 0;
     margin-top: 10px;
+    min-width: 200px;
+    z-index: 1050;
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+}
+
+.dropdown-menu.show {
+    display: block !important;
+    animation: dropdownFadeIn 0.3s ease-in-out;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .dropdown-item {

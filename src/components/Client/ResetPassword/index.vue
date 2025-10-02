@@ -12,18 +12,29 @@
                             <div class="card-body p-0">
                                 <div class="p-4 p-md-5 rounded">
                                     <div class="text-center mb-3">
-                                        <h3 class="title">Quên mật khẩu</h3>
-                                        <p class="subtitle">Vui lòng nhập email đã đăng ký của bạn</p>
+                                        <h3 class="title">Đặt lại mật khẩu</h3>
+                                        <p class="subtitle" v-if="userInfo">Nhập mật khẩu mới cho tài khoản {{ userInfo.email }}</p>
+                                        <p class="subtitle" v-else>Đang xác thực token...</p>
                                     </div>
-                                    <div class="form-body">
+                                    <div class="form-body" v-if="!loading && !error">
                                         <form class="row g-3" @submit.prevent="handleSubmit">
-                                            <!-- Email Input -->
+                                            <!-- New Password Input -->
                                             <div class="col-12">
-                                                <label for="email" class="form-label">Email</label>
-                                                <div class="input-with-icon">
-                                                    <i class='bx bx-envelope'></i>
-                                                    <input v-model="email" type="email" class="form-control fashion-input" id="email"
-                                                         placeholder="Nhập email của bạn" required>
+                                                <label for="newPassword" class="form-label">Mật khẩu mới</label>
+                                                <div class="input-group fashion-input-group" id="show_hide_password">
+                                                    <span class="input-group-text bg-transparent border-0 icon-left"><i class='bx bx-lock'></i></span>
+                                                    <input v-model="newPassword" type="password" class="form-control border-0 fashion-input" id="newPassword" placeholder="Nhập mật khẩu mới" required>
+                                                    <a href="javascript:;" class="input-group-text bg-transparent fashion-toggle"><i class='bx bx-hide'></i></a>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Confirm Password Input -->
+                                            <div class="col-12">
+                                                <label for="confirmPassword" class="form-label">Xác nhận mật khẩu mới</label>
+                                                <div class="input-group fashion-input-group" id="show_hide_password_confirm">
+                                                    <span class="input-group-text bg-transparent border-0 icon-left"><i class='bx bx-lock-alt'></i></span>
+                                                    <input v-model="confirmPassword" type="password" class="form-control border-0 fashion-input" id="confirmPassword" placeholder="Xác nhận mật khẩu mới" required>
+                                                    <a href="javascript:;" class="input-group-text bg-transparent fashion-toggle"><i class='bx bx-hide'></i></a>
                                                 </div>
                                             </div>
                                             
@@ -32,7 +43,7 @@
                                                 <div class="d-grid">
                                                     <button type="submit" class="btn btn-fashion" :disabled="dangGui">
                                                         <span v-if="dangGui"><i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...</span>
-                                                        <span v-else><i class="fas fa-paper-plane me-2"></i>Gửi yêu cầu đặt lại mật khẩu</span>
+                                                        <span v-else><i class="fas fa-key me-2"></i>Đặt lại mật khẩu</span>
                                                     </button>
                                                 </div>
                                             </div>
@@ -42,6 +53,27 @@
                                                 <router-link class="link-underline" to="/dang-nhap">Quay lại đăng nhập</router-link>
                                             </div>
                                         </form>
+                                    </div>
+                                    
+                                    <!-- Loading State -->
+                                    <div v-if="loading" class="text-center py-4">
+                                        <div class="spinner-border text-light" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <p class="mt-3 text-light">Đang xác thực token...</p>
+                                    </div>
+                                    
+                                    <!-- Error State -->
+                                    <div v-if="error" class="text-center py-4">
+                                        <div class="alert alert-danger" role="alert">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            {{ error }}
+                                        </div>
+                                        <div class="d-grid">
+                                            <router-link to="/quen-mat-khau" class="btn btn-fashion">
+                                                <i class="fas fa-arrow-left me-2"></i>Quay lại quên mật khẩu
+                                            </router-link>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -59,15 +91,21 @@ const toaster = createToaster({ position: "top-right" });
 import axios from "axios";
 
 export default {
-    name: "QuenMatKhau",
+    name: "ResetPassword",
     data() {
         return {
-            email: "",
+            newPassword: "",
+            confirmPassword: "",
+            resetToken: "",
+            userInfo: null,
+            loading: true,
+            error: null,
             dangGui: false
         };
     },
     mounted() {
         this.setupPasswordToggle();
+        this.getTokenFromURL();
     },
     methods: {
         setupPasswordToggle() {
@@ -96,34 +134,96 @@ export default {
             }, 100);
         },
         
+        // Lấy token từ URL
+        getTokenFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            
+            if (!token) {
+                this.error = 'Token không hợp lệ';
+                this.loading = false;
+                return;
+            }
+            
+            this.resetToken = token;
+            this.validateResetToken();
+        },
         
-        // Gửi yêu cầu reset password
-        async sendForgotPasswordRequest() {
+        // Validate reset token
+        async validateResetToken() {
             try {
-                const response = await axios.post('/api/auth/forgot-password', {
-                    email: this.email
+                const response = await axios.get('/api/auth/validate-reset-token', {
+                    params: { token: this.resetToken }
+                });
+                
+                if (response.data.status && response.data.valid) {
+                    this.getUserInfoByToken();
+                } else {
+                    this.error = 'Token không hợp lệ hoặc đã hết hạn';
+                    this.loading = false;
+                }
+            } catch (error) {
+                console.error('Lỗi validate token:', error);
+                this.error = 'Token không hợp lệ hoặc đã hết hạn';
+                this.loading = false;
+            }
+        },
+        
+        // Lấy thông tin user từ token
+        async getUserInfoByToken() {
+            try {
+                const response = await axios.get('/api/auth/user-info', {
+                    params: { token: this.resetToken }
+                });
+                
+                if (response.data.status) {
+                    this.userInfo = response.data.data;
+                }
+                this.loading = false;
+            } catch (error) {
+                console.error('Lỗi lấy thông tin user:', error);
+                this.error = 'Không thể lấy thông tin người dùng';
+                this.loading = false;
+            }
+        },
+        
+        // Reset password với token
+        async resetPassword() {
+            if (this.newPassword !== this.confirmPassword) {
+                toaster.error("Mật khẩu xác nhận không khớp");
+                return;
+            }
+            
+            if (this.newPassword.length < 6) {
+                toaster.error("Mật khẩu phải có ít nhất 6 ký tự");
+                return;
+            }
+            
+            try {
+                const response = await axios.post('/api/auth/reset-password', {
+                    token: this.resetToken,
+                    newPassword: this.newPassword
                 });
                 
                 if (response.data.status) {
                     toaster.success(response.data.message);
-                    toaster.info('Vui lòng kiểm tra email và click vào link để đặt lại mật khẩu');
+                    this.$router.push('/dang-nhap');
                 } else {
                     toaster.error(response.data.message);
                 }
             } catch (error) {
-                console.error('Lỗi gửi yêu cầu reset password:', error);
-                const errorMessage = error.response?.data?.message || 'Không thể gửi yêu cầu reset password';
+                console.error('Lỗi reset password:', error);
+                const errorMessage = error.response?.data?.message || 'Không thể đặt lại mật khẩu';
                 toaster.error(errorMessage);
             }
         },
-        
         
         // Xử lý submit form
         async handleSubmit() {
             this.dangGui = true;
             
             try {
-                await this.sendForgotPasswordRequest();
+                await this.resetPassword();
             } catch (error) {
                 console.error('Lỗi xử lý:', error);
                 toaster.error('Đã xảy ra lỗi, vui lòng thử lại');
@@ -226,5 +326,18 @@ a {
 
 a:hover {
     color: #ff2222;
+}
+
+/* Alert styles */
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    color: #f8d7da;
+    border-radius: 8px;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
 }
 </style>
